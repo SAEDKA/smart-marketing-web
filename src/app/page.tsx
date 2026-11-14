@@ -9,7 +9,6 @@ import { useSpotlight } from "@/lib/hooks/use-spotlight";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import { BrandLogo } from "@/components/layout/BrandLogo";
 import { TypewriterHeadline } from "@/components/landing/TypewriterHeadline";
-import { headlineFontClassName } from "@/components/landing/headline-fonts";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import {
@@ -285,7 +284,7 @@ export default function LandingPage() {
             <div className="lg:col-span-5 space-y-6">
               <TypewriterHeadline
                 segments={copy.heroHeadline}
-                className={`text-2xl sm:text-[28px] lg:text-[33px] font-bold tracking-tight text-white leading-[1.14] ${headlineFontClassName(locale)}`}
+                className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-[1.08]"
                 onDone={() => setHeroTyped(true)}
               />
 
