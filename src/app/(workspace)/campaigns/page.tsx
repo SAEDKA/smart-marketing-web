@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import React, { useState, useEffect } from "react";
 import { useI18n } from "@/lib/i18n/context";
 import { campaignsApi } from "@/lib/api/campaigns.api";
@@ -588,13 +590,13 @@ export default function CampaignsPage() {
 
                   <div className="flex items-center justify-between gap-2 pt-1">
                     {/* Open in Studio Deep Link (WEB-02-05 preparation) */}
-                    <a
+                    <Link
                       href={`/content-studio?campaignId=${camp.id}`}
                       className="inline-flex items-center gap-1.5 text-xs text-accent-cyan hover:underline font-medium"
                     >
                       <Sparkles className="w-3.5 h-3.5" />
                       <span>{t.campaigns.launchInStudioBtn}</span>
-                    </a>
+                    </Link>
 
                     <div className="flex items-center gap-1.5">
                       {/* Status toggle action */}
@@ -1154,7 +1156,7 @@ export default function CampaignsPage() {
 
             {/* Studio Launch Deep Link */}
             <div className="pt-3 border-t border-white/10 flex items-center justify-between">
-              <a
+              <Link
                 href={`/content-studio?campaignId=${selectedCampaign.id}`}
                 className="w-full sm:w-auto"
               >
@@ -1164,7 +1166,7 @@ export default function CampaignsPage() {
                 >
                   {t.campaigns.launchInStudioBtn}
                 </Button>
-              </a>
+              </Link>
 
               <div className="flex items-center gap-2">
                 <Button

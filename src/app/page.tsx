@@ -1,10 +1,15 @@
 "use client";
 
+import Link from "next/link";
+
 import React, { useState } from "react";
 import { useI18n } from "@/lib/i18n/context";
 import { useAuth } from "@/lib/auth/context";
+import { useSpotlight } from "@/lib/hooks/use-spotlight";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
-import { Logo, LogoMark } from "@/components/brand/Logo";
+import { BrandLogo } from "@/components/layout/BrandLogo";
+import { TypewriterHeadline } from "@/components/landing/TypewriterHeadline";
+import { headlineFontClassName } from "@/components/landing/headline-fonts";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import {
@@ -32,11 +37,14 @@ const LANDING_COPY = {
     openDashboard: "Open Workspace",
     signIn: "Sign In",
     startFree: "Start Free Workspace",
-    heroHeadline: "AI social media marketing for independent businesses.",
+    heroHeadline: [
+      { text: "AI", accent: true },
+      { text: " social media " },
+      { text: "marketing", accent: true },
+      { text: " for independent businesses." },
+    ],
     heroSubhead:
       "Turn your product catalog and brand voice into approved Instagram Professional and Facebook Page campaigns, scheduled publications, and evidence-based SWOT intelligence in one workspace.",
-    heroFact:
-      "Built for small and medium businesses without an in-house marketing team — 14 integrated workflow stages from brand setup to live Meta telemetry.",
     tryStudioBtn: "Launch AI Content Studio",
     exploreDashboardBtn: "Explore Marketing Command",
     liveFrameTitle: "Interactive Studio Preview — Select a business to test live synthesis",
@@ -71,11 +79,15 @@ const LANDING_COPY = {
     openDashboard: "Çalışma Alanını Aç",
     signIn: "Giriş Yap",
     startFree: "Ücretsiz Başla",
-    heroHeadline: "Bağımsız işletmeler için yapay zeka sosyal medya pazarlaması.",
+    heroHeadline: [
+      { text: "Bağımsız işletmeler için " },
+      { text: "yapay zeka", accent: true },
+      { text: " sosyal medya " },
+      { text: "pazarlaması", accent: true },
+      { text: "." },
+    ],
     heroSubhead:
       "Ürün kataloğunuzu ve marka sesinizi tek bir çalışma alanında onaylı Instagram Profesyonel ve Facebook Sayfası kampanyalarına, yayın takvimine ve kanıta dayalı SWOT analizlerine dönüştürün.",
-    heroFact:
-      "Pazarlama ekibi olmayan KOBİ'ler için tasarlandı — marka kurulumundan canlı Meta telemetrisine kadar 14 entegre iş akışı aşaması.",
     tryStudioBtn: "YZ İçerik Stüdyosunu Aç",
     exploreDashboardBtn: "Pazarlama Merkezini Keşfet",
     liveFrameTitle: "Canlı Stüdyo Önizlemesi — Sentezi test etmek için bir işletme seçin",
@@ -110,11 +122,14 @@ const LANDING_COPY = {
     openDashboard: "فتح مساحة العمل",
     signIn: "تسجيل الدخول",
     startFree: "ابدأ مجاناً",
-    heroHeadline: "تسويق ذكي عبر وسائل التواصل الاجتماعي للشركات المستقلة.",
+    heroHeadline: [
+      { text: "تسويق", accent: true },
+      { text: " " },
+      { text: "ذكي", accent: true },
+      { text: " عبر وسائل التواصل الاجتماعي للشركات المستقلة." },
+    ],
     heroSubhead:
       "حوّل كتالوج منتجاتك ونبرة علامتك التجارية إلى حملات معتمدة على إنستغرام الاحترافي وصفحات فيسبوك، وجدولة نشر تلقائية، وتقارير SWOT مبنية على البيانات في مساحة عمل واحدة.",
-    heroFact:
-      "مصممة خصيصاً للشركات الصغيرة والمتوسطة التي لا تمتلك فريق تسويق داخلي — 14 مرحلة عمل مترابطة من تأسيس الهوية حتى تحليلات Meta الحية.",
     tryStudioBtn: "تشغيل استوديو الذكاء الاصطناعي",
     exploreDashboardBtn: "استكشاف مركز القيادة",
     liveFrameTitle: "معاينة حية للاستوديو — اختر نشاطاً تجارياً لتجربة التوليد الفوري",
@@ -202,24 +217,29 @@ export default function LandingPage() {
   const isRtl = dir === "rtl";
   const DirectionalArrow = isRtl ? ArrowLeft : ArrowRight;
 
+  const [heroTyped, setHeroTyped] = useState(false);
   const [selectedPresetIdx, setSelectedPresetIdx] = useState(0);
   const [activeMomentStage, setActiveMomentStage] = useState<0 | 1 | 2>(1);
   const preset = BUSINESS_PRESETS[selectedPresetIdx];
 
-  const handleSpotlightMove = (e: React.MouseEvent<HTMLElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    e.currentTarget.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
-    e.currentTarget.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
-  };
+  const handleSpotlightMove = useSpotlight();
 
   return (
     <div className="min-h-screen flex flex-col bg-navy-950 text-white relative overflow-x-hidden">
       {/* Top Navigation Header */}
       <header className="sticky top-0 z-40 h-20 glass-panel border-b border-white/10 px-4 sm:px-8">
         <div className="max-w-7xl mx-auto h-full flex items-center justify-between gap-4">
-          <a href="/" className="flex items-center" aria-label="Smart Marketing">
-            <Logo size={40} tagline="AI Marketing Workspace" />
-          </a>
+          <Link href="/" className="flex items-center gap-3 group">
+            <BrandLogo priority className="w-10 h-10 shadow-glow-violet group-hover:scale-105 transition-transform" />
+            <div>
+              <span className="text-sm font-bold tracking-tight text-white block">
+                SMART MARKETING
+              </span>
+              <span className="text-[11px] text-txt-secondary hidden sm:block">
+                AI Marketing Workspace
+              </span>
+            </div>
+          </Link>
 
           <nav className="hidden lg:flex items-center gap-7 text-xs font-medium text-txt-secondary">
             <a href="#studio-frame" className="hover:text-white transition-colors">
@@ -235,12 +255,12 @@ export default function LandingPage() {
 
           <div className="flex items-center gap-2.5">
             <LanguageSwitcher />
-            <a href={isAuthenticated ? "/dashboard" : "/login"} className="hidden sm:block">
+            <Link href={isAuthenticated ? "/dashboard" : "/login"} className="hidden sm:block">
               <Button variant="secondary" size="sm">
                 {isAuthenticated ? copy.openDashboard : copy.signIn}
               </Button>
-            </a>
-            <a href="/dashboard">
+            </Link>
+            <Link href="/dashboard">
               <Button
                 variant="primary"
                 size="sm"
@@ -248,7 +268,7 @@ export default function LandingPage() {
               >
                 {copy.openDashboard}
               </Button>
-            </a>
+            </Link>
           </div>
         </div>
       </header>
@@ -263,20 +283,24 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
             {/* Hero Copy Column (5 cols) */}
             <div className="lg:col-span-5 space-y-6">
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-[1.08]">
-                {copy.heroHeadline}
-              </h1>
+              <TypewriterHeadline
+                segments={copy.heroHeadline}
+                className={`text-2xl sm:text-[28px] lg:text-[33px] font-bold tracking-tight text-white leading-[1.14] ${headlineFontClassName(locale)}`}
+                onDone={() => setHeroTyped(true)}
+              />
 
-              <p className="text-sm sm:text-base text-txt-secondary leading-relaxed">
+              <p
+                className={`text-sm sm:text-base text-accent-mint leading-relaxed transition-all duration-700 ${
+                  heroTyped
+                    ? "translate-y-0 opacity-100"
+                    : "translate-y-3 opacity-0"
+                }`}
+              >
                 {copy.heroSubhead}
               </p>
 
-              <p className="text-xs text-accent-mint font-medium border-s-2 border-accent-violet ps-3 py-0.5 leading-relaxed">
-                {copy.heroFact}
-              </p>
-
               <div className="flex flex-wrap items-center gap-3 pt-2">
-                <a href="/dashboard">
+                <Link href="/dashboard">
                   <Button
                     variant="primary"
                     size="lg"
@@ -284,8 +308,8 @@ export default function LandingPage() {
                   >
                     {copy.exploreDashboardBtn}
                   </Button>
-                </a>
-                <a href="/content-studio">
+                </Link>
+                <Link href="/content-studio">
                   <Button
                     variant="secondary"
                     size="lg"
@@ -293,7 +317,7 @@ export default function LandingPage() {
                   >
                     {copy.tryStudioBtn}
                   </Button>
-                </a>
+                </Link>
               </div>
             </div>
 
@@ -421,12 +445,12 @@ export default function LandingPage() {
                         <TrendingUp className="w-3.5 h-3.5 shrink-0" />
                         <span>{preset.swotEvidence}</span>
                       </span>
-                      <a
+                      <Link
                         href="/content-studio"
                         className="text-accent-cyan font-semibold hover:underline shrink-0"
                       >
                         Edit in Studio &rarr;
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -550,7 +574,7 @@ export default function LandingPage() {
 
               {/* 3. Three Parallel Lanes (4 cols) */}
               <div className="lg:col-span-4 space-y-3">
-                <a
+                <Link
                   href="/integrations"
                   className="glass-card-interactive p-4 flex items-center justify-between gap-3 block"
                 >
@@ -568,9 +592,9 @@ export default function LandingPage() {
                     </div>
                   </div>
                   <DirectionalArrow className="w-4 h-4 text-txt-muted" />
-                </a>
+                </Link>
 
-                <a
+                <Link
                   href="/integrations"
                   className="glass-card-interactive p-4 flex items-center justify-between gap-3 block"
                 >
@@ -588,9 +612,9 @@ export default function LandingPage() {
                     </div>
                   </div>
                   <DirectionalArrow className="w-4 h-4 text-txt-muted" />
-                </a>
+                </Link>
 
-                <a
+                <Link
                   href="/reports"
                   className="glass-card-interactive p-4 flex items-center justify-between gap-3 block"
                 >
@@ -608,7 +632,7 @@ export default function LandingPage() {
                     </div>
                   </div>
                   <DirectionalArrow className="w-4 h-4 text-txt-muted" />
-                </a>
+                </Link>
               </div>
             </div>
           </div>
@@ -684,11 +708,11 @@ export default function LandingPage() {
                       Winter Solstice Micro-Lot Drop
                     </h3>
                   </div>
-                  <a href="/products">
+                  <Link href="/products">
                     <Button variant="secondary" size="sm" rightIcon={<DirectionalArrow className="w-3.5 h-3.5" />}>
                       Inspect Product Catalog
                     </Button>
-                  </a>
+                  </Link>
                 </div>
               </div>
             )}
@@ -721,9 +745,9 @@ export default function LandingPage() {
                     </p>
                     <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[11px] text-accent-cyan">
                       <span>Readiness Check: 4/4 Passed</span>
-                      <a href="/posts" className="hover:underline font-semibold">
+                      <Link href="/posts" className="hover:underline font-semibold">
                         Approve &rarr;
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 ))}
@@ -763,11 +787,11 @@ export default function LandingPage() {
                       Evidence-Backed Action Plan
                     </h3>
                   </div>
-                  <a href="/reports">
+                  <Link href="/reports">
                     <Button variant="primary" size="sm" rightIcon={<DirectionalArrow className="w-3.5 h-3.5" />}>
                       Open SWOT Report
                     </Button>
-                  </a>
+                  </Link>
                 </div>
               </div>
             )}
@@ -786,7 +810,7 @@ export default function LandingPage() {
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-3 shrink-0">
-              <a href="/dashboard">
+              <Link href="/dashboard">
                 <Button
                   variant="primary"
                   size="lg"
@@ -794,12 +818,12 @@ export default function LandingPage() {
                 >
                   {copy.openDashboard}
                 </Button>
-              </a>
-              <a href="/register">
+              </Link>
+              <Link href="/register">
                 <Button variant="secondary" size="lg">
                   {copy.startFree}
                 </Button>
-              </a>
+              </Link>
             </div>
           </div>
         </section>
@@ -807,23 +831,22 @@ export default function LandingPage() {
 
       <footer className="border-t border-white/10 py-8 px-4 sm:px-8 text-xs text-txt-muted">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <LogoMark size={28} />
-            <p>Smart Marketing &copy; 2026</p>
-          </div>
+          <p>
+            SMART MARKETING PLATFORM &copy; 2026 &bull; AI Social Media Marketing Workspace
+          </p>
           <div className="flex items-center gap-5">
-            <a href="/dashboard" className="hover:text-white transition-colors">
+            <Link href="/dashboard" className="hover:text-white transition-colors">
               Marketing Command
-            </a>
-            <a href="/content-studio" className="hover:text-white transition-colors">
+            </Link>
+            <Link href="/content-studio" className="hover:text-white transition-colors">
               AI Studio
-            </a>
-            <a href="/analytics" className="hover:text-white transition-colors">
+            </Link>
+            <Link href="/analytics" className="hover:text-white transition-colors">
               Analytics
-            </a>
-            <a href="/reports" className="hover:text-white transition-colors">
+            </Link>
+            <Link href="/reports" className="hover:text-white transition-colors">
               SWOT Reports
-            </a>
+            </Link>
           </div>
         </div>
       </footer>

@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import React, { useState, useEffect } from "react";
 import { useI18n } from "@/lib/i18n/context";
 import { postsApi } from "@/lib/api/posts.api";
@@ -278,14 +280,14 @@ export default function PostsPage() {
             Sync
           </Button>
 
-          <a href="/content-studio">
+          <Link href="/content-studio">
             <Button
               variant="primary"
               leftIcon={<Sparkles className="w-4 h-4 text-accent-cyan" />}
             >
               Generate New Post in Studio
             </Button>
-          </a>
+          </Link>
         </div>
       </div>
 
@@ -388,7 +390,7 @@ export default function PostsPage() {
             {t.posts.emptyPostsDesc}
           </p>
           <div className="pt-2 flex justify-center">
-            <a href="/content-studio">
+            <Link href="/content-studio">
               <Button
                 variant="primary"
                 size="sm"
@@ -396,7 +398,7 @@ export default function PostsPage() {
               >
                 Open AI Content Studio
               </Button>
-            </a>
+            </Link>
           </div>
         </Card>
       )}

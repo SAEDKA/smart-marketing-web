@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import React, { useState } from "react";
 import { useI18n } from "@/lib/i18n/context";
 import { authApi } from "@/lib/api/auth.api";
@@ -65,12 +67,12 @@ export default function ForgotPasswordPage() {
                 {t.auth.resetLinkSentDesc}
               </p>
               <div className="pt-2">
-                <a
+                <Link
                   href="/reset-password"
                   className="text-xs text-accent-cyan hover:underline block"
                 >
                   Test Reset Password Screen &rarr;
-                </a>
+                </Link>
               </div>
             </div>
           ) : (
@@ -107,13 +109,13 @@ export default function ForgotPasswordPage() {
           )}
 
           <div className="mt-6 text-center">
-            <a
+            <Link
               href="/login"
               className="inline-flex items-center gap-1.5 text-xs text-txt-secondary hover:text-white transition-colors"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>{t.auth.backToLogin}</span>
-            </a>
+            </Link>
           </div>
         </CardContent>
       </Card>

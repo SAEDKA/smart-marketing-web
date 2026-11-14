@@ -5,7 +5,7 @@ export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   interactive?: boolean;
 }
 
-export function Card({ className, interactive = false, children, ...props }: CardProps) {
+function CardImpl({ className, interactive = false, children, ...props }: CardProps) {
   return (
     <div
       className={cn(
@@ -20,7 +20,7 @@ export function Card({ className, interactive = false, children, ...props }: Car
   );
 }
 
-export function CardHeader({
+function CardHeaderImpl({
   className,
   children,
   ...props
@@ -32,7 +32,7 @@ export function CardHeader({
   );
 }
 
-export function CardTitle({
+function CardTitleImpl({
   className,
   children,
   ...props
@@ -47,7 +47,7 @@ export function CardTitle({
   );
 }
 
-export function CardDescription({
+function CardDescriptionImpl({
   className,
   children,
   ...props
@@ -59,7 +59,7 @@ export function CardDescription({
   );
 }
 
-export function CardContent({
+function CardContentImpl({
   className,
   children,
   ...props
@@ -67,7 +67,7 @@ export function CardContent({
   return <div className={cn("pt-2", className)} {...props}>{children}</div>;
 }
 
-export function CardFooter({
+function CardFooterImpl({
   className,
   children,
   ...props
@@ -81,3 +81,13 @@ export function CardFooter({
     </div>
   );
 }
+
+// Memoized: these primitives render in long lists/grids across every
+// page. With stable props they now skip re-rendering when a parent
+// re-renders for an unrelated state change.
+export const Card = React.memo(CardImpl);
+export const CardHeader = React.memo(CardHeaderImpl);
+export const CardTitle = React.memo(CardTitleImpl);
+export const CardDescription = React.memo(CardDescriptionImpl);
+export const CardContent = React.memo(CardContentImpl);
+export const CardFooter = React.memo(CardFooterImpl);

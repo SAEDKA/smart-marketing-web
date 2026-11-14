@@ -1,8 +1,11 @@
 "use client";
 
+import Link from "next/link";
+
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useI18n } from "@/lib/i18n/context";
+import { useSpotlight } from "@/lib/hooks/use-spotlight";
 import { aiApi } from "@/lib/api/ai.api";
 import { campaignsApi } from "@/lib/api/campaigns.api";
 import { productsApi } from "@/lib/api/products.api";
@@ -87,11 +90,7 @@ export default function ContentStudioPage() {
   const [isSaved, setIsSaved] = useState<boolean>(false);
 
   // Spotlight cursor tracker
-  const handleSpotlightMove = (e: React.MouseEvent<HTMLElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    e.currentTarget.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
-    e.currentTarget.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
-  };
+  const handleSpotlightMove = useSpotlight();
 
   // Load campaigns and products on mount
   useEffect(() => {
@@ -222,7 +221,7 @@ export default function ContentStudioPage() {
           <p className="text-sm text-txt-secondary mt-1">{t.studio.subtitle}</p>
         </div>
 
-        <a href="/posts">
+        <Link href="/posts">
           <Button
             variant="secondary"
             size="sm"
@@ -230,7 +229,7 @@ export default function ContentStudioPage() {
           >
             Go to Posts & Approval Desk
           </Button>
-        </a>
+        </Link>
       </div>
 
       {/* Success Banner */}

@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import React from "react";
 import { useI18n } from "@/lib/i18n/context";
 import { JiraStoryStatus } from "@/types/domain";
@@ -55,11 +57,11 @@ export function ReleasePlaceholder({
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
-          <a href="/dashboard">
+          <Link href="/dashboard">
             <Button variant="secondary" size="sm">
               &larr; {t.dashboard.openScreen}
             </Button>
-          </a>
+          </Link>
         </div>
       </div>
 

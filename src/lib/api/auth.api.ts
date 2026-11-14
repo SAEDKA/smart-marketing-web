@@ -44,7 +44,11 @@ function normalizeAuthSession(raw: NestJsAuthResponse | AuthSession): AuthSessio
           : "COMPANY_OWNER",
       emailVerified: nest.user.emailVerified ?? true,
       onboardingCompleted: nest.user.onboardingCompleted ?? true,
-      companyId: nest.user.companyId || nest.user.business?.id || "cmp_live_01",
+      // Platform admins are not bound to any client company.
+      companyId:
+        nest.user.role === "ADMIN" || nest.user.role === "SYSTEM_ADMIN"
+          ? undefined
+          : nest.user.companyId || nest.user.business?.id || "cmp_live_01",
       createdAt: nest.user.createdAt || new Date().toISOString(),
     },
     expiresAt:

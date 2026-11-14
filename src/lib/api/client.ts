@@ -1,5 +1,4 @@
 import { ApiErrorShape, ApiResponse, AuthSession } from "@/types/domain";
-import { mockRequestHandler } from "./mock-adapter";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ||
@@ -37,6 +36,12 @@ export async function apiRequest<T>(
   body?: unknown
 ): Promise<ApiResponse<T>> {
   if (API_MODE === "mock") {
+    // Dynamic import on purpose: the mock adapter (~92 KB of fixture
+    // data) used to be statically imported, so it shipped inside the
+    // first-load bundle of every page — including live builds that
+    // never call it. Now it is a separate chunk, downloaded only when
+    // the first mock request actually happens.
+    const { mockRequestHandler } = await import("./mock-adapter");
     return mockRequestHandler<T>(method, endpoint, body);
   }
 

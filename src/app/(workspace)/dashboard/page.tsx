@@ -1,8 +1,12 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import Link from "next/link";
+
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth/context";
+import { useSpotlight } from "@/lib/hooks/use-spotlight";
+import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 import { useI18n } from "@/lib/i18n/context";
 import { companyApi } from "@/lib/api/company.api";
 import { analyticsApi } from "@/lib/api/analytics.api";
@@ -185,31 +189,6 @@ const DEFAULT_METRICS: AnalyticsMetricSummary = {
   lastSynchronizedAt: "2026-11-11T10:30:00.000Z",
 };
 
-function useAnimatedCounter(target: number, durationMs = 550): number {
-  const [value, setValue] = useState(target);
-
-  useEffect(() => {
-    let rafId: number;
-    const startVal = Math.round(target * 0.72);
-    const startTime = performance.now();
-
-    const step = (now: number) => {
-      const elapsed = now - startTime;
-      const progress = Math.min(elapsed / durationMs, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setValue(Math.round(startVal + (target - startVal) * eased));
-      if (progress < 1) {
-        rafId = requestAnimationFrame(step);
-      }
-    };
-
-    rafId = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(rafId);
-  }, [target, durationMs]);
-
-  return value;
-}
-
 export default function DashboardPage() {
   const router = useRouter();
   const { user } = useAuth();
@@ -241,9 +220,6 @@ export default function DashboardPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [accounts, setAccounts] = useState<SocialAccount[]>([]);
 
-  const animatedReach = useAnimatedCounter(metrics.reach);
-  const animatedImpressions = useAnimatedCounter(metrics.impressions);
-  const animatedClicks = useAnimatedCounter(metrics.linkClicks);
 
   useEffect(() => {
     async function loadWorkspaceOverview() {
@@ -270,18 +246,18 @@ export default function DashboardPage() {
     loadWorkspaceOverview();
   }, []);
 
-  const handleSpotlightMove = (e: React.MouseEvent<HTMLElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    e.currentTarget.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
-    e.currentTarget.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
-  };
+  const handleSpotlightMove = useSpotlight();
 
-  const handleAssistantSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    router.push("/content-studio");
-  };
+  const handleAssistantSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      router.push("/content-studio");
+    },
+    [router]
+  );
 
-  const workflowSteps = [
+  const workflowSteps = useMemo(
+    () => [
     {
       label: copy.stages.brand,
       value: company.communicationTone,
@@ -324,7 +300,10 @@ export default function DashboardPage() {
       href: "/reports",
       icon: FileText,
     },
-  ];
+    ],
+    // Icons and hrefs are module constants; only these values vary.
+    [copy, company.communicationTone, products.length, campaigns.length, posts.length, accounts.length]
+  );
 
   return (
     <div className="space-y-7 animate-in fade-in duration-300" data-enter="">
@@ -351,7 +330,7 @@ export default function DashboardPage() {
             </div>
 
             <div className="flex flex-wrap items-center gap-2.5">
-              <a href="/campaigns">
+              <Link href="/campaigns">
                 <Button
                   variant="secondary"
                   size="sm"
@@ -359,8 +338,8 @@ export default function DashboardPage() {
                 >
                   {copy.newCampaignBtn}
                 </Button>
-              </a>
-              <a href="/calendar">
+              </Link>
+              <Link href="/calendar">
                 <Button
                   variant="secondary"
                   size="sm"
@@ -368,8 +347,8 @@ export default function DashboardPage() {
                 >
                   {t.nav.calendar}
                 </Button>
-              </a>
-              <a href="/reports">
+              </Link>
+              <Link href="/reports">
                 <Button
                   variant="secondary"
                   size="sm"
@@ -377,7 +356,7 @@ export default function DashboardPage() {
                 >
                   {t.nav.reports}
                 </Button>
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -433,7 +412,7 @@ export default function DashboardPage() {
 
       {/* 2. Executive KPI Telemetry Strip (Animated Count-Up + Area Sparklines) */}
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <a
+        <Link
           href="/analytics"
           onMouseMove={handleSpotlightMove}
           className="glass-card-interactive glass-spotlight p-5 flex flex-col justify-between space-y-4"
@@ -449,7 +428,7 @@ export default function DashboardPage() {
           <div className="flex items-end justify-between gap-2 relative z-10">
             <div>
               <p className="text-2xl sm:text-3xl font-bold text-white tabular-nums-metric tracking-tight">
-                {animatedReach.toLocaleString()}
+                <AnimatedCounter value={metrics.reach} />
               </p>
               <span className="text-xs font-semibold text-accent-mint inline-flex items-center gap-1 mt-1 tabular-nums-metric">
                 <TrendingUp className="w-3.5 h-3.5" />+{metrics.reachChangePercent}%
@@ -475,9 +454,9 @@ export default function DashboardPage() {
               />
             </svg>
           </div>
-        </a>
+        </Link>
 
-        <a
+        <Link
           href="/analytics"
           onMouseMove={handleSpotlightMove}
           className="glass-card-interactive glass-spotlight p-5 flex flex-col justify-between space-y-4"
@@ -493,7 +472,7 @@ export default function DashboardPage() {
           <div className="flex items-end justify-between gap-2 relative z-10">
             <div>
               <p className="text-2xl sm:text-3xl font-bold text-white tabular-nums-metric tracking-tight">
-                {animatedImpressions.toLocaleString()}
+                <AnimatedCounter value={metrics.impressions} />
               </p>
               <span className="text-xs font-semibold text-accent-mint inline-flex items-center gap-1 mt-1 tabular-nums-metric">
                 <TrendingUp className="w-3.5 h-3.5" />+
@@ -520,9 +499,9 @@ export default function DashboardPage() {
               />
             </svg>
           </div>
-        </a>
+        </Link>
 
-        <a
+        <Link
           href="/analytics"
           onMouseMove={handleSpotlightMove}
           className="glass-card-interactive glass-spotlight p-5 flex flex-col justify-between space-y-4"
@@ -565,9 +544,9 @@ export default function DashboardPage() {
               />
             </svg>
           </div>
-        </a>
+        </Link>
 
-        <a
+        <Link
           href="/analytics"
           onMouseMove={handleSpotlightMove}
           className="glass-card-interactive glass-spotlight p-5 flex flex-col justify-between space-y-4"
@@ -583,7 +562,7 @@ export default function DashboardPage() {
           <div className="flex items-end justify-between gap-2 relative z-10">
             <div>
               <p className="text-2xl sm:text-3xl font-bold text-white tabular-nums-metric tracking-tight">
-                {animatedClicks.toLocaleString()}
+                <AnimatedCounter value={metrics.linkClicks} />
               </p>
               <span className="text-xs font-semibold text-accent-cyan inline-flex items-center gap-1 mt-1 tabular-nums-metric">
                 CTR {metrics.clickThroughRate}%
@@ -609,7 +588,7 @@ export default function DashboardPage() {
               />
             </svg>
           </div>
-        </a>
+        </Link>
       </section>
 
       {/* 3. End-to-End Marketing Workflow Pipeline + Pulsing Neural Vector Line */}
@@ -653,7 +632,7 @@ export default function DashboardPage() {
           {workflowSteps.map((step) => {
             const Icon = step.icon;
             return (
-              <a
+              <Link
                 key={step.href}
                 href={step.href}
                 className="group p-3.5 rounded-[16px] bg-white/[0.03] hover:bg-accent-violet/15 border border-white/10 hover:border-accent-violet/40 transition-all flex flex-col justify-between gap-3"
@@ -672,7 +651,7 @@ export default function DashboardPage() {
                     {step.value}
                   </p>
                 </div>
-              </a>
+              </Link>
             );
           })}
         </div>
@@ -693,7 +672,7 @@ export default function DashboardPage() {
                   {copy.activeCampaignsDesc}
                 </p>
               </div>
-              <a href="/campaigns">
+              <Link href="/campaigns">
                 <Button
                   variant="secondary"
                   size="sm"
@@ -701,7 +680,7 @@ export default function DashboardPage() {
                 >
                   {t.nav.campaigns}
                 </Button>
-              </a>
+              </Link>
             </div>
 
             <div className="divide-y divide-white/10 pt-2">
@@ -712,12 +691,12 @@ export default function DashboardPage() {
                 >
                   <div className="space-y-1 min-w-0">
                     <div className="flex items-center gap-2.5">
-                      <a
+                      <Link
                         href="/campaigns"
                         className="text-sm font-bold text-white hover:text-accent-cyan transition-colors truncate"
                       >
                         {camp.name}
-                      </a>
+                      </Link>
                       <Badge
                         variant={camp.status === "ACTIVE" ? "mint" : "violet"}
                         size="sm"
@@ -751,7 +730,7 @@ export default function DashboardPage() {
                         </span>
                       )}
                     </div>
-                    <a href={`/content-studio?campaignId=${camp.id}`}>
+                    <Link href={`/content-studio?campaignId=${camp.id}`}>
                       <Button
                         variant="secondary"
                         size="sm"
@@ -759,7 +738,7 @@ export default function DashboardPage() {
                       >
                         AI Studio
                       </Button>
-                    </a>
+                    </Link>
                   </div>
                 </div>
               ))}
@@ -777,7 +756,7 @@ export default function DashboardPage() {
                   {copy.contentQueueDesc}
                 </p>
               </div>
-              <a href="/posts">
+              <Link href="/posts">
                 <Button
                   variant="secondary"
                   size="sm"
@@ -785,12 +764,12 @@ export default function DashboardPage() {
                 >
                   {copy.reviewAllBtn}
                 </Button>
-              </a>
+              </Link>
             </div>
 
             <div className="divide-y divide-white/10 pt-2">
               {posts.slice(0, 3).map((post) => (
-                <a
+                <Link
                   key={post.id}
                   href="/posts"
                   className="py-3.5 flex items-start justify-between gap-4 group block"
@@ -825,7 +804,7 @@ export default function DashboardPage() {
                   >
                     {post.status}
                   </Badge>
-                </a>
+                </Link>
               ))}
             </div>
           </Card>
@@ -852,13 +831,13 @@ export default function DashboardPage() {
                   {copy.swotHighlightText}
                 </p>
                 <div className="pt-2">
-                  <a
+                  <Link
                     href="/reports"
                     className="inline-flex items-center gap-1.5 text-xs font-semibold text-accent-cyan hover:text-white transition-colors"
                   >
                     <span>{copy.viewFullSwotBtn}</span>
                     <DirectionalArrow className="w-3.5 h-3.5" />
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -875,11 +854,11 @@ export default function DashboardPage() {
                   {company.companyName}
                 </p>
               </div>
-              <a href="/settings/brand">
+              <Link href="/settings/brand">
                 <Button variant="ghost" size="sm" leftIcon={<Sliders className="w-3.5 h-3.5" />}>
                   {copy.editBrandBtn}
                 </Button>
-              </a>
+              </Link>
             </div>
 
             <dl className="divide-y divide-white/10 text-xs pt-1">
@@ -922,17 +901,17 @@ export default function DashboardPage() {
               <h2 className="text-base font-bold text-white">
                 {copy.connectedChannelsTitle}
               </h2>
-              <a
+              <Link
                 href="/integrations"
                 className="text-xs font-semibold text-accent-cyan hover:text-white transition-colors"
               >
                 {copy.manageChannelsBtn}
-              </a>
+              </Link>
             </div>
 
             <div className="divide-y divide-white/10 pt-1">
               {accounts.map((acc) => (
-                <a
+                <Link
                   key={acc.id}
                   href="/integrations"
                   className="py-3.5 flex items-center justify-between gap-3 group"
@@ -958,7 +937,7 @@ export default function DashboardPage() {
                   <Badge variant="mint" size="sm">
                     {acc.status}
                   </Badge>
-                </a>
+                </Link>
               ))}
             </div>
           </Card>

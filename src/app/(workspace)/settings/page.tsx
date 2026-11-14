@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth/context";
 import { useI18n } from "@/lib/i18n/context";
+import { useTheme } from "@/lib/theme/context";
+import type { ThemeName } from "@/lib/theme/theme";
 import { accountApi } from "@/lib/api/notifications.api";
 import { adminApi } from "@/lib/api/admin.api";
 import { AdminComplaintTicket, ApiErrorShape } from "@/types/domain";
@@ -11,6 +13,7 @@ import {
   User,
   Lock,
   Globe,
+  Palette,
   CheckCircle2,
   AlertTriangle,
   RefreshCw,
@@ -18,9 +21,37 @@ import {
   Send,
 } from "lucide-react";
 
+const THEME_OPTIONS: {
+  id: ThemeName;
+  swatch: string;
+  names: Record<"en" | "tr" | "ar", string>;
+}[] = [
+  {
+    id: "emerald",
+    swatch: "linear-gradient(135deg, #38c995, #40d9e8)",
+    names: { en: "Emerald", tr: "Zümrüt", ar: "زمردي" },
+  },
+  {
+    id: "ocean",
+    swatch: "linear-gradient(135deg, #40d9e8, #55d6a6)",
+    names: { en: "Ocean", tr: "Okyanus", ar: "محيطي" },
+  },
+  {
+    id: "violet",
+    swatch: "linear-gradient(135deg, #8b72ff, #40d9e8)",
+    names: { en: "Violet", tr: "Menekşe", ar: "بنفسجي" },
+  },
+  {
+    id: "light",
+    swatch: "linear-gradient(135deg, #ffffff, #a9e6cf 55%, #9fdcf0)",
+    names: { en: "White", tr: "Beyaz", ar: "أبيض" },
+  },
+];
+
 export default function SettingsPage() {
   const { session } = useAuth();
   const { t, locale, setLocale } = useI18n();
+  const { theme, setTheme } = useTheme();
 
   const isAdmin = session?.user.role === "SYSTEM_ADMIN";
 
@@ -145,10 +176,10 @@ export default function SettingsPage() {
             </h2>
             <p className="text-xs text-txt-secondary">
               {locale === "ar"
-                ? "البيانات الشخصية ولغة العرض المفضلة"
+                ? "البيانات الشخصية ولغة العرض ومظهر الواجهة"
                 : locale === "tr"
-                ? "Kişisel bilgiler ve tercih edilen arayüz dili"
-                : "Personal identity and language preferences"}
+                ? "Kişisel bilgiler, arayüz dili ve görünüm"
+                : "Personal identity, language and appearance preferences"}
             </p>
           </div>
         </div>
@@ -216,6 +247,48 @@ export default function SettingsPage() {
                 </button>
               ))}
             </div>
+          </div>
+
+          {/* Theme Selection */}
+          <div>
+            <label className="block text-xs font-semibold text-txt-secondary mb-1.5 flex items-center gap-1.5">
+              <Palette className="w-3.5 h-3.5 text-accent-cyan" />
+              <span>
+                {locale === "ar"
+                  ? "مظهر الواجهة"
+                  : locale === "tr"
+                  ? "Arayüz Teması"
+                  : "Interface Theme"}
+              </span>
+            </label>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-xl">
+              {THEME_OPTIONS.map((option) => (
+                <button
+                  key={option.id}
+                  type="button"
+                  onClick={() => setTheme(option.id)}
+                  aria-pressed={theme === option.id}
+                  className={`py-2 px-3 rounded-xl text-xs font-semibold border transition flex items-center justify-center gap-2 ${
+                    theme === option.id
+                      ? "bg-accent-violet text-white border-accent-violet shadow-glow-violet"
+                      : "bg-white/5 text-txt-secondary border-white/10 hover:bg-white/10 hover:text-white"
+                  }`}
+                >
+                  <span
+                    className="w-4 h-4 rounded-full border border-white/25 shrink-0"
+                    style={{ background: option.swatch }}
+                  />
+                  <span>{option.names[locale]}</span>
+                </button>
+              ))}
+            </div>
+            <p className="text-[11px] text-txt-muted mt-2">
+              {locale === "ar"
+                ? "يُطبّق المظهر فورًا ويُحفظ على هذا الجهاز."
+                : locale === "tr"
+                ? "Tema anında uygulanır ve bu cihazda saklanır."
+                : "Applies immediately and is saved on this device."}
+            </p>
           </div>
 
           <div className="pt-2 flex justify-end">

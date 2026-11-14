@@ -14,7 +14,7 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   size?: "sm" | "md";
 }
 
-export function Badge({
+function BadgeImpl({
   className,
   variant = "default",
   size = "md",
@@ -59,3 +59,5 @@ export function Badge({
     </span>
   );
 }
+
+export const Badge = React.memo(BadgeImpl);

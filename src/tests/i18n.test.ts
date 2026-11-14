@@ -1,5 +1,10 @@
 import { describe, it, expect } from "vitest";
-import { dictionaries } from "@/lib/i18n/dictionaries";
+import { en } from "@/lib/i18n/locales/en";
+import { tr } from "@/lib/i18n/locales/tr";
+import { ar } from "@/lib/i18n/locales/ar";
+import { loadDictionary } from "@/lib/i18n/load-dictionary";
+
+const dictionaries = { en, tr, ar };
 
 describe("Multi-Language Support (EN, TR, AR)", () => {
   it("provides complete translations for English, Turkish, and Arabic", () => {
@@ -24,5 +29,17 @@ describe("Multi-Language Support (EN, TR, AR)", () => {
   it("contains Arabic onboarding tone translations", () => {
     expect(dictionaries.ar.onboarding.tones.LUXURY).toBeDefined();
     expect(dictionaries.ar.onboarding.step1Title).toBeDefined();
+  });
+});
+
+describe("Per-locale dictionary loading (bundle split)", () => {
+  it("loads each locale on demand and caches it", async () => {
+    const arLoaded = await loadDictionary("ar");
+    expect(arLoaded.meta.direction).toBe("rtl");
+    const arAgain = await loadDictionary("ar");
+    expect(arAgain).toBe(arLoaded); // same cached object, no re-import
+
+    const enLoaded = await loadDictionary("en");
+    expect(enLoaded).toBe(en); // default locale is the bundled one
   });
 });

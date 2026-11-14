@@ -4,6 +4,7 @@ import React, {
   createContext,
   useContext,
   useEffect,
+  useMemo,
   useState,
   useCallback,
 } from "react";
@@ -138,6 +139,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         user: {
           ...session.user,
           role,
+          // The platform admin belongs to no company; the client
+          // account belongs to its own company only.
+          companyId:
+            role === "SYSTEM_ADMIN"
+              ? undefined
+              : DEFAULT_INITIAL_SESSION.user.companyId,
           email:
             role === "SYSTEM_ADMIN"
               ? "admin@smartmarketing.ai"
@@ -163,26 +170,38 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsSessionExpired(false);
   }, []);
 
-  return (
-    <AuthContext.Provider
-      value={{
-        session,
-        user: session ? session.user : null,
-        isLoading,
-        isAuthenticated: !!session && !isSessionExpired,
-        isSessionExpired,
-        login,
-        register,
-        logout,
-        switchRole,
-        simulateSessionExpiry,
-        clearSessionExpiry,
-        setSession: saveSession,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+  // Memoized for the same reason as I18nProvider: an inline object
+  // here re-rendered every useAuth() consumer on every provider render.
+  const value = useMemo<AuthContextValue>(
+    () => ({
+      session,
+      user: session ? session.user : null,
+      isLoading,
+      isAuthenticated: !!session && !isSessionExpired,
+      isSessionExpired,
+      login,
+      register,
+      logout,
+      switchRole,
+      simulateSessionExpiry,
+      clearSessionExpiry,
+      setSession: saveSession,
+    }),
+    [
+      session,
+      isLoading,
+      isSessionExpired,
+      login,
+      register,
+      logout,
+      switchRole,
+      simulateSessionExpiry,
+      clearSessionExpiry,
+      saveSession,
+    ]
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {

@@ -18,7 +18,10 @@ export interface AuthUser {
   role: UserRole;
   emailVerified: boolean;
   onboardingCompleted: boolean;
-  companyId: string;
+  // Only client accounts (COMPANY_OWNER) belong to a company.
+  // The platform admin (SYSTEM_ADMIN) manages the whole site and
+  // must never be bound to one client's company.
+  companyId?: string;
   createdAt: string;
 }
 

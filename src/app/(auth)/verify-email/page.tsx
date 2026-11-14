@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import React, { useState } from "react";
 import { useI18n } from "@/lib/i18n/context";
 import { authApi } from "@/lib/api/auth.api";
@@ -145,12 +147,12 @@ export default function VerifyEmailPage() {
               >
                 {t.auth.resendVerificationBtn}
               </Button>
-              <a
+              <Link
                 href="/login"
                 className="text-xs text-txt-secondary hover:text-white pt-2 inline-block"
               >
                 {t.auth.backToLogin}
-              </a>
+              </Link>
             </div>
           </div>
         )}

@@ -22,14 +22,14 @@ const config: Config = {
           mint: "rgb(var(--accent-mint-rgb) / <alpha-value>)",
         },
         semantic: {
-          success: "#38C995",
-          warning: "#F5B85C",
-          error: "#F16C7D",
+          success: "rgb(var(--semantic-success-rgb) / <alpha-value>)",
+          warning: "rgb(var(--semantic-warning-rgb) / <alpha-value>)",
+          error: "rgb(var(--semantic-error-rgb) / <alpha-value>)",
         },
         txt: {
-          primary: "#FFFFFF",
-          secondary: "#A8B2C6",
-          muted: "#77839A",
+          primary: "rgb(var(--txt-primary-rgb) / <alpha-value>)",
+          secondary: "rgb(var(--txt-secondary-rgb) / <alpha-value>)",
+          muted: "rgb(var(--txt-muted-rgb) / <alpha-value>)",
         },
       },
       borderRadius: {

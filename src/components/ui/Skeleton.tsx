@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 
 export interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export function Skeleton({ className, ...props }: SkeletonProps) {
+function SkeletonImpl({ className, ...props }: SkeletonProps) {
   return (
     <div
       className={cn(
@@ -14,3 +14,5 @@ export function Skeleton({ className, ...props }: SkeletonProps) {
     />
   );
 }
+
+export const Skeleton = React.memo(SkeletonImpl);

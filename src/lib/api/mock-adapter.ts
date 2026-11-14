@@ -1182,7 +1182,8 @@ export async function mockRequestHandler<T>(
         role: isAdmin ? "SYSTEM_ADMIN" : "COMPANY_OWNER",
         emailVerified: true,
         onboardingCompleted: mockCompanyProfile.onboardingCompleted,
-        companyId: mockCompanyProfile.id,
+        // Platform admin has no company; only client accounts do.
+        companyId: isAdmin ? undefined : mockCompanyProfile.id,
         createdAt: "2026-10-01T09:00:00.000Z",
       },
       expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 8).toISOString(),

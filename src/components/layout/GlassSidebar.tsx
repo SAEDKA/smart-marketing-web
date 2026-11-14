@@ -1,11 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import Link from "next/link";
+
+import React, { useMemo, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useI18n } from "@/lib/i18n/context";
 import { useAuth } from "@/lib/auth/context";
 import { cn } from "@/lib/utils";
-import { Logo, LogoMark } from "@/components/brand/Logo";
+import { BrandLogo } from "@/components/layout/BrandLogo";
 import {
   LayoutDashboard,
   Building2,
@@ -41,7 +43,7 @@ interface NavItem {
   badgeTone?: "cyan" | "violet" | "mint";
 }
 
-export function GlassSidebar() {
+export const GlassSidebar = React.memo(function GlassSidebar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { t, dir, locale } = useI18n();
@@ -66,7 +68,10 @@ export function GlassSidebar() {
       : "Review Customer Tickets";
 
   // Dedicated Customer Menu (COMPANY_OWNER) — Only business & marketing items
-  const customerNavGroups: { groupLabel: string; items: NavItem[] }[] = [
+  // Rebuilt only when the dictionary changes (locale switch) —
+  // previously this ~40-item structure was recreated on every render.
+  const customerNavGroups: { groupLabel: string; items: NavItem[] }[] = useMemo(
+    () => [
     {
       groupLabel: t.nav.workspaceGroup,
       items: [
@@ -169,10 +174,13 @@ export function GlassSidebar() {
         },
       ],
     },
-  ];
+    ],
+    [t]
+  );
 
   // Dedicated System Admin Menu (SYSTEM_ADMIN) — Platform analytics, visitors, tenants, complaints, commands
-  const adminNavGroups: { groupLabel: string; items: NavItem[] }[] = [
+  const adminNavGroups: { groupLabel: string; items: NavItem[] }[] = useMemo(
+    () => [
     {
       groupLabel:
         locale === "ar"
@@ -264,7 +272,9 @@ export function GlassSidebar() {
         },
       ],
     },
-  ];
+    ],
+    [t, locale]
+  );
 
   const activeNavGroups = isAdmin ? adminNavGroups : customerNavGroups;
   const isRtl = dir === "rtl";
@@ -293,31 +303,33 @@ export function GlassSidebar() {
       {/* Brand Identity Header */}
       <div className="h-20 flex items-center justify-between px-5 border-b border-white/10 shrink-0">
         {!isCollapsed ? (
-          <a
+          <Link
             href={isAdmin ? "/admin" : "/dashboard"}
-            className="flex items-center overflow-hidden min-w-0"
+            className="flex items-center gap-3 overflow-hidden group"
           >
-            <Logo
-              size={38}
-              tagline={
-                isAdmin
+            <BrandLogo className="w-10 h-10 shadow-glow-violet group-hover:scale-105 transition-transform" />
+            <div className="flex flex-col truncate">
+              <span className="text-sm font-bold tracking-tight text-white truncate">
+                {t.meta.appName}
+              </span>
+              <span className="text-[11px] text-accent-cyan font-medium truncate">
+                {isAdmin
                   ? locale === "ar"
                     ? "لوحة الإدارة المركزية"
                     : locale === "tr"
                     ? "Merkezi Yönetim Paneli"
                     : "System Admin Console"
-                  : "Lumiere Artisan Roasters"
-              }
-            />
-          </a>
+                  : "Lumiere Artisan Roasters"}
+              </span>
+            </div>
+          </Link>
         ) : (
-          <a
+          <Link
             href={isAdmin ? "/admin" : "/dashboard"}
-            className="mx-auto flex items-center justify-center"
-            aria-label="Smart Marketing"
+            className="block w-10 h-10 mx-auto"
           >
-            <LogoMark size={38} />
-          </a>
+            <BrandLogo className="w-10 h-10" />
+          </Link>
         )}
 
         <button
@@ -347,21 +359,21 @@ export function GlassSidebar() {
       {!isCollapsed && (
         <div className="px-4 pt-4 pb-1 shrink-0">
           {isAdmin ? (
-            <a
+            <Link
               href="/admin?tab=complaints"
               className="w-full h-10 px-3.5 rounded-[13px] glass-button-primary flex items-center justify-center gap-2 text-xs font-semibold text-white"
             >
               <MessageSquareWarning className="w-3.5 h-3.5 shrink-0" />
               <span className="truncate">{adminQuickCtaLabel}</span>
-            </a>
+            </Link>
           ) : (
-            <a
+            <Link
               href="/content-studio"
               className="w-full h-10 px-3.5 rounded-[13px] glass-button-primary flex items-center justify-center gap-2 text-xs font-semibold text-white"
             >
               <Wand2 className="w-3.5 h-3.5 shrink-0" />
               <span className="truncate">{aiQuickCtaLabel}</span>
-            </a>
+            </Link>
           )}
         </div>
       )}
@@ -380,7 +392,7 @@ export function GlassSidebar() {
               const isActive = isNavItemActive(item);
 
               return (
-                <a
+                <Link
                   key={item.key}
                   href={item.href}
                   title={item.label}
@@ -424,7 +436,7 @@ export function GlassSidebar() {
                   {isActive && (
                     <span className="absolute start-1 top-1/2 -translate-y-1/2 w-1 h-5 rounded-full bg-accent-cyan shadow-glow-cyan" />
                   )}
-                </a>
+                </Link>
               );
             })}
           </div>
@@ -452,15 +464,15 @@ export function GlassSidebar() {
               >
                 {locale === "ar"
                   ? isAdmin
-                    ? "واجهة العميل"
-                    : "واجهة الأدمن"
+                    ? "حساب العميل"
+                    : "حساب الأدمن"
                   : locale === "tr"
                   ? isAdmin
-                    ? "Müşteri Paneli"
-                    : "Admin Paneli"
+                    ? "Müşteri Hesabı"
+                    : "Admin Hesabı"
                   : isAdmin
-                  ? "Customer View"
-                  : "Admin View"}
+                  ? "Client Account"
+                  : "Admin Account"}
               </button>
             </div>
 
@@ -503,4 +515,4 @@ export function GlassSidebar() {
       </div>
     </aside>
   );
-}
+});

@@ -23,6 +23,15 @@
     --semantic-success: #38c995;
     --semantic-warning: #f5b85c;
     --semantic-error: #f16c7d;
+    --semantic-success-rgb: 56 201 149;
+    --semantic-warning-rgb: 245 184 92;
+    --semantic-error-rgb: 241 108 125;
+    --txt-primary: #ffffff;
+    --txt-secondary: #a8b2c6;
+    --txt-muted: #77839a;
+    --txt-primary-rgb: 255 255 255;
+    --txt-secondary-rgb: 168 178 198;
+    --txt-muted-rgb: 119 131 154;
   }
 
   [data-theme="ocean"] {
@@ -44,6 +53,15 @@
     --semantic-success: #38c995;
     --semantic-warning: #f5b85c;
     --semantic-error: #f16c7d;
+    --semantic-success-rgb: 56 201 149;
+    --semantic-warning-rgb: 245 184 92;
+    --semantic-error-rgb: 241 108 125;
+    --txt-primary: #ffffff;
+    --txt-secondary: #a8b2c6;
+    --txt-muted: #77839a;
+    --txt-primary-rgb: 255 255 255;
+    --txt-secondary-rgb: 168 178 198;
+    --txt-muted-rgb: 119 131 154;
   }
 
   [data-theme="violet"] {
@@ -65,6 +83,45 @@
     --semantic-success: #38c995;
     --semantic-warning: #f5b85c;
     --semantic-error: #f16c7d;
+    --semantic-success-rgb: 56 201 149;
+    --semantic-warning-rgb: 245 184 92;
+    --semantic-error-rgb: 241 108 125;
+    --txt-primary: #ffffff;
+    --txt-secondary: #a8b2c6;
+    --txt-muted: #77839a;
+    --txt-primary-rgb: 255 255 255;
+    --txt-secondary-rgb: 168 178 198;
+    --txt-muted-rgb: 119 131 154;
+  }
+
+  [data-theme="light"] {
+    color-scheme: light;
+    --bg-deep: #e2efe9;
+    --bg-dark: #eef6f2;
+    --bg-surface: #ffffff;
+    --bg-deep-rgb: 226 239 233;
+    --bg-dark-rgb: 238 246 242;
+    --bg-surface-rgb: 255 255 255;
+    --accent-violet: #0b7a55;
+    --accent-indigo: #0a6e5c;
+    --accent-cyan: #0b7285;
+    --accent-mint: #0da678;
+    --accent-violet-rgb: 11 122 85;
+    --accent-indigo-rgb: 10 110 92;
+    --accent-cyan-rgb: 11 114 133;
+    --accent-mint-rgb: 13 166 120;
+    --semantic-success: #0b7a55;
+    --semantic-warning: #b97a0f;
+    --semantic-error: #d63a52;
+    --semantic-success-rgb: 11 122 85;
+    --semantic-warning-rgb: 185 122 15;
+    --semantic-error-rgb: 214 58 82;
+    --txt-primary: #13222c;
+    --txt-secondary: #43596e;
+    --txt-muted: #71879c;
+    --txt-primary-rgb: 19 34 44;
+    --txt-secondary-rgb: 67 89 110;
+    --txt-muted-rgb: 113 135 156;
   }
 
   body {
@@ -74,7 +131,7 @@
       radial-gradient(at 88% 14%, color-mix(in srgb, var(--accent-cyan) 14%, transparent) 0px, transparent 44%),
       radial-gradient(at 52% 88%, color-mix(in srgb, var(--accent-indigo) 14%, transparent) 0px, transparent 52%);
     background-attachment: fixed;
-    color: #ffffff;
+    color: var(--txt-primary);
     caret-color: var(--accent-violet);
     font-feature-settings: "ss01", "cv02", "cv03", "cv04", "cv11";
     min-height: 100vh;
@@ -259,6 +316,67 @@
     border: 1px solid color-mix(in srgb, #ffffff 14%, transparent);
     border-radius: 9999px;
   }
+
+  /* Light theme: same Liquid Glass, retinted for white surfaces —
+     frosted glass washed with the brand mint, emerald-tinted shadows,
+     dark-tinted hairlines. */
+  [data-theme="light"] .glass-card,
+  [data-theme="light"] .glass-card-interactive {
+    background: linear-gradient(
+      155deg,
+      color-mix(in srgb, var(--accent-mint) 9%, #ffffff) 0%,
+      color-mix(in srgb, var(--bg-dark) 90%, transparent) 100%
+    );
+  }
+
+  [data-theme="light"] .glass-panel {
+    background: linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--accent-mint) 11%, #ffffff) 0%,
+      color-mix(in srgb, var(--bg-dark) 92%, transparent) 100%
+    );
+  }
+
+  [data-theme="light"] .glass-card,
+  [data-theme="light"] .glass-card-interactive,
+  [data-theme="light"] .glass-panel {
+    border-color: rgb(19 34 44 / 0.1);
+    box-shadow:
+      0 20px 44px -18px rgb(11 90 66 / 0.22),
+      inset 0 1px 0 0 rgb(255 255 255 / 0.65);
+  }
+
+  [data-theme="light"] .glass-card:hover {
+    border-color: rgb(19 34 44 / 0.18);
+  }
+
+  [data-theme="light"] .glass-card-interactive:hover {
+    border-color: color-mix(in srgb, var(--accent-violet) 45%, transparent);
+    box-shadow:
+      0 24px 52px -14px rgb(11 90 66 / 0.28),
+      inset 0 1px 0 0 rgb(255 255 255 / 0.7);
+  }
+
+  [data-theme="light"] .glass-input {
+    color: var(--txt-primary);
+    border-color: rgb(19 34 44 / 0.14);
+    box-shadow: inset 0 1px 2px 0 rgb(19 34 44 / 0.05);
+  }
+
+  [data-theme="light"] .glass-input::placeholder {
+    color: var(--txt-muted);
+  }
+
+  [data-theme="light"] .glass-button-secondary {
+    color: var(--txt-primary);
+    border-color: rgb(19 34 44 / 0.14);
+    box-shadow: inset 0 1px 0 0 rgb(255 255 255 / 0.55);
+  }
+
+  [data-theme="light"] .glass-badge {
+    background-color: rgb(19 34 44 / 0.05);
+    border-color: rgb(19 34 44 / 0.1);
+  }
 }
 
 @keyframes pulse-flow {
@@ -334,4 +452,101 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Light theme compatibility layer.
+   The markup was authored dark-first and uses white-based utilities
+   (text-white, bg-white/5, border-white/10, ...) hundreds of times.
+   Under the light theme those utilities are re-tinted to slate-based
+   equivalents so every screen flips without editing each component.
+   Unlayered on purpose: it must win over Tailwind's utility layer. */
+/* The white theme keeps the brand's ambient color wash — stronger
+   pastel glows than the dark themes need, plus one warm accent —
+   and a livelier emerald-to-cyan primary gradient. Backgrounds and
+   gradients only: text colors are untouched, so copy stays readable. */
+[data-theme="light"] body {
+  background-image:
+    radial-gradient(at 12% 8%, color-mix(in srgb, var(--accent-violet) 26%, transparent) 0px, transparent 48%),
+    radial-gradient(at 88% 14%, color-mix(in srgb, var(--accent-cyan) 24%, transparent) 0px, transparent 44%),
+    radial-gradient(at 52% 88%, color-mix(in srgb, var(--accent-indigo) 22%, transparent) 0px, transparent 52%),
+    radial-gradient(at 80% 84%, rgb(245 184 92 / 0.12) 0px, transparent 42%);
+}
+[data-theme="light"] .glass-button-primary {
+  background: linear-gradient(135deg, #0a8f66 0%, #07829b 100%);
+}
+[data-theme="light"] .text-white {
+  color: var(--txt-primary);
+}
+[data-theme="light"] .text-white\/90 {
+  color: rgb(var(--txt-primary-rgb) / 0.9);
+}
+[data-theme="light"] .text-white\/95 {
+  color: rgb(var(--txt-primary-rgb) / 0.95);
+}
+[data-theme="light"] .text-white\/20 {
+  color: rgb(var(--txt-primary-rgb) / 0.2);
+}
+[data-theme="light"] .hover\:text-white:hover {
+  color: var(--txt-primary);
+}
+[data-theme="light"] .bg-white\/5 {
+  background-color: rgb(19 34 44 / 0.04);
+}
+[data-theme="light"] .bg-white\/10 {
+  background-color: rgb(19 34 44 / 0.07);
+}
+[data-theme="light"] .bg-white\/\[0\.02\] {
+  background-color: rgb(19 34 44 / 0.02);
+}
+[data-theme="light"] .bg-white\/\[0\.03\] {
+  background-color: rgb(19 34 44 / 0.03);
+}
+[data-theme="light"] .bg-white\/\[0\.04\] {
+  background-color: rgb(19 34 44 / 0.04);
+}
+[data-theme="light"] .hover\:bg-white\/5:hover {
+  background-color: rgb(19 34 44 / 0.04);
+}
+[data-theme="light"] .hover\:bg-white\/10:hover {
+  background-color: rgb(19 34 44 / 0.07);
+}
+[data-theme="light"] .border-white\/5 {
+  border-color: rgb(19 34 44 / 0.06);
+}
+[data-theme="light"] .border-white\/10 {
+  border-color: rgb(19 34 44 / 0.1);
+}
+[data-theme="light"] .border-white\/15 {
+  border-color: rgb(19 34 44 / 0.13);
+}
+[data-theme="light"] .border-white\/20 {
+  border-color: rgb(19 34 44 / 0.16);
+}
+[data-theme="light"] .divide-white\/5 > :not([hidden]) ~ :not([hidden]) {
+  border-color: rgb(19 34 44 / 0.06);
+}
+[data-theme="light"] .divide-white\/10 > :not([hidden]) ~ :not([hidden]) {
+  border-color: rgb(19 34 44 / 0.1);
+}
+[data-theme="light"] ::selection {
+  color: #ffffff;
+}
+[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background-color: rgb(19 34 44 / 0.18);
+}
+[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(19 34 44 / 0.3);
+}
+
+/* Guard: white text stays white where it sits on a solid accent,
+   semantic or gradient background (avatars, primary CTAs, badges). */
+[data-theme="light"] .bg-accent-violet.text-white,
+[data-theme="light"] .bg-semantic-error.text-white,
+[data-theme="light"] .bg-gradient-to-r.text-white,
+[data-theme="light"] .bg-gradient-to-tr.text-white,
+[data-theme="light"] .bg-gradient-to-br.text-white,
+[data-theme="light"] .bg-gradient-to-b.text-white,
+[data-theme="light"] .glass-button-primary.text-white,
+[data-theme="light"] .glass-button-primary .text-white {
+  color: #ffffff;
 }

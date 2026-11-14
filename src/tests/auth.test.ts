@@ -18,6 +18,8 @@ describe("R1 Authentication & Recovery API (WEB-01-03, WEB-01-04)", () => {
     });
     expect(res.data.user.role).toBe("COMPANY_OWNER");
     expect(res.data.user.email).toBe("sarah@lumierecoffee.com");
+    // Client accounts belong to their own company.
+    expect(res.data.user.companyId).toBe("cmp_lumiere_01");
     expect(res.meta.mode).toBe("mock");
   });
 
@@ -27,6 +29,9 @@ describe("R1 Authentication & Recovery API (WEB-01-03, WEB-01-04)", () => {
       password: "AdminRoot2026!",
     });
     expect(res.data.user.role).toBe("SYSTEM_ADMIN");
+    // The platform admin manages the whole site and must NOT be
+    // bound to any single client's company.
+    expect(res.data.user.companyId).toBeUndefined();
   });
 
   it("blocks locked accounts with 403 FORBIDDEN", async () => {

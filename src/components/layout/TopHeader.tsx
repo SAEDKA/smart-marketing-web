@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import React, { useState, useRef, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useI18n } from "@/lib/i18n/context";
@@ -21,7 +23,7 @@ interface TopHeaderProps {
   onOpenMobileNav: () => void;
 }
 
-export function TopHeader({ onOpenMobileNav }: TopHeaderProps) {
+export const TopHeader = React.memo(function TopHeader({ onOpenMobileNav }: TopHeaderProps) {
   const pathname = usePathname();
   const router = useRouter();
   const { t, locale } = useI18n();
@@ -121,13 +123,13 @@ export function TopHeader({ onOpenMobileNav }: TopHeaderProps) {
               <span>{adminModeLabel}</span>
             </span>
           ) : (
-            <a
+            <Link
               href="/content-studio"
               className="hidden md:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium bg-accent-cyan/10 hover:bg-accent-cyan/20 text-accent-cyan border border-accent-cyan/25 transition-colors"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-accent-mint animate-pulse" />
               <span>{aiReadyLabel}</span>
-            </a>
+            </Link>
           )}
         </div>
       </div>
@@ -151,27 +153,27 @@ export function TopHeader({ onOpenMobileNav }: TopHeaderProps) {
 
         {/* Quick Calendar Shortcut (Only for Company Owners) */}
         {!isAdmin && (
-          <a
+          <Link
             href="/calendar"
             title={t.nav.calendar}
             className="hidden sm:flex items-center justify-center w-9 h-9 rounded-full glass-button-secondary text-txt-secondary hover:text-white transition-colors"
           >
             <Calendar className="w-4 h-4" />
-          </a>
+          </Link>
         )}
 
         {/* 3-Language Switcher (EN, TR, AR with RTL) */}
         <LanguageSwitcher />
 
         {/* Notification Bell */}
-        <a
+        <Link
           href="/notifications"
           aria-label="View notifications"
           className="relative flex items-center justify-center w-9 h-9 rounded-full glass-button-secondary text-txt-secondary hover:text-white transition-colors"
         >
           <Bell className="w-4 h-4" />
           <span className="absolute top-1.5 end-1.5 w-2 h-2 rounded-full bg-accent-violet" />
-        </a>
+        </Link>
 
         {/* User Profile Dropdown */}
         <div className="relative" ref={profileRef}>
@@ -180,6 +182,7 @@ export function TopHeader({ onOpenMobileNav }: TopHeaderProps) {
             onClick={() => setProfileOpen(!profileOpen)}
             aria-expanded={profileOpen}
             aria-label="User profile menu"
+            data-intro-target="account"
             className="flex items-center gap-2.5 p-1 sm:px-2.5 sm:py-1 rounded-full hover:bg-white/10 transition-colors border border-transparent hover:border-white/10"
           >
             <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-accent-violet via-accent-indigo to-accent-cyan p-[1px] shadow-glow-violet">
@@ -214,22 +217,22 @@ export function TopHeader({ onOpenMobileNav }: TopHeaderProps) {
 
               <div className="py-1">
                 {!isAdmin && (
-                  <a
+                  <Link
                     href="/settings/brand"
                     className="flex items-center gap-2.5 px-3 py-2 text-xs text-txt-secondary hover:text-white hover:bg-white/5 rounded-xl transition-colors"
                   >
                     <Sliders className="w-4 h-4 text-txt-muted" />
                     <span>{t.nav.brandSettings}</span>
-                  </a>
+                  </Link>
                 )}
 
-                <a
+                <Link
                   href="/settings"
                   className="flex items-center gap-2.5 px-3 py-2 text-xs text-txt-secondary hover:text-white hover:bg-white/5 rounded-xl transition-colors"
                 >
                   <Settings className="w-4 h-4 text-txt-muted" />
                   <span>{t.nav.accountSettings}</span>
-                </a>
+                </Link>
 
                 <button
                   type="button"
@@ -246,11 +249,15 @@ export function TopHeader({ onOpenMobileNav }: TopHeaderProps) {
                   <span className="text-[10px] text-accent-violet font-semibold">
                     {isAdmin
                       ? locale === "ar"
-                        ? "← العميل"
-                        : "→ Owner"
+                        ? "← حساب العميل"
+                        : locale === "tr"
+                        ? "→ Müşteri Hesabı"
+                        : "→ Client Account"
                       : locale === "ar"
-                      ? "← الأدمن"
-                      : "→ Admin"}
+                      ? "← حساب الأدمن"
+                      : locale === "tr"
+                      ? "→ Admin Hesabı"
+                      : "→ Admin Account"}
                   </span>
                 </button>
               </div>
@@ -271,4 +278,4 @@ export function TopHeader({ onOpenMobileNav }: TopHeaderProps) {
       </div>
     </header>
   );
-}
+});

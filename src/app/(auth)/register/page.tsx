@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth/context";
@@ -7,7 +9,6 @@ import { useI18n } from "@/lib/i18n/context";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import { LogoMark } from "@/components/brand/Logo";
 import {
   User,
   Building,
@@ -17,9 +18,9 @@ import {
   EyeOff,
   AlertCircle,
   CheckCircle2,
-  Sparkles,
 } from "lucide-react";
 import { ApiErrorShape } from "@/types/domain";
+import { BrandLogo } from "@/components/layout/BrandLogo";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -90,7 +91,7 @@ export default function RegisterPage() {
     <div className="w-full max-w-md animate-in fade-in zoom-in-95 duration-300">
       <Card className="glass-panel border-white/15 shadow-2xl p-6 sm:p-8">
         <CardHeader className="text-center pb-6">
-          <LogoMark size={48} className="mx-auto mb-3" />
+          <BrandLogo className="w-12 h-12 mx-auto mb-3 block shadow-glow-violet" />
           <CardTitle className="text-xl sm:text-2xl font-bold tracking-tight text-white">
             {t.auth.registerTitle}
           </CardTitle>
@@ -230,12 +231,12 @@ export default function RegisterPage() {
 
           <div className="mt-6 text-center text-xs text-txt-secondary">
             <span>{t.auth.haveAccountText} </span>
-            <a
+            <Link
               href="/login"
               className="text-accent-violet font-semibold hover:underline"
             >
               {t.auth.signInBtn}
-            </a>
+            </Link>
           </div>
         </CardContent>
       </Card>

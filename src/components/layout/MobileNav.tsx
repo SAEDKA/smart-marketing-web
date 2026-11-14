@@ -1,12 +1,14 @@
 "use client";
 
+import Link from "next/link";
+
 import React, { useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useI18n } from "@/lib/i18n/context";
 import { useAuth } from "@/lib/auth/context";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import { cn } from "@/lib/utils";
-import { Logo } from "@/components/brand/Logo";
+import { BrandLogo } from "@/components/layout/BrandLogo";
 import {
   LayoutDashboard,
   Building2,
@@ -37,7 +39,7 @@ interface MobileNavProps {
   onOpen?: () => void;
 }
 
-export function MobileNav({ isOpen, onClose, onOpen }: MobileNavProps) {
+export const MobileNav = React.memo(function MobileNav({ isOpen, onClose, onOpen }: MobileNavProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { t, locale } = useI18n();
@@ -221,7 +223,7 @@ export function MobileNav({ isOpen, onClose, onOpen }: MobileNavProps) {
           const Icon = item.icon;
           const isActive = isLinkActive(item.href);
           return (
-            <a
+            <Link
               key={item.href}
               href={item.href}
               className={cn(
@@ -238,7 +240,7 @@ export function MobileNav({ isOpen, onClose, onOpen }: MobileNavProps) {
                 )}
               />
               <span className="truncate max-w-[64px]">{item.label}</span>
-            </a>
+            </Link>
           );
         })}
 
@@ -271,7 +273,12 @@ export function MobileNav({ isOpen, onClose, onOpen }: MobileNavProps) {
           <div className="relative z-10 w-4/5 max-w-sm h-full glass-panel border-s border-white/15 flex flex-col shadow-2xl animate-in slide-in-from-right duration-200">
             {/* Header */}
             <div className="h-16 px-5 border-b border-white/10 flex items-center justify-between shrink-0">
-              <Logo size={32} />
+              <div className="flex items-center gap-2.5">
+                <BrandLogo className="w-8 h-8" />
+                <span className="text-sm font-bold text-white">
+                  {t.meta.appName}
+                </span>
+              </div>
               <button
                 type="button"
                 onClick={onClose}
@@ -301,7 +308,7 @@ export function MobileNav({ isOpen, onClose, onOpen }: MobileNavProps) {
                     const Icon = link.icon;
                     const isActive = isLinkActive(link.href);
                     return (
-                      <a
+                      <Link
                         key={link.href}
                         href={link.href}
                         onClick={onClose}
@@ -314,7 +321,7 @@ export function MobileNav({ isOpen, onClose, onOpen }: MobileNavProps) {
                       >
                         <Icon className="w-4 h-4 shrink-0 text-txt-muted" />
                         <span>{link.label}</span>
-                      </a>
+                      </Link>
                     );
                   })}
                 </div>
@@ -338,11 +345,15 @@ export function MobileNav({ isOpen, onClose, onOpen }: MobileNavProps) {
                 >
                   {locale === "ar"
                     ? isAdmin
-                      ? "واجهة العميل"
-                      : "واجهة الأدمن"
+                      ? "حساب العميل"
+                      : "حساب الأدمن"
+                    : locale === "tr"
+                    ? isAdmin
+                      ? "Müşteri Hesabı"
+                      : "Admin Hesabı"
                     : isAdmin
-                    ? "Customer View"
-                    : "Admin View"}
+                    ? "Client Account"
+                    : "Admin Account"}
                 </button>
               </div>
 
@@ -363,4 +374,4 @@ export function MobileNav({ isOpen, onClose, onOpen }: MobileNavProps) {
       )}
     </>
   );
-}
+});
