@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useI18n } from "@/lib/i18n/context";
 import { useAuth } from "@/lib/auth/context";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
+import { Logo, LogoMark } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import {
@@ -216,20 +217,8 @@ export default function LandingPage() {
       {/* Top Navigation Header */}
       <header className="sticky top-0 z-40 h-20 glass-panel border-b border-white/10 px-4 sm:px-8">
         <div className="max-w-7xl mx-auto h-full flex items-center justify-between gap-4">
-          <a href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-accent-violet to-accent-cyan p-[1px] shadow-glow-violet flex items-center justify-center">
-              <div className="w-full h-full rounded-2xl bg-navy-950 flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-accent-violet group-hover:scale-110 transition-transform" />
-              </div>
-            </div>
-            <div>
-              <span className="text-sm font-bold tracking-tight text-white block">
-                SMART MARKETING
-              </span>
-              <span className="text-[11px] text-txt-secondary hidden sm:block">
-                AI Marketing Workspace
-              </span>
-            </div>
+          <a href="/" className="flex items-center" aria-label="Smart Marketing">
+            <Logo size={40} tagline="AI Marketing Workspace" />
           </a>
 
           <nav className="hidden lg:flex items-center gap-7 text-xs font-medium text-txt-secondary">
@@ -818,9 +807,10 @@ export default function LandingPage() {
 
       <footer className="border-t border-white/10 py-8 px-4 sm:px-8 text-xs text-txt-muted">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p>
-            SMART MARKETING PLATFORM &copy; 2026 &bull; AI Social Media Marketing Workspace
-          </p>
+          <div className="flex items-center gap-3">
+            <LogoMark size={28} />
+            <p>Smart Marketing &copy; 2026</p>
+          </div>
           <div className="flex items-center gap-5">
             <a href="/dashboard" className="hover:text-white transition-colors">
               Marketing Command

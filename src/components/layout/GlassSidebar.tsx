@@ -5,6 +5,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useI18n } from "@/lib/i18n/context";
 import { useAuth } from "@/lib/auth/context";
 import { cn } from "@/lib/utils";
+import { Logo, LogoMark } from "@/components/brand/Logo";
 import {
   LayoutDashboard,
   Building2,
@@ -294,44 +295,28 @@ export function GlassSidebar() {
         {!isCollapsed ? (
           <a
             href={isAdmin ? "/admin" : "/dashboard"}
-            className="flex items-center gap-3 overflow-hidden group"
+            className="flex items-center overflow-hidden min-w-0"
           >
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-accent-violet via-accent-indigo to-accent-cyan p-[1px] shadow-glow-violet shrink-0 flex items-center justify-center">
-              <div className="w-full h-full rounded-2xl bg-navy-950/90 flex items-center justify-center">
-                {isAdmin ? (
-                  <ShieldCheck className="w-5 h-5 text-accent-cyan group-hover:scale-110 transition-transform" />
-                ) : (
-                  <Sparkles className="w-5 h-5 text-accent-cyan group-hover:scale-110 transition-transform" />
-                )}
-              </div>
-            </div>
-            <div className="flex flex-col truncate">
-              <span className="text-sm font-bold tracking-tight text-white truncate">
-                {t.meta.appName}
-              </span>
-              <span className="text-[11px] text-accent-cyan font-medium truncate">
-                {isAdmin
+            <Logo
+              size={38}
+              tagline={
+                isAdmin
                   ? locale === "ar"
                     ? "لوحة الإدارة المركزية"
                     : locale === "tr"
                     ? "Merkezi Yönetim Paneli"
                     : "System Admin Console"
-                  : "Lumiere Artisan Roasters"}
-              </span>
-            </div>
+                  : "Lumiere Artisan Roasters"
+              }
+            />
           </a>
         ) : (
           <a
             href={isAdmin ? "/admin" : "/dashboard"}
-            className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-accent-violet to-accent-cyan p-[1px] mx-auto flex items-center justify-center"
+            className="mx-auto flex items-center justify-center"
+            aria-label="Smart Marketing"
           >
-            <div className="w-full h-full rounded-2xl bg-navy-950/90 flex items-center justify-center">
-              {isAdmin ? (
-                <ShieldCheck className="w-5 h-5 text-accent-cyan" />
-              ) : (
-                <Sparkles className="w-5 h-5 text-accent-cyan" />
-              )}
-            </div>
+            <LogoMark size={38} />
           </a>
         )}
 

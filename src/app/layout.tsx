@@ -4,7 +4,7 @@ import { I18nProvider } from "@/lib/i18n/context";
 import { AuthProvider } from "@/lib/auth/context";
 
 export const metadata: Metadata = {
-  title: "SMART MARKETING — AI-Powered Social Media Marketing Platform",
+  title: "Smart Marketing | AI-Powered Social Media Marketing Platform",
   description:
     "Enterprise-grade AI marketing workspace for growing businesses. Liquid Glass design, multi-language, and intelligent social publishing.",
 };

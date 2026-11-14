@@ -7,6 +7,7 @@ import { useI18n } from "@/lib/i18n/context";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { LogoMark } from "@/components/brand/Logo";
 import {
   User,
   Building,
@@ -89,11 +90,7 @@ export default function RegisterPage() {
     <div className="w-full max-w-md animate-in fade-in zoom-in-95 duration-300">
       <Card className="glass-panel border-white/15 shadow-2xl p-6 sm:p-8">
         <CardHeader className="text-center pb-6">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-accent-violet via-accent-indigo to-accent-cyan p-[1px] shadow-glow-violet mx-auto mb-3 flex items-center justify-center">
-            <div className="w-full h-full rounded-2xl bg-navy-950 flex items-center justify-center">
-              <Sparkles className="w-6 h-6 text-accent-cyan" />
-            </div>
-          </div>
+          <LogoMark size={48} className="mx-auto mb-3" />
           <CardTitle className="text-xl sm:text-2xl font-bold tracking-tight text-white">
             {t.auth.registerTitle}
           </CardTitle>

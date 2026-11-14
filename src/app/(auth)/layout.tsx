@@ -2,6 +2,7 @@
 
 import React from "react";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
+import { Logo } from "@/components/brand/Logo";
 import { useI18n } from "@/lib/i18n/context";
 import {
   Sparkles,
@@ -64,20 +65,8 @@ export default function AuthLayout({
     <div className="min-h-screen flex flex-col justify-between p-4 sm:p-6 lg:p-8 relative overflow-x-hidden">
       {/* Top Header with Brand, Theme Switcher, and Language Switcher */}
       <header className="w-full max-w-7xl mx-auto flex items-center justify-between py-2 relative z-10">
-        <a href="/" className="flex items-center gap-2.5 group">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-accent-violet to-accent-cyan p-[1px] shadow-glow-violet flex items-center justify-center">
-            <div className="w-full h-full rounded-xl bg-navy-950 flex items-center justify-center">
-              <Sparkles className="w-4 h-4 text-accent-violet group-hover:scale-110 transition-transform" />
-            </div>
-          </div>
-          <div>
-            <span className="text-sm font-bold tracking-tight text-white block">
-              {t.meta.appName}
-            </span>
-            <span className="text-[10px] text-txt-secondary font-medium hidden sm:block">
-              {t.meta.appTagline}
-            </span>
-          </div>
+        <a href="/" className="flex items-center" aria-label="Smart Marketing">
+          <Logo size={38} tagline={t.meta.appTagline} />
         </a>
 
         <div className="flex items-center gap-2.5">

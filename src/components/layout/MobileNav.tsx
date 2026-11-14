@@ -6,6 +6,7 @@ import { useI18n } from "@/lib/i18n/context";
 import { useAuth } from "@/lib/auth/context";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import { cn } from "@/lib/utils";
+import { Logo } from "@/components/brand/Logo";
 import {
   LayoutDashboard,
   Building2,
@@ -270,18 +271,7 @@ export function MobileNav({ isOpen, onClose, onOpen }: MobileNavProps) {
           <div className="relative z-10 w-4/5 max-w-sm h-full glass-panel border-s border-white/15 flex flex-col shadow-2xl animate-in slide-in-from-right duration-200">
             {/* Header */}
             <div className="h-16 px-5 border-b border-white/10 flex items-center justify-between shrink-0">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-accent-violet to-accent-cyan flex items-center justify-center">
-                  {isAdmin ? (
-                    <ShieldCheck className="w-4 h-4 text-white" />
-                  ) : (
-                    <Sparkles className="w-4 h-4 text-white" />
-                  )}
-                </div>
-                <span className="text-sm font-bold text-white">
-                  {t.meta.appName}
-                </span>
-              </div>
+              <Logo size={32} />
               <button
                 type="button"
                 onClick={onClose}
