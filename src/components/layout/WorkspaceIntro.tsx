@@ -9,10 +9,14 @@ import { cn } from "@/lib/utils";
  * Branded workspace entry sequence.
  *
  * Replaces the plain "Initializing Workspace..." spinner. The logo
- * appears, its growth arrow lifts off and flies to the account
- * (profile) corner of the header — measured live from the profile
- * button, so it lands correctly in LTR and RTL — and the workspace
- * then iris-opens from the exact point the arrow lands on.
+ * appears, its growth arrow lifts off and flies to the right-hand
+ * corner of the header — the account corner's height and edge inset,
+ * measured live from the profile button and mirrored to the right
+ * when that corner sits on the left (RTL) — and the workspace then
+ * iris-opens from the exact point the arrow lands on. The arrow
+ * always keeps the up-right shape it has in the logo artwork: the
+ * owner reviewed the RTL flight (arrow flipped, flying left) on
+ * 2026-11-15 and asked for the logo's own direction instead.
  *
  * Plays once per workspace mount (full load, refresh, fresh login);
  * in-app navigation never replays it because the workspace layout
@@ -40,7 +44,6 @@ const REVEAL_MS = 800;
 interface Flight {
   dx: number;
   dy: number;
-  flip: boolean;
   x: number;
   y: number;
 }
@@ -79,19 +82,23 @@ export function WorkspaceIntro({ ready }: { ready: boolean }) {
     const targetRect = document
       .querySelector('[data-intro-target="account"]')
       ?.getBoundingClientRect();
-    const to = targetRect
+    const corner = targetRect
       ? {
           x: targetRect.left + targetRect.width / 2,
           y: targetRect.top + targetRect.height / 2,
         }
-      : {
-          x: document.documentElement.dir === "rtl" ? 44 : window.innerWidth - 44,
-          y: 40,
-        };
+      : { x: window.innerWidth - 44, y: 40 };
+    // Always land on the right: when the account corner is on the
+    // left half (RTL), mirror it across the screen — same height,
+    // same distance from the right edge as the button keeps from
+    // the left — so the arrow flies right and never flips.
+    const to =
+      corner.x < window.innerWidth / 2
+        ? { x: window.innerWidth - corner.x, y: corner.y }
+        : corner;
     setFlight({
       dx: to.x - from.x,
       dy: to.y - from.y,
-      flip: to.x < from.x,
       x: to.x,
       y: to.y,
     });
@@ -217,7 +224,7 @@ export function WorkspaceIntro({ ready }: { ready: boolean }) {
             <BrandLogo className="w-28 h-28 shadow-glow-violet" />
           </div>
 
-          {/* The arrow that lifts off the logo and flies to the account corner */}
+          {/* The arrow that lifts off the logo and flies to the right-hand corner */}
           <div
             aria-hidden="true"
             className="absolute left-1/2 top-1/2 pointer-events-none"
@@ -238,7 +245,6 @@ export function WorkspaceIntro({ ready }: { ready: boolean }) {
               height="104"
               viewBox="0 0 96 96"
               fill="none"
-              style={flight?.flip ? { transform: "scaleX(-1)" } : undefined}
             >
               <defs>
                 <linearGradient id="intro-arrow" x1="0" y1="1" x2="1" y2="0">

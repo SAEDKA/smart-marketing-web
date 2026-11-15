@@ -38,4 +38,33 @@ describe("WorkspaceIntro", () => {
     });
     expect(screen.queryByText("Initializing Workspace...")).toBeNull();
   });
+
+  it("flies right and never flips, even when the account corner is on the left (RTL)", () => {
+    vi.useFakeTimers();
+    // Account button parked at the top-left, as in the RTL header.
+    const target = document.createElement("div");
+    target.setAttribute("data-intro-target", "account");
+    target.getBoundingClientRect = () =>
+      ({ left: 8, top: 8, right: 48, bottom: 48, width: 40, height: 40, x: 8, y: 8, toJSON: () => {} }) as DOMRect;
+    document.body.appendChild(target);
+    try {
+      const { container } = render(<WorkspaceIntro ready />);
+      act(() => {
+        // Past the frame-settle cap (1000ms) + splash (550ms): the
+        // flight has started.
+        vi.advanceTimersByTime(1600);
+      });
+      const svg = container.querySelector("svg");
+      expect(svg).toBeTruthy();
+      // No horizontal flip is ever applied to the arrow artwork.
+      expect(svg?.style.transform ?? "").not.toContain("scaleX(-1)");
+      // The flight translation heads right (positive dx): the
+      // left-side corner (center x=28 of a 1024-wide window) is
+      // mirrored to x=996.
+      const flyer = svg?.parentElement as HTMLElement | null;
+      expect(flyer?.style.transform).toContain("+ 996px");
+    } finally {
+      target.remove();
+    }
+  });
 });
