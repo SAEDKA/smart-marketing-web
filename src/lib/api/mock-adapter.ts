@@ -1781,12 +1781,71 @@ export async function mockRequestHandler<T>(
       throw err;
     }
 
-    const prod =
-      mockProducts.find((p) => p.id === payload.productId) || mockProducts[0];
+    const prod = mockProducts.find((p) => p.id === payload.productId);
 
-    const variants: GeneratedAiVariant[] = [
+    // No product selected: build the variants from the user's own
+    // description instead of silently reusing a catalog product.
+    const subject =
+      payload.customPrompt?.trim().slice(0, 120) || "our latest offer";
+
+    const promptVariants: GeneratedAiVariant[] = [
       {
         id: `var_${Date.now()}_1`,
+        variantIndex: 1,
+        title: `Introducing: ${subject}`,
+        caption: `${subject} — made with care and ready for you.\n\nMessage us today to learn more or place your order.`,
+        hashtags: [
+          "#SmallBusiness",
+          "#LocalBusiness",
+          "#ShopLocal",
+          "#MadeWithCare",
+        ],
+        callToAction: "Send us a message to order or ask anything.",
+        visualIdea:
+          "A bright, clean photo of the offer in its real setting, natural light, with the key benefit as a bold text overlay.",
+        recommendedPublishingTime: "Wednesday 08:30 AM (Peak morning engagement)",
+        tone: payload.tone,
+      },
+      {
+        id: `var_${Date.now()}_2`,
+        variantIndex: 2,
+        title: `Why you'll love it: ${subject}`,
+        caption: `Quality you can feel, from a team that cares about every detail. ${subject} is waiting for you.\n\nTap the link in our bio or visit us today.`,
+        hashtags: [
+          "#QualityFirst",
+          "#SupportLocal",
+          "#SmallBusinessLove",
+          "#DailyFinds",
+        ],
+        callToAction: "Visit us or tap the link in bio to get yours.",
+        visualIdea:
+          "Close-up detail shot showing texture and quality, warm tones, shallow depth of field.",
+        recommendedPublishingTime: "Saturday 10:15 AM (Weekend shopping window)",
+        tone: payload.tone,
+      },
+      {
+        id: `var_${Date.now()}_3`,
+        variantIndex: 3,
+        title: `Don't miss out: ${subject}`,
+        caption: `Good things don't wait — and neither should you. ${subject}, available now for a limited time.\n\nTag someone who needs to see this!`,
+        hashtags: [
+          "#LimitedOffer",
+          "#DontMissOut",
+          "#LocalDeals",
+          "#TreatYourself",
+        ],
+        callToAction: "Tag a friend and message us to reserve yours.",
+        visualIdea:
+          "Eye-catching flat-lay of the offer with props that tell its story, strong contrast for the feed.",
+        recommendedPublishingTime: "Thursday 17:00 PM (Evening leisure browsing)",
+        tone: payload.tone,
+      },
+    ];
+
+    const variants: GeneratedAiVariant[] = prod
+      ? [
+          {
+            id: `var_${Date.now()}_1`,
         variantIndex: 1,
         title: `Sensory Elegance: ${prod.name}`,
         caption: `Crafted for those who savor the quiet ritual. Discover ${prod.name} — featuring direct-origin craftsmanship and refined tasting notes of jasmine, bergamot, and sweet citrus.\n\nRoasted fresh in micro-lots each week in Istanbul for peak aromatic vitality.`,
@@ -1841,7 +1900,8 @@ export async function mockRequestHandler<T>(
         recommendedPublishingTime: "Thursday 17:00 PM (Evening leisure browsing)",
         tone: payload.tone,
       },
-    ];
+        ]
+      : promptVariants;
 
     return wrapMockResponse(variants as unknown as T);
   }

@@ -27,6 +27,23 @@ describe("Release R4 - AI Studio & Post Review/Editor Suite (WEB-02-05, WEB-02-0
       expect(res.data[0].recommendedPublishingTime).toBeDefined();
     });
 
+    it("generates prompt-based variants when no product is selected", async () => {
+      const res = await aiApi.generateVariants({
+        campaignId: "cmp_winter_drop_01",
+        productId: "",
+        platform: "INSTAGRAM",
+        contentLanguage: "en",
+        tone: "FRIENDLY",
+        customPrompt: "Weekend haircut offer at our barbershop",
+      });
+
+      expect(res.data.length).toBe(3);
+      expect(res.data[0].title).toContain("Weekend haircut offer");
+      expect(res.data[0].caption).toContain("Weekend haircut offer");
+      // Must not silently reuse a catalog product
+      expect(res.data[0].title).not.toContain("Yirgacheffe");
+    });
+
     it("rejects when AI worker timeout is simulated", async () => {
       await expect(
         aiApi.generateVariants({

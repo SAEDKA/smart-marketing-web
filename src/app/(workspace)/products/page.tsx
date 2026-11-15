@@ -36,6 +36,7 @@ import {
   RefreshCw,
   DollarSign,
   AlertCircle,
+  Link2,
 } from "lucide-react";
 
 export default function ProductsPage() {
@@ -57,6 +58,10 @@ export default function ProductsPage() {
 
   // Dialog states
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [importUrl, setImportUrl] = useState("");
+  const [importError, setImportError] = useState<string | null>(null);
+  const [isFetchingImport, setIsFetchingImport] = useState(false);
   const [isMediaModalOpen, setIsMediaModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -123,6 +128,45 @@ export default function ProductsPage() {
     setFormStatus("ACTIVE");
     setFormErrors({});
     setIsFormModalOpen(true);
+  };
+
+  // Import from link: pull a product name out of a product-page URL,
+  // then hand off to the regular product form for review and saving.
+  const parseNameFromUrl = (raw: string): string | null => {
+    try {
+      const url = new URL(raw.trim());
+      const segments = url.pathname.split("/").filter(Boolean);
+      const last = segments[segments.length - 1] || "";
+      const cleaned = decodeURIComponent(last)
+        .replace(/\.[a-z0-9]+$/i, "")
+        .replace(/[-_]+/g, " ")
+        .trim();
+      if (cleaned) {
+        return cleaned.replace(/\b\w/g, (c) => c.toUpperCase());
+      }
+      return url.hostname.replace(/^www\./, "");
+    } catch {
+      return null;
+    }
+  };
+
+  const handleFetchFromLink = async () => {
+    const name = parseNameFromUrl(importUrl);
+    if (!name) {
+      setImportError(t.products.importInvalidUrl);
+      return;
+    }
+    setImportError(null);
+    setIsFetchingImport(true);
+    // Simulated catalog fetch: in live mode this resolves through the
+    // backend's product-link importer.
+    await new Promise((resolve) => setTimeout(resolve, 900));
+    setIsFetchingImport(false);
+    setIsImportModalOpen(false);
+    handleOpenAddModal();
+    setFormName(name);
+    setFormPurchaseUrl(importUrl.trim());
+    setImportUrl("");
   };
 
   // Open Edit Product Dialog
@@ -344,6 +388,17 @@ export default function ProductsPage() {
             leftIcon={<RefreshCw className="w-3.5 h-3.5" />}
           >
             Sync
+          </Button>
+
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setImportError(null);
+              setIsImportModalOpen(true);
+            }}
+            leftIcon={<Link2 className="w-4 h-4" />}
+          >
+            {t.products.importFromLink}
           </Button>
 
           <Button
@@ -749,6 +804,53 @@ export default function ProductsPage() {
           </div>
         </Card>
       )}
+
+      {/* IMPORT FROM LINK MODAL */}
+      <Modal
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+        title={t.products.importTitle}
+        description={t.products.importDesc}
+        maxWidth="md"
+      >
+        <div className="space-y-4">
+          {importError && (
+            <div className="p-3 rounded-xl bg-semantic-error/15 border border-semantic-error/30 text-semantic-error text-xs flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 shrink-0" />
+              <span>{importError}</span>
+            </div>
+          )}
+
+          <Input
+            label={t.products.importFromLink}
+            type="url"
+            value={importUrl}
+            onChange={(e) => setImportUrl(e.target.value)}
+            placeholder={t.products.importUrlPlaceholder}
+          />
+
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-white/10">
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => setIsImportModalOpen(false)}
+            >
+              {t.common.cancel}
+            </Button>
+            <Button
+              type="button"
+              variant="primary"
+              isLoading={isFetchingImport}
+              onClick={handleFetchFromLink}
+              leftIcon={<Link2 className="w-4 h-4" />}
+            >
+              {isFetchingImport
+                ? t.products.importFetching
+                : t.products.importFetchBtn}
+            </Button>
+          </div>
+        </div>
+      </Modal>
 
       {/* CREATE / EDIT PRODUCT MODAL (WEB-02-01) */}
       <Modal

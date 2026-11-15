@@ -46,6 +46,8 @@ import {
   Check,
   Wifi,
   BatteryCharging,
+  Package,
+  ChevronDown,
 } from "lucide-react";
 
 type DevicePreviewFormat = "FEED" | "STORY" | "CAROUSEL";
@@ -69,6 +71,7 @@ export default function ContentStudioPage() {
   const [selectedTone, setSelectedTone] =
     useState<CommunicationTone>("LUXURY");
   const [customPrompt, setCustomPrompt] = useState("");
+  const [productSectionOpen, setProductSectionOpen] = useState(false);
 
   // Generation status (WEB-02-05: honest job states: idle, queued, processing, completed, failed)
   const [generationState, setGenerationState] = useState<
@@ -256,6 +259,15 @@ export default function ContentStudioPage() {
             </Badge>
           </div>
 
+          {/* The idea comes first: describe the ad in your own words */}
+          <Textarea
+            label={t.studio.customPromptLabel}
+            placeholder="e.g. Announce a weekend offer: what is it, who is it for, and what should people do?"
+            value={customPrompt}
+            onChange={(e) => setCustomPrompt(e.target.value)}
+            rows={3}
+          />
+
           {/* Campaign Context Selector */}
           <div className="space-y-1.5">
             <label className="block text-xs font-medium text-txt-secondary">
@@ -274,22 +286,51 @@ export default function ContentStudioPage() {
             </select>
           </div>
 
-          {/* Featured Product Selector */}
-          <div className="space-y-1.5">
-            <label className="block text-xs font-medium text-txt-secondary">
-              {t.studio.productContext}
-            </label>
-            <select
-              value={selectedProductId}
-              onChange={(e) => setSelectedProductId(e.target.value)}
-              className="glass-input w-full h-11 px-3 text-xs text-white bg-navy-900 focus:outline-none"
+          {/* Optional Product Context: collapsed by default, the ad works without it */}
+          <div className="rounded-xl border border-white/10 bg-white/[0.03]">
+            <button
+              type="button"
+              onClick={() => setProductSectionOpen((open) => !open)}
+              aria-expanded={productSectionOpen}
+              className="w-full flex items-center gap-2 px-3.5 py-3 text-start"
             >
-              {products.map((prod) => (
-                <option key={prod.id} value={prod.id}>
-                  {prod.name} (${prod.price.toFixed(2)})
-                </option>
-              ))}
-            </select>
+              <Package className="w-4 h-4 text-accent-cyan shrink-0" />
+              <span className="text-xs font-medium text-txt-secondary">
+                {t.studio.productContext}
+              </span>
+              <Badge variant="cyan" size="sm">
+                {t.studio.productOptionalBadge}
+              </Badge>
+              {activeProduct && !productSectionOpen && (
+                <span className="text-[11px] text-accent-mint truncate">
+                  {activeProduct.name}
+                </span>
+              )}
+              <ChevronDown
+                className={`w-4 h-4 text-txt-muted ms-auto shrink-0 transition-transform ${
+                  productSectionOpen ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+            {productSectionOpen && (
+              <div className="px-3.5 pb-3.5 space-y-2">
+                <select
+                  value={selectedProductId}
+                  onChange={(e) => setSelectedProductId(e.target.value)}
+                  className="glass-input w-full h-11 px-3 text-xs text-white bg-navy-900 focus:outline-none"
+                >
+                  <option value="">{t.studio.noProductOption}</option>
+                  {products.map((prod) => (
+                    <option key={prod.id} value={prod.id}>
+                      {prod.name} (${prod.price.toFixed(2)})
+                    </option>
+                  ))}
+                </select>
+                <p className="text-[11px] leading-relaxed text-txt-muted">
+                  {t.studio.productOptionalHint}
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Platform Selector (Instagram & Facebook MVP) */}
@@ -364,15 +405,6 @@ export default function ContentStudioPage() {
               </select>
             </div>
           </div>
-
-          {/* Creative Guidance */}
-          <Textarea
-            label={t.studio.customPromptLabel}
-            placeholder="e.g. Focus on micro-lot harvest notes and cold-brew acidity contrast..."
-            value={customPrompt}
-            onChange={(e) => setCustomPrompt(e.target.value)}
-            rows={2}
-          />
 
           {/* Generate Button */}
           <Button

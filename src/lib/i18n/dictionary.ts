@@ -204,6 +204,13 @@ export interface Dictionary {
     title: string;
     subtitle: string;
     addProduct: string;
+    importFromLink: string;
+    importTitle: string;
+    importDesc: string;
+    importUrlPlaceholder: string;
+    importFetchBtn: string;
+    importFetching: string;
+    importInvalidUrl: string;
     editProduct: string;
     deleteProduct: string;
     productDetails: string;
@@ -297,6 +304,9 @@ export interface Dictionary {
     subtitle: string;
     campaignContext: string;
     productContext: string;
+    productOptionalBadge: string;
+    productOptionalHint: string;
+    noProductOption: string;
     platformSelect: string;
     languageSelect: string;
     toneSelect: string;

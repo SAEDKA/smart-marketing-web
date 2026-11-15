@@ -92,16 +92,16 @@ const DASHBOARD_COPY = {
     getStarted: {
       title: "New here? Start in 3 simple steps",
       subtitle:
-        "Everything else can wait. This is the shortest path to your first published post.",
+        "Everything else can wait. Start with your first ad — products are optional, they only make it stronger.",
       dismiss: "Hide this guide",
       steps: [
         {
-          title: "Add your products",
-          desc: "Enter what you sell — the AI writes from your real products.",
+          title: "Create your first ad",
+          desc: "Write your idea in your own words and let the AI draft it for you.",
         },
         {
-          title: "Create a post with AI",
-          desc: "Pick a product and let the studio draft the text for you.",
+          title: "Add products (optional)",
+          desc: "Saved products strengthen ads with real names, prices and photos.",
         },
         {
           title: "Review & schedule",
@@ -152,16 +152,16 @@ const DASHBOARD_COPY = {
     getStarted: {
       title: "Yeni misiniz? 3 basit adımda başlayın",
       subtitle:
-        "Gerisi bekleyebilir. İlk yayınlanan gönderinize giden en kısa yol bu.",
+        "Gerisi bekleyebilir. İlk reklamınızla başlayın — ürünler isteğe bağlıdır, reklamı sadece güçlendirir.",
       dismiss: "Bu kılavuzu gizle",
       steps: [
         {
-          title: "Ürünlerinizi ekleyin",
-          desc: "Ne sattığınızı girin — yapay zeka gerçek ürünlerinizden yazar.",
+          title: "İlk reklamınızı oluşturun",
+          desc: "Fikrinizi kendi sözlerinizle yazın, yapay zeka sizin için hazırlasın.",
         },
         {
-          title: "YZ ile gönderi oluşturun",
-          desc: "Bir ürün seçin, stüdyo metni sizin için hazırlasın.",
+          title: "Ürün ekleyin (isteğe bağlı)",
+          desc: "Kayıtlı ürünler; gerçek ad, fiyat ve fotoğraflarla reklamı güçlendirir.",
         },
         {
           title: "İnceleyin ve planlayın",
@@ -211,16 +211,17 @@ const DASHBOARD_COPY = {
     clicksLabel: "نقرات الروابط والزيارات",
     getStarted: {
       title: "جديد هون؟ بلّش بـ ٣ خطوات بسيطة",
-      subtitle: "كل شي تاني بيستنى. هاد أقصر طريق لأول منشور بينشر عندك.",
+      subtitle:
+        "كل شي تاني بيستنى. بلّش بأول إعلان — المنتجات اختيارية وبتقوّيه بس.",
       dismiss: "إخفاء هذا الدليل",
       steps: [
         {
-          title: "أضف منتجاتك",
-          desc: "حطّ شو بتبيع — الذكاء الاصطناعي بيكتب من منتجاتك الحقيقية.",
+          title: "اعمل أول إعلان",
+          desc: "اكتب فكرتك بكلماتك وخلي الذكاء الاصطناعي يجهّزها.",
         },
         {
-          title: "اعمل منشور بالذكاء الاصطناعي",
-          desc: "اختار منتج وخلي الاستوديو يجهّزلك النص.",
+          title: "أضف منتجات (اختياري)",
+          desc: "المنتجات المحفوظة بتقوّي الإعلان بالاسم والسعر والصور الحقيقية.",
         },
         {
           title: "راجع وجدول النشر",
@@ -384,8 +385,8 @@ export default function DashboardPage() {
   );
 
   const getStartedSteps = [
-    { href: "/products", Icon: ShoppingBag },
     { href: "/content-studio", Icon: Wand2 },
+    { href: "/products", Icon: ShoppingBag },
     { href: "/calendar", Icon: Calendar },
   ];
 
