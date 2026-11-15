@@ -33,6 +33,28 @@ export interface Dictionary {
     roleOwner: string;
     roleAdmin: string;
   };
+  access: {
+    guestTitle: string;
+    guestDesc: string;
+    signInCta: string;
+    registerCta: string;
+    loginNoticeTitle: string;
+    loginNoticeDesc: string;
+    companyNoticeTitle: string;
+    companyNoticeDesc: string;
+    companyCta: string;
+    gettingStartedTitle: string;
+    stepAccountTitle: string;
+    stepAccountDesc: string;
+    stepCompanyTitle: string;
+    stepCompanyDesc: string;
+    stepCompanyCta: string;
+    stepProductsTitle: string;
+    stepProductsDesc: string;
+    stepProductsCta: string;
+    doneBadge: string;
+    companySaved: string;
+  };
   common: {
     save: string;
     saving: string;

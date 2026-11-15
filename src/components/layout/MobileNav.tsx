@@ -10,6 +10,11 @@ import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import { cn } from "@/lib/utils";
 import { BrandLogo } from "@/components/layout/BrandLogo";
 import {
+  isHrefLocked,
+  noticeKindForTier,
+  showAccessNotice,
+} from "@/lib/access/access";
+import {
   LayoutDashboard,
   Building2,
   Sliders,
@@ -25,6 +30,8 @@ import {
   Settings,
   ShieldCheck,
   X,
+  Lock,
+  LogIn,
   LogOut,
   Menu,
   Activity,
@@ -43,9 +50,11 @@ export const MobileNav = React.memo(function MobileNav({ isOpen, onClose, onOpen
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { t, locale } = useI18n();
-  const { user, logout } = useAuth();
+  const { user, logout, accessTier } = useAuth();
 
   const isAdmin = user?.role === "SYSTEM_ADMIN";
+  const handleLockedClick = () =>
+    showAccessNotice(noticeKindForTier(accessTier));
   const currentAdminTab = searchParams.get("tab") || "overview";
 
   useEffect(() => {
@@ -222,6 +231,19 @@ export const MobileNav = React.memo(function MobileNav({ isOpen, onClose, onOpen
         {primaryBottomNav.map((item) => {
           const Icon = item.icon;
           const isActive = isLinkActive(item.href);
+          if (!isAdmin && isHrefLocked(accessTier, item.href)) {
+            return (
+              <button
+                key={item.href}
+                type="button"
+                onClick={handleLockedClick}
+                className="flex flex-col items-center justify-center gap-1 flex-1 py-1 text-[10px] font-medium text-txt-muted opacity-45"
+              >
+                <Icon className="w-5 h-5" />
+                <span className="truncate max-w-[64px]">{item.label}</span>
+              </button>
+            );
+          }
           return (
             <Link
               key={item.href}
@@ -307,6 +329,23 @@ export const MobileNav = React.memo(function MobileNav({ isOpen, onClose, onOpen
                   {group.links.map((link) => {
                     const Icon = link.icon;
                     const isActive = isLinkActive(link.href);
+                    if (!isAdmin && isHrefLocked(accessTier, link.href)) {
+                      return (
+                        <button
+                          key={link.href}
+                          type="button"
+                          onClick={() => {
+                            onClose();
+                            handleLockedClick();
+                          }}
+                          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-txt-secondary opacity-45 text-start"
+                        >
+                          <Icon className="w-4 h-4 shrink-0 text-txt-muted" />
+                          <span className="flex-1">{link.label}</span>
+                          <Lock className="w-3 h-3 shrink-0 text-txt-muted" />
+                        </button>
+                      );
+                    }
                     return (
                       <Link
                         key={link.href}
@@ -330,24 +369,37 @@ export const MobileNav = React.memo(function MobileNav({ isOpen, onClose, onOpen
 
             {/* Drawer Footer */}
             <div className="p-4 border-t border-white/10 bg-black/30 space-y-2.5 shrink-0">
-              {/* Current role */}
-              <div className="flex items-center p-2.5 rounded-xl bg-white/5 text-xs">
-                <span className="text-txt-secondary text-[11px]">
-                  {isAdmin ? t.nav.roleAdmin : t.nav.roleOwner}
-                </span>
-              </div>
+              {!user ? (
+                <Link
+                  href="/login"
+                  onClick={onClose}
+                  className="glass-button-primary w-full h-10 rounded-xl flex items-center justify-center gap-2 text-xs font-semibold text-white"
+                >
+                  <LogIn className="w-4 h-4" />
+                  <span>{t.access.signInCta}</span>
+                </Link>
+              ) : (
+                <>
+                  {/* Current role */}
+                  <div className="flex items-center p-2.5 rounded-xl bg-white/5 text-xs">
+                    <span className="text-txt-secondary text-[11px]">
+                      {isAdmin ? t.nav.roleAdmin : t.nav.roleOwner}
+                    </span>
+                  </div>
 
-              <button
-                type="button"
-                onClick={() => {
-                  onClose();
-                  logout();
-                }}
-                className="w-full flex items-center justify-center gap-2 py-2 text-xs font-medium text-semantic-error bg-semantic-error/10 hover:bg-semantic-error/20 rounded-xl transition-colors"
-              >
-                <LogOut className="w-4 h-4" />
-                <span>{t.nav.logout}</span>
-              </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onClose();
+                      logout();
+                    }}
+                    className="w-full flex items-center justify-center gap-2 py-2 text-xs font-medium text-semantic-error bg-semantic-error/10 hover:bg-semantic-error/20 rounded-xl transition-colors"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>{t.nav.logout}</span>
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>

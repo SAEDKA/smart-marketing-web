@@ -9,6 +9,11 @@ import { useAuth } from "@/lib/auth/context";
 import { cn } from "@/lib/utils";
 import { BrandLogo } from "@/components/layout/BrandLogo";
 import {
+  isHrefLocked,
+  noticeKindForTier,
+  showAccessNotice,
+} from "@/lib/access/access";
+import {
   LayoutDashboard,
   Building2,
   Sliders,
@@ -25,6 +30,8 @@ import {
   ShieldCheck,
   ChevronLeft,
   ChevronRight,
+  LogIn,
+  Lock,
   LogOut,
   UserCheck,
   Wand2,
@@ -47,10 +54,12 @@ export const GlassSidebar = React.memo(function GlassSidebar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { t, dir, locale } = useI18n();
-  const { user, logout } = useAuth();
+  const { user, logout, accessTier } = useAuth();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const isAdmin = user?.role === "SYSTEM_ADMIN";
+  const handleLockedClick = () =>
+    showAccessNotice(noticeKindForTier(accessTier));
   const currentAdminTab = searchParams.get("tab") || "overview";
 
   const aiQuickCtaLabel =
@@ -366,6 +375,16 @@ export const GlassSidebar = React.memo(function GlassSidebar() {
               <MessageSquareWarning className="w-3.5 h-3.5 shrink-0" />
               <span className="truncate">{adminQuickCtaLabel}</span>
             </Link>
+          ) : isHrefLocked(accessTier, "/content-studio") ? (
+            <button
+              type="button"
+              onClick={handleLockedClick}
+              className="w-full h-10 px-3.5 rounded-[13px] glass-button-primary flex items-center justify-center gap-2 text-xs font-semibold text-white opacity-45"
+            >
+              <Wand2 className="w-3.5 h-3.5 shrink-0" />
+              <span className="truncate">{aiQuickCtaLabel}</span>
+              <Lock className="w-3 h-3 shrink-0" />
+            </button>
           ) : (
             <Link
               href="/content-studio"
@@ -390,6 +409,28 @@ export const GlassSidebar = React.memo(function GlassSidebar() {
             {group.items.map((item) => {
               const Icon = item.icon;
               const isActive = isNavItemActive(item);
+              const locked =
+                !isAdmin && isHrefLocked(accessTier, item.href);
+
+              if (locked) {
+                return (
+                  <button
+                    key={item.key}
+                    type="button"
+                    onClick={handleLockedClick}
+                    title={item.label}
+                    className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-[13px] text-xs font-medium transition-all duration-200 relative select-none text-txt-secondary opacity-45 border border-transparent text-start"
+                  >
+                    <Icon className="w-4 h-4 shrink-0 text-txt-muted" />
+                    {!isCollapsed && (
+                      <div className="flex-1 flex items-center justify-between truncate">
+                        <span className="truncate">{item.label}</span>
+                        <Lock className="w-3 h-3 shrink-0 text-txt-muted" />
+                      </div>
+                    )}
+                  </button>
+                );
+              }
 
               return (
                 <Link
@@ -443,9 +484,18 @@ export const GlassSidebar = React.memo(function GlassSidebar() {
         ))}
       </div>
 
-      {/* Bottom Dock: User Profile */}
+      {/* Bottom Dock: User Profile (or the guest sign-in entry) */}
       <div className="p-3.5 border-t border-white/10 bg-navy-950/50 shrink-0 space-y-2.5">
-        {!isCollapsed ? (
+        {!user ? (
+          <Link
+            href="/login"
+            title={t.access.signInCta}
+            className="glass-button-primary w-full h-10 px-3.5 rounded-[13px] flex items-center justify-center gap-2 text-xs font-semibold text-white"
+          >
+            <LogIn className="w-4 h-4 shrink-0" />
+            {!isCollapsed && <span>{t.access.signInCta}</span>}
+          </Link>
+        ) : !isCollapsed ? (
           <>
             <div className="flex items-center px-2.5 py-2 rounded-[13px] bg-white/5 border border-white/10 text-xs">
               <div className="flex items-center gap-2 truncate">

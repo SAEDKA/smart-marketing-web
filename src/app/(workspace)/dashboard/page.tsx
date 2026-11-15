@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth/context";
 import { useSpotlight } from "@/lib/hooks/use-spotlight";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
+import { GettingStartedCard } from "@/components/dashboard/GettingStartedCard";
 import { useI18n } from "@/lib/i18n/context";
 import { companyApi } from "@/lib/api/company.api";
 import { analyticsApi } from "@/lib/api/analytics.api";
@@ -46,6 +47,7 @@ import {
   MousePointerClick,
   Clock,
   Lightbulb,
+  Lock,
   X,
 } from "lucide-react";
 
@@ -89,26 +91,6 @@ const DASHBOARD_COPY = {
       "Instagram carousel posts featuring single-origin tasting notes achieved 4.82% engagement (+31% above benchmark). Schedule 2 additional educational posts this week.",
     viewFullSwotBtn: "View Full SWOT Report",
     clicksLabel: "Link Clicks & Traffic",
-    getStarted: {
-      title: "New here? Start in 3 simple steps",
-      subtitle:
-        "Everything else can wait. Start with your first ad — products are optional, they only make it stronger.",
-      dismiss: "Hide this guide",
-      steps: [
-        {
-          title: "Create your first ad",
-          desc: "Write your idea in your own words and let the AI draft it for you.",
-        },
-        {
-          title: "Add products (optional)",
-          desc: "Saved products strengthen ads with real names, prices and photos.",
-        },
-        {
-          title: "Review & schedule",
-          desc: "Approve the post and choose when it goes out.",
-        },
-      ],
-    },
   },
   tr: {
     assistantPlaceholder:
@@ -149,26 +131,6 @@ const DASHBOARD_COPY = {
       "Tadım notlarını içeren Instagram kaydırmalı gönderileri %4,82 etkileşim oranına ulaştı (ortalamanın %31 üzerinde). Bu hafta 2 eğitici gönderi daha planlayın.",
     viewFullSwotBtn: "Tam SWOT Raporunu Gör",
     clicksLabel: "Bağlantı Tıklamaları",
-    getStarted: {
-      title: "Yeni misiniz? 3 basit adımda başlayın",
-      subtitle:
-        "Gerisi bekleyebilir. İlk reklamınızla başlayın — ürünler isteğe bağlıdır, reklamı sadece güçlendirir.",
-      dismiss: "Bu kılavuzu gizle",
-      steps: [
-        {
-          title: "İlk reklamınızı oluşturun",
-          desc: "Fikrinizi kendi sözlerinizle yazın, yapay zeka sizin için hazırlasın.",
-        },
-        {
-          title: "Ürün ekleyin (isteğe bağlı)",
-          desc: "Kayıtlı ürünler; gerçek ad, fiyat ve fotoğraflarla reklamı güçlendirir.",
-        },
-        {
-          title: "İnceleyin ve planlayın",
-          desc: "Gönderiyi onaylayın ve ne zaman yayınlanacağını seçin.",
-        },
-      ],
-    },
   },
   ar: {
     assistantPlaceholder:
@@ -209,26 +171,6 @@ const DASHBOARD_COPY = {
       "حققت منشورات إنستغرام التفاعلية حول إيحاءات القهوة المختصة معدل تفاعل 4.82% (+31% أعلى من المعيار). ننصح بجدولة منشورين تعليميين إضافيين هذا الأسبوع.",
     viewFullSwotBtn: "عرض تقرير SWOT الكامل",
     clicksLabel: "نقرات الروابط والزيارات",
-    getStarted: {
-      title: "جديد هون؟ بلّش بـ ٣ خطوات بسيطة",
-      subtitle:
-        "كل شي تاني بيستنى. بلّش بأول إعلان — المنتجات اختيارية وبتقوّيه بس.",
-      dismiss: "إخفاء هذا الدليل",
-      steps: [
-        {
-          title: "اعمل أول إعلان",
-          desc: "اكتب فكرتك بكلماتك وخلي الذكاء الاصطناعي يجهّزها.",
-        },
-        {
-          title: "أضف منتجات (اختياري)",
-          desc: "المنتجات المحفوظة بتقوّي الإعلان بالاسم والسعر والصور الحقيقية.",
-        },
-        {
-          title: "راجع وجدول النشر",
-          desc: "وافق عالمنشور واختار إيمتى يطلع.",
-        },
-      ],
-    },
   },
 } as const;
 
@@ -259,22 +201,16 @@ export default function DashboardPage() {
   const DirectionalArrow = isRtl ? ArrowLeft : ArrowRight;
 
   const [assistantPrompt, setAssistantPrompt] = useState("");
-  const [getStartedDismissed, setGetStartedDismissed] = useState<boolean>(() => {
+  // One-time green banner after the company onboarding is saved.
+  const [companySaved, setCompanySaved] = useState(false);
+  useEffect(() => {
     try {
-      return (
-        typeof window !== "undefined" &&
-        window.localStorage.getItem("smp_get_started_dismissed") === "1"
-      );
+      if (window.sessionStorage.getItem("smp_company_saved") === "1") {
+        window.sessionStorage.removeItem("smp_company_saved");
+        setCompanySaved(true);
+      }
     } catch {
-      return false;
-    }
-  });
-  const dismissGetStarted = useCallback(() => {
-    setGetStartedDismissed(true);
-    try {
-      window.localStorage.setItem("smp_get_started_dismissed", "1");
-    } catch {
-      // Storage unavailable; the guide just stays for this session.
+      // Storage unavailable; the banner simply never shows.
     }
   }, []);
   const [company, setCompany] = useState<CompanyProfile>({
@@ -384,58 +320,65 @@ export default function DashboardPage() {
     [copy, company.communicationTone, products.length, campaigns.length, posts.length, accounts.length]
   );
 
-  const getStartedSteps = [
-    { href: "/content-studio", Icon: Wand2 },
-    { href: "/products", Icon: ShoppingBag },
-    { href: "/calendar", Icon: Calendar },
-  ];
+  // Guest dashboard: no data at all — just the professional sign-in
+  // notice and the ladder card showing what signing up unlocks.
+  if (!user) {
+    return (
+      <div className="space-y-7 animate-in fade-in duration-300">
+        <section className="glass-panel rounded-[26px] p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center gap-5">
+          <span className="w-12 h-12 rounded-full bg-accent-cyan/15 border border-accent-cyan/30 flex items-center justify-center shrink-0">
+            <Lock className="w-6 h-6 text-accent-cyan" />
+          </span>
+          <div className="flex-1 min-w-0 space-y-1.5">
+            <h1 className="text-xl sm:text-2xl font-bold text-white">
+              {t.access.guestTitle}
+            </h1>
+            <p className="text-sm text-txt-secondary leading-relaxed max-w-xl">
+              {t.access.guestDesc}
+            </p>
+          </div>
+          <div className="flex items-center gap-2.5 shrink-0">
+            <Link
+              href="/login"
+              className="inline-flex items-center h-10 px-4 rounded-[12px] glass-button-secondary text-xs font-semibold text-white"
+            >
+              {t.access.signInCta}
+            </Link>
+            <Link
+              href="/register"
+              className="inline-flex items-center h-10 px-4 rounded-[12px] glass-button-primary text-xs font-semibold text-white"
+            >
+              {t.access.registerCta}
+            </Link>
+          </div>
+        </section>
+        <GettingStartedCard />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-7 animate-in fade-in duration-300" data-enter="">
-      {/* Get Started guide: the beginner's path to a first post, dismissible */}
-      {!getStartedDismissed && (
-        <section className="relative overflow-hidden rounded-[26px] glass-panel p-6 sm:p-7">
+      {/* One-time banner: the company details were just saved */}
+      {companySaved && (
+        <div className="flex items-center gap-2.5 rounded-2xl border border-accent-mint/40 bg-accent-mint/15 px-4 py-3 animate-in fade-in duration-300">
+          <CheckCircle2 className="w-5 h-5 text-accent-mint shrink-0" />
+          <span className="flex-1 text-sm font-medium text-accent-mint">
+            {t.access.companySaved}
+          </span>
           <button
             type="button"
-            aria-label={copy.getStarted.dismiss}
-            onClick={dismissGetStarted}
-            className="absolute top-4 end-4 p-1.5 text-txt-muted hover:text-white rounded-lg transition-colors"
+            onClick={() => setCompanySaved(false)}
+            aria-label={t.common.cancel}
+            className="p-1 rounded-lg text-accent-mint/70 hover:text-accent-mint hover:bg-white/10 transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
-          <div className="space-y-1.5 pe-8">
-            <h2 className="text-lg sm:text-xl font-bold text-white">
-              {copy.getStarted.title}
-            </h2>
-            <p className="text-sm text-txt-secondary max-w-2xl leading-relaxed">
-              {copy.getStarted.subtitle}
-            </p>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 mt-5">
-            {getStartedSteps.map(({ href, Icon }, i) => (
-              <Link
-                key={href}
-                href={href}
-                className="group flex items-start gap-3.5 p-4 rounded-2xl bg-white/[0.04] border border-white/10 hover:border-accent-mint/40 hover:bg-white/[0.07] transition-colors"
-              >
-                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-accent-mint/15 border border-accent-mint/30 text-accent-mint text-sm font-bold shrink-0">
-                  {i + 1}
-                </span>
-                <span className="space-y-1 min-w-0">
-                  <span className="flex items-center gap-2 text-sm font-semibold text-white">
-                    <Icon className="w-4 h-4 text-accent-cyan shrink-0" />
-                    {copy.getStarted.steps[i].title}
-                  </span>
-                  <span className="block text-xs text-txt-secondary leading-relaxed">
-                    {copy.getStarted.steps[i].desc}
-                  </span>
-                </span>
-                <DirectionalArrow className="w-4 h-4 text-txt-muted group-hover:text-accent-mint transition-colors ms-auto shrink-0 mt-0.5" />
-              </Link>
-            ))}
-          </div>
-        </section>
+        </div>
       )}
+
+      {/* Getting started: the access ladder (account, company, products) */}
+      <GettingStartedCard />
 
       {/* 1. AI Marketing Assistant Command Center Hero with Cursor Spotlight */}
       <section

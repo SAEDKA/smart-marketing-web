@@ -37,6 +37,31 @@ export const ar: Dictionary = {
       roleOwner: "مالك الشركة",
       roleAdmin: "مدير النظام",
     },
+    access: {
+      guestTitle: "أنت تتصفح كضيف",
+      guestDesc:
+        "لسا ما سجلت دخولك، فهالمساحة مجرد معاينة. سجل دخولك لتفتح كل الميزات وتبدأ التسويق.",
+      signInCta: "تسجيل الدخول",
+      registerCta: "إنشاء حساب",
+      loginNoticeTitle: "سجل دخولك لتكمل",
+      loginNoticeDesc:
+        "هالقسم للمستخدمين المسجلين. سجل دخولك لتحصل على كافة الميزات.",
+      companyNoticeTitle: "بقي خطوة: أضف شركتك",
+      companyNoticeDesc:
+        "هالميزة بتشتغل ببيانات شركتك. أكمل ملف شركتك لتفعيلها — والذكاء الاصطناعي بيستخدم هالبيانات ليعمل إعلانات أفضل.",
+      companyCta: "إكمال ملف الشركة",
+      gettingStartedTitle: "البدء",
+      stepAccountTitle: "أنشئ حسابك",
+      stepAccountDesc: "أنت مسجل دخولك وجاهز.",
+      stepCompanyTitle: "أكمل بيانات الشركة",
+      stepCompanyDesc: "خبرنا عن شغلك وجمهورك وأسلوبك.",
+      stepCompanyCta: "فتح إعداد الشركة",
+      stepProductsTitle: "أضف منتجاتك",
+      stepProductsDesc: "المنتجات بتخلي إعلاناتك أقوى وأسرع بالإنشاء.",
+      stepProductsCta: "إضافة منتجات",
+      doneBadge: "تم",
+      companySaved: "تم حفظ بيانات الشركة.",
+    },
     common: {
       save: "حفظ التغييرات",
       saving: "جارٍ الحفظ عبر API...",

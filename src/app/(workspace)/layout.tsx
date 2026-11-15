@@ -7,8 +7,10 @@ import { GlassSidebar } from "@/components/layout/GlassSidebar";
 import { TopHeader } from "@/components/layout/TopHeader";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { SessionExpiredModal } from "@/components/layout/SessionExpiredModal";
+import { AccessNoticeToast } from "@/components/layout/AccessNoticeToast";
 import { UnauthorizedView } from "@/components/layout/UnauthorizedView";
 import { WorkspaceIntro } from "@/components/layout/WorkspaceIntro";
+import { isHrefLocked } from "@/lib/access/access";
 
 export default function WorkspaceLayout({
   children,
@@ -17,7 +19,7 @@ export default function WorkspaceLayout({
 }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { isAuthenticated, isLoading, user } = useAuth();
+  const { isAuthenticated, isLoading, user, accessTier } = useAuth();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   // Stable identities: previously these were inline arrows in JSX, so
@@ -37,28 +39,51 @@ export default function WorkspaceLayout({
     pathname === "/settings";
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      router.replace("/login");
-    } else if (!isLoading && isAuthenticated && isAdmin && !isAdminAllowedRoute) {
+    if (isLoading) return;
+    if (!isAuthenticated) {
+      // Guests live on the dashboard only — it renders its guest view
+      // (no data, just the sign-in notice and the first steps). Any
+      // other workspace route sends them back to it.
+      if (pathname !== "/dashboard") {
+        router.replace("/dashboard");
+      }
+    } else if (isAdmin && !isAdminAllowedRoute) {
       router.replace("/admin");
+    } else if (!isAdmin && isHrefLocked(accessTier, pathname)) {
+      // Signed in but the company profile is not completed yet: this
+      // route runs on company data, so it stays locked for now.
+      router.replace("/dashboard");
     }
-  }, [isLoading, isAuthenticated, isAdmin, isAdminAllowedRoute, router]);
+  }, [
+    isLoading,
+    isAuthenticated,
+    isAdmin,
+    isAdminAllowedRoute,
+    accessTier,
+    pathname,
+    router,
+  ]);
 
   // The branded entry sequence (WorkspaceIntro) is both the loading
   // screen and the reveal that follows it, so it stays mounted across
   // every state; the shell itself renders only once the session is
-  // known and this route is allowed for the signed-in account. A guest
-  // and an admin headed to his own console render nothing underneath
-  // while the redirect above fires.
+  // known and this route is allowed for the current access tier. A
+  // guest headed anywhere but the dashboard, an owner headed to a
+  // still-locked route and an admin headed to his own console render
+  // nothing underneath while the redirect above fires.
   const showShell =
-    !isLoading && isAuthenticated && !(isAdmin && !isAdminAllowedRoute);
+    !isLoading &&
+    !isHrefLocked(accessTier, pathname) &&
+    !(isAdmin && !isAdminAllowedRoute);
 
   const isAdminRoute = pathname.startsWith("/admin");
   const isUnauthorized = isAdminRoute && user?.role !== "SYSTEM_ADMIN";
 
   return (
     <>
-      <WorkspaceIntro ready={!isLoading && isAuthenticated} />
+      <WorkspaceIntro
+        ready={!isLoading && (isAuthenticated || pathname === "/dashboard")}
+      />
       {showShell ? (
     <div className="min-h-screen flex bg-navy-950 text-white relative overflow-x-hidden">
       {/* Ambient Liquid Glass Light Refraction Layer */}
@@ -89,6 +114,9 @@ export default function WorkspaceLayout({
 
       {/* Session Expiry Recovery Modal (WEB-01-05) */}
       <SessionExpiredModal />
+
+      {/* Access ladder notice for locked areas */}
+      <AccessNoticeToast />
     </div>
       ) : null}
     </>

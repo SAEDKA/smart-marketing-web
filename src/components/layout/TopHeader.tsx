@@ -8,6 +8,11 @@ import { useI18n } from "@/lib/i18n/context";
 import { useAuth } from "@/lib/auth/context";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import {
+  isHrefLocked,
+  noticeKindForTier,
+  showAccessNotice,
+} from "@/lib/access/access";
+import {
   Menu,
   Bell,
   Search,
@@ -26,7 +31,7 @@ export const TopHeader = React.memo(function TopHeader({ onOpenMobileNav }: TopH
   const pathname = usePathname();
   const router = useRouter();
   const { t, locale } = useI18n();
-  const { user, logout } = useAuth();
+  const { user, logout, accessTier } = useAuth();
   const [profileOpen, setProfileOpen] = useState(false);
   const [quickQuery, setQuickQuery] = useState("");
   const profileRef = useRef<HTMLDivElement>(null);
@@ -121,6 +126,15 @@ export const TopHeader = React.memo(function TopHeader({ onOpenMobileNav }: TopH
               <span className="w-1.5 h-1.5 rounded-full bg-accent-mint animate-pulse" />
               <span>{adminModeLabel}</span>
             </span>
+          ) : isHrefLocked(accessTier, "/content-studio") ? (
+            <button
+              type="button"
+              onClick={() => showAccessNotice(noticeKindForTier(accessTier))}
+              className="hidden md:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium bg-accent-cyan/10 text-accent-cyan border border-accent-cyan/25 opacity-50"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-accent-mint animate-pulse" />
+              <span>{aiReadyLabel}</span>
+            </button>
           ) : (
             <Link
               href="/content-studio"
@@ -151,30 +165,67 @@ export const TopHeader = React.memo(function TopHeader({ onOpenMobileNav }: TopH
         </form>
 
         {/* Quick Calendar Shortcut (Only for Company Owners) */}
-        {!isAdmin && (
-          <Link
-            href="/calendar"
-            title={t.nav.calendar}
-            className="hidden sm:flex items-center justify-center w-9 h-9 rounded-full glass-button-secondary text-txt-secondary hover:text-white transition-colors"
-          >
-            <Calendar className="w-4 h-4" />
-          </Link>
-        )}
+        {!isAdmin &&
+          (isHrefLocked(accessTier, "/calendar") ? (
+            <button
+              type="button"
+              onClick={() => showAccessNotice(noticeKindForTier(accessTier))}
+              title={t.nav.calendar}
+              className="hidden sm:flex items-center justify-center w-9 h-9 rounded-full glass-button-secondary text-txt-secondary opacity-45"
+            >
+              <Calendar className="w-4 h-4" />
+            </button>
+          ) : (
+            <Link
+              href="/calendar"
+              title={t.nav.calendar}
+              className="hidden sm:flex items-center justify-center w-9 h-9 rounded-full glass-button-secondary text-txt-secondary hover:text-white transition-colors"
+            >
+              <Calendar className="w-4 h-4" />
+            </Link>
+          ))}
 
         {/* 3-Language Switcher (EN, TR, AR with RTL) */}
         <LanguageSwitcher />
 
         {/* Notification Bell */}
-        <Link
-          href="/notifications"
-          aria-label="View notifications"
-          className="relative flex items-center justify-center w-9 h-9 rounded-full glass-button-secondary text-txt-secondary hover:text-white transition-colors"
-        >
-          <Bell className="w-4 h-4" />
-          <span className="absolute top-1.5 end-1.5 w-2 h-2 rounded-full bg-accent-violet" />
-        </Link>
+        {isHrefLocked(accessTier, "/notifications") ? (
+          <button
+            type="button"
+            onClick={() => showAccessNotice(noticeKindForTier(accessTier))}
+            aria-label="View notifications"
+            className="relative flex items-center justify-center w-9 h-9 rounded-full glass-button-secondary text-txt-secondary opacity-45"
+          >
+            <Bell className="w-4 h-4" />
+          </button>
+        ) : (
+          <Link
+            href="/notifications"
+            aria-label="View notifications"
+            className="relative flex items-center justify-center w-9 h-9 rounded-full glass-button-secondary text-txt-secondary hover:text-white transition-colors"
+          >
+            <Bell className="w-4 h-4" />
+            <span className="absolute top-1.5 end-1.5 w-2 h-2 rounded-full bg-accent-violet" />
+          </Link>
+        )}
 
-        {/* User Profile Dropdown */}
+        {/* User Profile Dropdown — guests get the auth entry instead */}
+        {!user ? (
+          <div className="flex items-center gap-2">
+            <Link
+              href="/login"
+              className="hidden sm:inline-flex items-center h-9 px-3.5 rounded-full glass-button-secondary text-xs font-semibold text-white"
+            >
+              {t.access.signInCta}
+            </Link>
+            <Link
+              href="/register"
+              className="inline-flex items-center h-9 px-3.5 rounded-full glass-button-primary text-xs font-semibold text-white"
+            >
+              {t.access.registerCta}
+            </Link>
+          </div>
+        ) : (
         <div className="relative" ref={profileRef}>
           <button
             type="button"
@@ -215,15 +266,28 @@ export const TopHeader = React.memo(function TopHeader({ onOpenMobileNav }: TopH
               </div>
 
               <div className="py-1">
-                {!isAdmin && (
-                  <Link
-                    href="/settings/brand"
-                    className="flex items-center gap-2.5 px-3 py-2 text-xs text-txt-secondary hover:text-white hover:bg-white/5 rounded-xl transition-colors"
-                  >
-                    <Sliders className="w-4 h-4 text-txt-muted" />
-                    <span>{t.nav.brandSettings}</span>
-                  </Link>
-                )}
+                {!isAdmin &&
+                  (isHrefLocked(accessTier, "/settings/brand") ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setProfileOpen(false);
+                        showAccessNotice(noticeKindForTier(accessTier));
+                      }}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 text-xs text-txt-secondary hover:text-white hover:bg-white/5 rounded-xl transition-colors text-start opacity-60"
+                    >
+                      <Sliders className="w-4 h-4 text-txt-muted" />
+                      <span>{t.nav.brandSettings}</span>
+                    </button>
+                  ) : (
+                    <Link
+                      href="/settings/brand"
+                      className="flex items-center gap-2.5 px-3 py-2 text-xs text-txt-secondary hover:text-white hover:bg-white/5 rounded-xl transition-colors"
+                    >
+                      <Sliders className="w-4 h-4 text-txt-muted" />
+                      <span>{t.nav.brandSettings}</span>
+                    </Link>
+                  ))}
 
                 <Link
                   href="/settings"
@@ -247,6 +311,7 @@ export const TopHeader = React.memo(function TopHeader({ onOpenMobileNav }: TopH
             </div>
           )}
         </div>
+        )}
       </div>
     </header>
   );

@@ -17,6 +17,7 @@ import {
   UserRole,
 } from "@/types/domain";
 import { authApi } from "@/lib/api/auth.api";
+import { tierForUser, type AccessTier } from "@/lib/access/access";
 
 interface AuthContextValue {
   session: AuthSession | null;
@@ -24,10 +25,14 @@ interface AuthContextValue {
   isLoading: boolean;
   isAuthenticated: boolean;
   isSessionExpired: boolean;
+  /** Access ladder tier derived from the current user (see lib/access). */
+  accessTier: AccessTier;
   login: (payload: LoginRequest) => Promise<void>;
   register: (payload: RegisterRequest) => Promise<void>;
   logout: () => void;
   switchRole: (role: UserRole) => void;
+  /** Mark the company onboarding as completed for the signed-in user. */
+  completeOnboarding: () => void;
   simulateSessionExpiry: () => void;
   clearSessionExpiry: () => void;
   setSession: (session: AuthSession | null) => void;
@@ -35,7 +40,9 @@ interface AuthContextValue {
 
 const STORAGE_SESSION_KEY = "smp_auth_session";
 
-// Default initial demo session to allow immediate, smooth exploration
+// Reference copy of the seeded demo client account. Sessions are never
+// created from it automatically — a visitor starts as a guest and signs
+// in explicitly; it only remains as the target persona for switchRole.
 const DEFAULT_INITIAL_SESSION: AuthSession = {
   user: {
     id: "usr_owner_01",
@@ -79,15 +86,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setSessionState(parsed);
         }
       } else {
-        // Use default demo session for first-time convenience
-        setSessionState(DEFAULT_INITIAL_SESSION);
-        window.localStorage.setItem(
-          STORAGE_SESSION_KEY,
-          JSON.stringify(DEFAULT_INITIAL_SESSION)
-        );
+        // No stored session: the visitor is a guest. The workspace
+        // shows its guest dashboard until he signs in — no session is
+        // created on his behalf.
+        setSessionState(null);
       }
     } catch {
-      setSessionState(DEFAULT_INITIAL_SESSION);
+      setSessionState(null);
     } finally {
       setIsLoading(false);
     }
@@ -160,6 +165,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [session, saveSession, router]
   );
 
+  const completeOnboarding = useCallback(() => {
+    if (!session) return;
+    saveSession({
+      ...session,
+      user: { ...session.user, onboardingCompleted: true },
+    });
+  }, [session, saveSession]);
+
   const simulateSessionExpiry = useCallback(() => {
     setIsSessionExpired(true);
     saveSession(null);
@@ -178,10 +191,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       isLoading,
       isAuthenticated: !!session && !isSessionExpired,
       isSessionExpired,
+      accessTier: tierForUser(session ? session.user : null),
       login,
       register,
       logout,
       switchRole,
+      completeOnboarding,
       simulateSessionExpiry,
       clearSessionExpiry,
       setSession: saveSession,
@@ -194,6 +209,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       register,
       logout,
       switchRole,
+      completeOnboarding,
       simulateSessionExpiry,
       clearSessionExpiry,
       saveSession,

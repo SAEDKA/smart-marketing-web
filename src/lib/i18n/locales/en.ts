@@ -37,6 +37,32 @@ export const en: Dictionary = {
       roleOwner: "Company Owner",
       roleAdmin: "System Admin",
     },
+    access: {
+      guestTitle: "You're browsing as a guest",
+      guestDesc:
+        "You're not signed in yet, so this workspace is just a preview. Sign in to unlock all the features and start marketing.",
+      signInCta: "Sign in",
+      registerCta: "Create account",
+      loginNoticeTitle: "Sign in to continue",
+      loginNoticeDesc:
+        "This area is for registered users. Sign in to get all the features.",
+      companyNoticeTitle: "One more step: add your company",
+      companyNoticeDesc:
+        "This feature runs on your company details. Complete your company profile to activate it — the AI uses those details to make better ads.",
+      companyCta: "Complete company profile",
+      gettingStartedTitle: "Getting started",
+      stepAccountTitle: "Create your account",
+      stepAccountDesc: "You are signed in and ready.",
+      stepCompanyTitle: "Complete company onboarding",
+      stepCompanyDesc: "Tell us about your business, audience and tone.",
+      stepCompanyCta: "Open company setup",
+      stepProductsTitle: "Add your products",
+      stepProductsDesc:
+        "Products make your ads stronger and faster to create.",
+      stepProductsCta: "Add products",
+      doneBadge: "Done",
+      companySaved: "Company details saved.",
+    },
     common: {
       save: "Save Changes",
       saving: "Saving to API...",

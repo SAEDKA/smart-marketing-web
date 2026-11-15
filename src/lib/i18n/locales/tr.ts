@@ -37,6 +37,32 @@ export const tr: Dictionary = {
       roleOwner: "Şirket Sahibi",
       roleAdmin: "Sistem Yöneticisi",
     },
+    access: {
+      guestTitle: "Misafir olarak geziniyorsunuz",
+      guestDesc:
+        "Henüz giriş yapmadınız, bu yüzden bu alan yalnızca bir önizleme. Tüm özellikleri açmak ve pazarlamaya başlamak için giriş yapın.",
+      signInCta: "Giriş yap",
+      registerCta: "Hesap oluştur",
+      loginNoticeTitle: "Devam etmek için giriş yapın",
+      loginNoticeDesc:
+        "Bu alan kayıtlı kullanıcılar içindir. Tüm özellikleri almak için giriş yapın.",
+      companyNoticeTitle: "Bir adım kaldı: şirketinizi ekleyin",
+      companyNoticeDesc:
+        "Bu özellik şirket bilgilerinizle çalışır. Etkinleştirmek için şirket profilinizi tamamlayın — yapay zeka bu bilgileri daha iyi reklamlar için kullanır.",
+      companyCta: "Şirket profilini tamamla",
+      gettingStartedTitle: "Başlarken",
+      stepAccountTitle: "Hesabınızı oluşturun",
+      stepAccountDesc: "Giriş yaptınız ve hazırsınız.",
+      stepCompanyTitle: "Şirket kaydını tamamlayın",
+      stepCompanyDesc: "Bize işletmenizden, kitlenizden ve üslubunuzdan bahsedin.",
+      stepCompanyCta: "Şirket kurulumunu aç",
+      stepProductsTitle: "Ürünlerinizi ekleyin",
+      stepProductsDesc:
+        "Ürünler, reklamlarınızı daha güçlü ve daha hızlı oluşturulur hale getirir.",
+      stepProductsCta: "Ürün ekle",
+      doneBadge: "Tamam",
+      companySaved: "Şirket bilgileri kaydedildi.",
+    },
     common: {
       save: "Değişiklikleri Kaydet",
       saving: "API'ye Kaydediliyor...",

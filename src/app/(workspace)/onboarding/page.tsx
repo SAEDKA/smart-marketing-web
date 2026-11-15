@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useI18n } from "@/lib/i18n/context";
+import { useAuth } from "@/lib/auth/context";
 import { companyApi } from "@/lib/api/company.api";
 import { CommunicationTone, ContentLanguage, ApiErrorShape } from "@/types/domain";
 import { Card } from "@/components/ui/Card";
@@ -22,6 +23,7 @@ import {
 
 export default function OnboardingPage() {
   const { t } = useI18n();
+  const { completeOnboarding } = useAuth();
 
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -121,6 +123,14 @@ export default function OnboardingPage() {
         brandInformation,
         simulateFailure: false,
       });
+      // The company now exists: unlock the full workspace for this
+      // session and let the dashboard greet him with the saved banner.
+      completeOnboarding();
+      try {
+        window.sessionStorage.setItem("smp_company_saved", "1");
+      } catch {
+        // Storage is best-effort; the unlock above is what matters.
+      }
       setIsSaved(true);
     } catch (err: unknown) {
       const apiErr = err as ApiErrorShape;

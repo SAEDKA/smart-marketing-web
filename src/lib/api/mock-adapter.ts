@@ -58,10 +58,16 @@ function wrapMockResponse<T>(data: T): ApiResponse<T> {
   };
 }
 
+// Seeded fresh-owner test account (nour@nurstore.com): signs in with no
+// company, so the access ladder can be walked end to end. Her onboarding
+// state lives here because the shared mock company profile belongs to
+// the seeded Lumiere workspace; completing PUT /company/onboarding
+// flips it, and the client session mirrors it via completeOnboarding().
+let mockFreshOwnerOnboarded = false;
+
 let mockCompanyProfile: CompanyProfile = {
   id: "cmp_lumiere_01",
-  companyName: "Lumiere Artisan Roasters",
-  industry: "Specialty Coffee & Artisanal Bakery",
+  companyName: "Lumiere Artisan Roasters",  industry: "Specialty Coffee & Artisanal Bakery",
   description:
     "Single-origin specialty coffee roastery and artisanal sourdough bakery serving urban coffee enthusiasts across Istanbul and online.",
   targetAudience:
@@ -1159,6 +1165,28 @@ export async function mockRequestHandler<T>(
       throw err;
     }
 
+    // Seeded fresh-owner account: a real registration with no company
+    // yet, used to walk the access ladder (account → company → full).
+    if (payload.email.toLowerCase() === "nour@nurstore.com") {
+      const freshSession: AuthSession = {
+        user: {
+          id: "usr_owner_nour",
+          email: payload.email,
+          fullName: "Nour Haddad",
+          role: "COMPANY_OWNER",
+          emailVerified: true,
+          onboardingCompleted: mockFreshOwnerOnboarded,
+          companyId: mockFreshOwnerOnboarded
+            ? mockCompanyProfile.id
+            : undefined,
+          createdAt: "2026-11-15T09:00:00.000Z",
+        },
+        expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 8).toISOString(),
+        isSimulated: true,
+      };
+      return wrapMockResponse(freshSession as unknown as T);
+    }
+
     const isAdmin = payload.email.toLowerCase().includes("admin");
     const session: AuthSession = {
       user: {
@@ -1311,6 +1339,7 @@ export async function mockRequestHandler<T>(
       onboardingCompleted: true,
       updatedAt: new Date().toISOString(),
     };
+    mockFreshOwnerOnboarded = true;
 
     // Keep brand settings synchronized with onboarding configuration
     mockBrandSettings = {
