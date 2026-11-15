@@ -346,6 +346,14 @@ export const en: Dictionary = {
       productOptionalHint:
         "Adding a product makes the ad stronger — the AI uses its real name, price and photos.",
       noProductOption: "No product — use my description only",
+      uploadTitle: "Add your ad photos",
+      uploadHint:
+        "The photo is the face of your ad — and it shows the AI what your product really looks like.",
+      uploadCta: "Click to upload, or drag images here",
+      uploadMainBadge: "Cover",
+      uploadRequired:
+        "Add at least one photo (or choose a product that has photos) before sending for review.",
+      removeImageLabel: "Remove image",
       platformSelect: "Target Publishing Platform",
       languageSelect: "Language",
       toneSelect: "Tone of Voice",

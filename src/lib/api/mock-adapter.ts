@@ -1903,6 +1903,17 @@ export async function mockRequestHandler<T>(
         ]
       : promptVariants;
 
+    // Attached photos lead the creative: note them in the art direction.
+    if (payload.mediaNames && payload.mediaNames.length > 0) {
+      const label =
+        payload.mediaNames.length > 1
+          ? `your ${payload.mediaNames.length} uploaded photos`
+          : `your uploaded photo (${payload.mediaNames[0]})`;
+      variants.forEach((variant) => {
+        variant.visualIdea = `${variant.visualIdea} The creative leads with ${label}.`;
+      });
+    }
+
     return wrapMockResponse(variants as unknown as T);
   }
 

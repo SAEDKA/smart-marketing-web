@@ -44,6 +44,21 @@ describe("Release R4 - AI Studio & Post Review/Editor Suite (WEB-02-05, WEB-02-0
       expect(res.data[0].title).not.toContain("Yirgacheffe");
     });
 
+    it("notes attached photos in the art direction when media is provided", async () => {
+      const res = await aiApi.generateVariants({
+        campaignId: "cmp_winter_drop_01",
+        productId: "",
+        platform: "INSTAGRAM",
+        contentLanguage: "en",
+        tone: "FRIENDLY",
+        customPrompt: "Weekend haircut offer at our barbershop",
+        mediaNames: ["shop-front.jpg", "chair.jpg"],
+      });
+
+      expect(res.data.length).toBe(3);
+      expect(res.data[0].visualIdea).toContain("2 uploaded photos");
+    });
+
     it("rejects when AI worker timeout is simulated", async () => {
       await expect(
         aiApi.generateVariants({

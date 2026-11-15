@@ -307,6 +307,12 @@ export interface Dictionary {
     productOptionalBadge: string;
     productOptionalHint: string;
     noProductOption: string;
+    uploadTitle: string;
+    uploadHint: string;
+    uploadCta: string;
+    uploadMainBadge: string;
+    uploadRequired: string;
+    removeImageLabel: string;
     platformSelect: string;
     languageSelect: string;
     toneSelect: string;

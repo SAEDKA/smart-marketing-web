@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useI18n } from "@/lib/i18n/context";
 import { useSpotlight } from "@/lib/hooks/use-spotlight";
@@ -48,6 +48,8 @@ import {
   BatteryCharging,
   Package,
   ChevronDown,
+  ImagePlus,
+  X,
 } from "lucide-react";
 
 type DevicePreviewFormat = "FEED" | "STORY" | "CAROUSEL";
@@ -88,6 +90,39 @@ export default function ContentStudioPage() {
   const [previewFormat, setPreviewFormat] =
     useState<DevicePreviewFormat>("FEED");
   const [carouselSlide, setCarouselSlide] = useState<number>(0);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [attachedImages, setAttachedImages] = useState<
+    { id: string; url: string; name: string }[]
+  >([]);
+
+  const addFiles = (files: FileList | null) => {
+    if (!files) return;
+    const images = Array.from(files).filter((f) =>
+      f.type.startsWith("image/")
+    );
+    if (images.length === 0) return;
+    setAttachedImages((prev) => [
+      ...prev,
+      ...images.map((file, i) => ({
+        id: `${Date.now()}-${i}-${file.name}`,
+        url: URL.createObjectURL(file),
+        name: file.name,
+      })),
+    ]);
+  };
+
+  const removeAttachedImage = (id: string) => {
+    setAttachedImages((prev) => {
+      const target = prev.find((img) => img.id === id);
+      if (target) URL.revokeObjectURL(target.url);
+      return prev.filter((img) => img.id !== id);
+    });
+  };
+
+  const handleImageDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    addFiles(e.dataTransfer.files);
+  };
   const [isLiked, setIsLiked] = useState<boolean>(false);
   const [isSaved, setIsSaved] = useState<boolean>(false);
 
@@ -154,6 +189,7 @@ export default function ContentStudioPage() {
         contentLanguage: selectedLanguage,
         tone: selectedTone,
         customPrompt: customPrompt.trim(),
+        mediaNames: attachedImages.map((img) => img.name),
         simulateFailure: false,
       });
 
@@ -177,8 +213,18 @@ export default function ContentStudioPage() {
   // Send Variant to Post Editor or Review
   const handleCreatePost = async (status: "DRAFT" | "PENDING_REVIEW") => {
     if (!currentVariant || !activeCampaign) return;
+
+    // The ad needs a face: an uploaded photo, or a product that has one.
+    const coverImage =
+      attachedImages[0]?.url || activeProduct?.media[0]?.url;
+    if (status === "PENDING_REVIEW" && !coverImage) {
+      setErrorMessage(t.studio.uploadRequired);
+      return;
+    }
+
     setIsSubmittingPost(true);
     setSuccessBanner(null);
+    setErrorMessage(null);
 
     try {
       await postsApi.createPost({
@@ -190,7 +236,7 @@ export default function ContentStudioPage() {
         hashtags: currentVariant.hashtags,
         callToAction: currentVariant.callToAction,
         visualIdea: currentVariant.visualIdea,
-        mediaUrl: activeProduct?.media[0]?.url,
+        mediaUrl: coverImage,
         source: "AI_GENERATED",
         status,
       });
@@ -267,6 +313,76 @@ export default function ContentStudioPage() {
             onChange={(e) => setCustomPrompt(e.target.value)}
             rows={3}
           />
+
+          {/* Ad photos: the face of the ad, and context for the AI */}
+          <div className="space-y-2">
+            <span className="block text-xs font-medium text-txt-secondary">
+              {t.studio.uploadTitle}
+            </span>
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => fileInputRef.current?.click()}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  fileInputRef.current?.click();
+                }
+              }}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={handleImageDrop}
+              className="rounded-xl border border-dashed border-white/20 bg-white/[0.03] hover:border-accent-mint/50 transition-colors px-4 py-4 text-center cursor-pointer"
+            >
+              <ImagePlus className="w-5 h-5 mx-auto text-accent-cyan" />
+              <p className="text-xs text-white font-medium mt-1.5">
+                {t.studio.uploadCta}
+              </p>
+              <p className="text-[11px] text-txt-muted mt-1 leading-relaxed">
+                {t.studio.uploadHint}
+              </p>
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              multiple
+              className="hidden"
+              onChange={(e) => {
+                addFiles(e.target.files);
+                e.target.value = "";
+              }}
+            />
+            {attachedImages.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {attachedImages.map((img, i) => (
+                  <div
+                    key={img.id}
+                    className="relative w-16 h-16 rounded-lg overflow-hidden border border-white/15"
+                  >
+                    <div
+                      className="w-full h-full bg-cover bg-center"
+                      style={{ backgroundImage: `url(${img.url})` }}
+                      role="img"
+                      aria-label={img.name}
+                    />
+                    {i === 0 && (
+                      <span className="absolute bottom-0 inset-x-0 text-center text-[9px] font-semibold bg-navy-950/75 text-accent-mint py-0.5">
+                        {t.studio.uploadMainBadge}
+                      </span>
+                    )}
+                    <button
+                      type="button"
+                      aria-label={t.studio.removeImageLabel}
+                      onClick={() => removeAttachedImage(img.id)}
+                      className="absolute top-0.5 end-0.5 p-0.5 rounded-md bg-navy-950/80 text-white hover:text-semantic-error transition-colors"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
 
           {/* Campaign Context Selector */}
           <div className="space-y-1.5">
@@ -711,6 +827,26 @@ export default function ContentStudioPage() {
                       previewFormat === "STORY" ? "h-80" : "h-60"
                     }`}
                   >
+                    {/* The user's own photo leads the creative when attached */}
+                    {attachedImages.length > 0 && (
+                      <>
+                        <div
+                          className="absolute inset-0 bg-cover bg-center"
+                          style={{
+                            backgroundImage: `url(${
+                              attachedImages[
+                                Math.min(
+                                  carouselSlide,
+                                  attachedImages.length - 1
+                                )
+                              ].url
+                            })`,
+                          }}
+                        />
+                        <div className="absolute inset-0 bg-navy-950/40" />
+                      </>
+                    )}
+
                     {/* Ambient radial light */}
                     <div className="absolute -top-12 -right-12 w-36 h-36 rounded-full bg-accent-violet/20 blur-2xl pointer-events-none" />
                     <div className="absolute -bottom-12 -left-12 w-36 h-36 rounded-full bg-accent-cyan/15 blur-2xl pointer-events-none" />
@@ -729,9 +865,11 @@ export default function ContentStudioPage() {
 
                     {/* Center Visual Art Copy */}
                     <div className="relative z-10 my-auto text-center space-y-2 px-2">
-                      <p className="text-sm font-bold text-white tracking-tight">
-                        {activeProduct?.name || "Product Media Showcase"}
-                      </p>
+                      {attachedImages.length === 0 && (
+                        <p className="text-sm font-bold text-white tracking-tight">
+                          {activeProduct?.name || "Product Media Showcase"}
+                        </p>
+                      )}
                       <p className="text-[11px] text-accent-cyan/95 max-w-xs mx-auto italic leading-relaxed line-clamp-3">
                         &ldquo;{currentVariant.visualIdea}&rdquo;
                       </p>
@@ -741,7 +879,10 @@ export default function ContentStudioPage() {
                     <div className="relative z-10 flex items-center justify-between pt-2">
                       {previewFormat === "CAROUSEL" ? (
                         <div className="flex items-center gap-1.5 mx-auto">
-                          {[0, 1, 2].map((slideIdx) => (
+                          {(attachedImages.length > 0
+                            ? attachedImages.map((_, i) => i)
+                            : [0, 1, 2]
+                          ).map((slideIdx) => (
                             <button
                               key={slideIdx}
                               type="button"
