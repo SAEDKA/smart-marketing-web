@@ -18,13 +18,10 @@ import {
   Instagram,
   Facebook,
   CheckCircle2,
-  Calendar,
   BarChart3,
-  FileText,
   Wand2,
   ShoppingBag,
   Sliders,
-  ShieldCheck,
   TrendingUp,
 } from "lucide-react";
 

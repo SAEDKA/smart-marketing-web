@@ -4,13 +4,12 @@ import React, { useState, useEffect } from "react";
 import { useI18n } from "@/lib/i18n/context";
 import { companyApi } from "@/lib/api/company.api";
 import { BrandSettings, CommunicationTone, ContentLanguage, ApiErrorShape } from "@/types/domain";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/Card";
+import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import {
-  Sliders,
   Sparkles,
   Save,
   RotateCcw,
@@ -33,7 +32,7 @@ export default function BrandSettingsPage() {
   const [keyValueProposition, setKeyValueProposition] = useState("");
   const [brandGuidelines, setBrandGuidelines] = useState("");
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [statusMsg, setStatusMsg] = useState<{ type: "success" | "error"; text: string } | null>(
     null

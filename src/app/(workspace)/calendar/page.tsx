@@ -4,7 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import { useI18n } from "@/lib/i18n/context";
 import { publishingApi } from "@/lib/api/publishing.api";
 import { postsApi } from "@/lib/api/posts.api";
-import { Post, SocialPlatform } from "@/types/domain";
+import { Post } from "@/types/domain";
 import {
   Calendar as CalendarIcon,
   ChevronLeft,
@@ -14,12 +14,10 @@ import {
   Facebook,
   AlertTriangle,
   CheckCircle2,
-  XCircle,
   Plus,
   RefreshCw,
   ExternalLink,
   RotateCcw,
-  Sparkles,
   Info,
   CalendarCheck,
   Send,
@@ -30,7 +28,7 @@ export default function CalendarPage() {
 
   const [posts, setPosts] = useState<Post[]>([]);
   const [approvedPosts, setApprovedPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
 

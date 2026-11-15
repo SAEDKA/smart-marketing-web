@@ -24,13 +24,10 @@ import {
   HelpCircle,
   Instagram,
   Facebook,
-  ShieldCheck,
-  Calendar,
-  Sparkles,
 } from "lucide-react";
 
 export default function AnalyticsPage() {
-  const { t, locale } = useI18n();
+  const { t } = useI18n();
 
   const [dateRange, setDateRange] = useState<AnalyticsDateRange>("30d");
   const [summary, setSummary] = useState<AnalyticsMetricSummary | null>(null);

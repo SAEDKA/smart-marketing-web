@@ -513,13 +513,3 @@ export interface ApiResponse<T> {
     mode: "mock" | "live";
   };
 }
-
-export interface JiraStoryStatus {
-  id: string;
-  release: "R1" | "R2" | "R3" | "R4" | "R5" | "R6" | "R7";
-  epic: "WEB-01" | "WEB-02" | "WEB-03";
-  titleKey: string;
-  route: string;
-  frontendStatus: "COMPLETED" | "SCHEDULED";
-  externalDependencies: string[];
-}

@@ -8,17 +8,13 @@ import {
   Share2,
   Instagram,
   Facebook,
-  CheckCircle2,
   AlertTriangle,
   XCircle,
   RefreshCw,
   ExternalLink,
   ShieldCheck,
   Users,
-  Calendar,
   Lock,
-  Layers,
-  Sparkles,
 } from "lucide-react";
 
 export default function IntegrationsPage() {

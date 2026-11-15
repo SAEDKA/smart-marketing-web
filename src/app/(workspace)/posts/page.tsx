@@ -8,11 +8,10 @@ import { postsApi } from "@/lib/api/posts.api";
 import {
   Post,
   PostStatus,
-  PostVersion,
   SocialPlatform,
   ApiErrorShape,
 } from "@/types/domain";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
@@ -21,7 +20,6 @@ import { Modal } from "@/components/ui/Modal";
 import { Skeleton } from "@/components/ui/Skeleton";
 import {
   PenTool,
-  Plus,
   Search,
   CheckCircle2,
   XCircle,
@@ -29,16 +27,10 @@ import {
   RotateCcw,
   Sparkles,
   Edit2,
-  Trash2,
   Instagram,
   Facebook,
-  AlertTriangle,
   AlertCircle,
   ArrowRight,
-  ShieldCheck,
-  Calendar,
-  Layers,
-  FileCheck,
   Clock,
   User,
   Check,
@@ -67,7 +59,6 @@ export default function PostsPage() {
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   // Post Editor state (WEB-02-06)
   const [editTitle, setEditTitle] = useState("");
@@ -239,22 +230,6 @@ export default function PostsPage() {
       } catch (err) {
         console.error("Revert failed", err);
       }
-    }
-  };
-
-  // Delete Post
-  const handleConfirmDelete = async () => {
-    if (!selectedPost) return;
-    try {
-      await postsApi.deletePost(selectedPost.id);
-      setPosts((prev) => prev.filter((p) => p.id !== selectedPost.id));
-      setIsDeleteModalOpen(false);
-      setStatusMessage({
-        type: "success",
-        text: "Post draft removed from workspace.",
-      });
-    } catch (err) {
-      console.error("Delete failed", err);
     }
   };
 

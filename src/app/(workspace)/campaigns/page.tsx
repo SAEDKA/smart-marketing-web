@@ -17,7 +17,7 @@ import {
   SocialPlatform,
   ApiErrorShape,
 } from "@/types/domain";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card";
+import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
@@ -30,30 +30,25 @@ import {
   Search,
   Target,
   Calendar,
-  Share2,
   Instagram,
   Facebook,
   Sparkles,
   Edit2,
-  Trash2,
   CheckCircle2,
   AlertCircle,
-  Clock,
   ArrowRight,
   ArrowLeft,
   Check,
   PauseCircle,
   PlayCircle,
   ShoppingBag,
-  ExternalLink,
-  Layers,
   X,
   RefreshCw,
   Lock,
 } from "lucide-react";
 
 export default function CampaignsPage() {
-  const { t, dir } = useI18n();
+  const { t } = useI18n();
 
   // Data & loading
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);

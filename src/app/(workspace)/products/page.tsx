@@ -5,16 +5,14 @@ import { useI18n } from "@/lib/i18n/context";
 import { productsApi } from "@/lib/api/products.api";
 import {
   Product,
-  ProductMedia,
   ProductStatus,
   CreateProductRequest,
   ApiErrorShape,
 } from "@/types/domain";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card";
+import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
-import { Select } from "@/components/ui/Select";
 import { Badge } from "@/components/ui/Badge";
 import { Modal } from "@/components/ui/Modal";
 import { Skeleton } from "@/components/ui/Skeleton";
@@ -22,7 +20,6 @@ import {
   ShoppingBag,
   Plus,
   Search,
-  Filter,
   LayoutGrid,
   List,
   Edit2,
@@ -36,15 +33,13 @@ import {
   ArrowDown,
   Star,
   X,
-  Sparkles,
   RefreshCw,
-  Tag,
   DollarSign,
   AlertCircle,
 } from "lucide-react";
 
 export default function ProductsPage() {
-  const { t, dir } = useI18n();
+  const { t } = useI18n();
 
   // Data & loading state
   const [products, setProducts] = useState<Product[]>([]);
@@ -78,9 +73,9 @@ export default function ProductsPage() {
   const [isSavingProduct, setIsSavingProduct] = useState(false);
 
   // Media upload simulation state (WEB-02-02)
-  const [simulateUploadFail, setSimulateUploadFail] = useState(false);
+  const [simulateUploadFail] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
-  const [isUploadingMedia, setIsUploadingMedia] = useState(false);
+  const [, setIsUploadingMedia] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Fetch products from API

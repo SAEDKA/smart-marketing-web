@@ -4,12 +4,10 @@ import React, { useState, useEffect } from "react";
 import { useI18n } from "@/lib/i18n/context";
 import { companyApi } from "@/lib/api/company.api";
 import { CommunicationTone, ContentLanguage, ApiErrorShape } from "@/types/domain";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/Card";
+import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
-import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
-import { Badge } from "@/components/ui/Badge";
 import {
   Building2,
   Users,
@@ -20,18 +18,16 @@ import {
   ArrowRight,
   ArrowLeft,
   Check,
-  RefreshCw,
-  Sliders,
 } from "lucide-react";
 
 export default function OnboardingPage() {
-  const { t, locale } = useI18n();
+  const { t } = useI18n();
 
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
-  const [simulateFailure, setSimulateFailure] = useState(false);
+  const [simulateFailure] = useState(false);
 
   // Form State
   const [companyName, setCompanyName] = useState("Lumiere Artisan Roasters");
@@ -162,7 +158,6 @@ export default function OnboardingPage() {
       <div className="glass-card p-4 sm:p-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {steps.map((st) => {
-            const Icon = st.icon;
             const isCompleted = currentStep > st.number || isSaved;
             const isCurrent = currentStep === st.number;
 

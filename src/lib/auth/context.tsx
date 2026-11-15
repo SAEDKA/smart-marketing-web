@@ -8,7 +8,7 @@ import React, {
   useState,
   useCallback,
 } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import {
   AuthSession,
   AuthUser,
@@ -58,7 +58,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const [isSessionExpired, setIsSessionExpired] = useState(false);
   const router = useRouter();
-  const pathname = usePathname();
 
   useEffect(() => {
     try {

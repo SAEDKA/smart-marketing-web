@@ -17,7 +17,6 @@ import { UnauthorizedView } from "@/components/layout/UnauthorizedView";
 import {
   ShieldCheck,
   Building,
-  Sparkles,
   AlertTriangle,
   Trash2,
   Lock,

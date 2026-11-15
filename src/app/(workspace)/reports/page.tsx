@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n/context";
 import { reportsApi } from "@/lib/api/reports.api";
-import { SwotReport, SwotCategory, MarketingRecommendation } from "@/types/domain";
+import { SwotReport, SwotCategory } from "@/types/domain";
 import {
   FileText,
   Sparkles,
@@ -15,17 +15,14 @@ import {
   ArrowRight,
   TrendingUp,
   RefreshCw,
-  Database,
-  ExternalLink,
   Flame,
-  Layers,
 } from "lucide-react";
 
 export default function ReportsPage() {
   const { t } = useI18n();
 
   const [report, setReport] = useState<SwotReport | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
   const [regenerating, setRegenerating] = useState(false);
   const [simulateInsufficient, setSimulateInsufficient] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);

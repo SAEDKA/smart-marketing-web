@@ -2,7 +2,6 @@ import {
   CreatePostRequest,
   Post,
   PostFilterParams,
-  PostStatus,
   UpdatePostRequest,
 } from "@/types/domain";
 import { apiRequest } from "./client";

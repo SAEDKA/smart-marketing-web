@@ -15,7 +15,6 @@ const NAV_FILES = [
   "src/components/layout/GlassSidebar.tsx",
   "src/components/layout/MobileNav.tsx",
   "src/components/layout/TopHeader.tsx",
-  "src/components/layout/ReleasePlaceholder.tsx",
   "src/app/(workspace)/dashboard/page.tsx",
   "src/app/(workspace)/posts/page.tsx",
   "src/app/(workspace)/campaigns/page.tsx",

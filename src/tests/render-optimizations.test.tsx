@@ -27,7 +27,7 @@ describe("Render optimizations (re-render fix)", () => {
       currentTarget: el,
       clientX: 60,
       clientY: 70,
-    } as React.MouseEvent<HTMLElement>);
+    } as unknown as React.MouseEvent<HTMLElement>);
 
     // The write is coalesced into the next animation frame.
     return new Promise<void>((resolve) => {

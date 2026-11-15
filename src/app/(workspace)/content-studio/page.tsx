@@ -69,7 +69,7 @@ export default function ContentStudioPage() {
   const [selectedTone, setSelectedTone] =
     useState<CommunicationTone>("LUXURY");
   const [customPrompt, setCustomPrompt] = useState("");
-  const [simulateFailure, setSimulateFailure] = useState(false);
+  const [simulateFailure] = useState(false);
 
   // Generation status (WEB-02-05: honest job states: idle, queued, processing, completed, failed)
   const [generationState, setGenerationState] = useState<

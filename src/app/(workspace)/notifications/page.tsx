@@ -7,8 +7,6 @@ import { notificationsApi } from "@/lib/api/notifications.api";
 import { NotificationCategory, NotificationItem } from "@/types/domain";
 import {
   Bell,
-  CheckCircle2,
-  AlertTriangle,
   Sparkles,
   Calendar,
   ShieldAlert,
@@ -16,8 +14,6 @@ import {
   Trash2,
   ExternalLink,
   Check,
-  RefreshCw,
-  Filter,
 } from "lucide-react";
 
 export default function NotificationsPage() {
@@ -27,7 +23,7 @@ export default function NotificationsPage() {
   const [selectedCategory, setSelectedCategory] = useState<
     NotificationCategory | "ALL"
   >("ALL");
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
   const fetchNotifications = async () => {
