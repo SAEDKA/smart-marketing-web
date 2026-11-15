@@ -30,8 +30,6 @@ export interface Dictionary {
     logout: string;
     collapseSidebar: string;
     expandSidebar: string;
-    switchRole: string;
-    simulateExpiry: string;
     roleOwner: string;
     roleAdmin: string;
   };
@@ -425,6 +423,9 @@ export interface Dictionary {
     reachLabel: string;
     impressionsLabel: string;
     engagementRateLabel: string;
+    reachHint: string;
+    impressionsHint: string;
+    engagementHint: string;
     likesLabel: string;
     commentsLabel: string;
     sharesLabel: string;
@@ -443,6 +444,7 @@ export interface Dictionary {
   reports: {
     title: string;
     subtitle: string;
+    swotHint: string;
     swotTitle: string;
     swotSubtitle: string;
     strengths: string;
@@ -459,8 +461,6 @@ export interface Dictionary {
     numericalEvidenceLabel: string;
     insufficientDataTitle: string;
     insufficientDataDesc: string;
-    insufficientToggle: string;
-    sufficientToggle: string;
     regenerateReport: string;
     regenerating: string;
     applyToCampaign: string;

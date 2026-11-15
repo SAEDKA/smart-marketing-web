@@ -14,7 +14,7 @@ export default function ResetPasswordPage() {
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [token, setToken] = useState("sample_valid_token");
+  const [token] = useState("sample_valid_token");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -132,26 +132,6 @@ export default function ResetPasswordPage() {
                 leftElement={<Lock className="w-4 h-4" />}
                 required
               />
-
-              {/* Simulation token test trigger */}
-              <div className="p-2.5 rounded-xl bg-white/5 border border-white/5 text-[11px] flex items-center justify-between">
-                <span className="text-txt-muted">Token Status:</span>
-                <button
-                  type="button"
-                  onClick={() =>
-                    setToken((prev) =>
-                      prev === "expired_token"
-                        ? "sample_valid_token"
-                        : "expired_token"
-                    )
-                  }
-                  className="text-accent-cyan hover:underline font-mono"
-                >
-                  {token === "expired_token"
-                    ? "Simulating: Expired"
-                    : "Simulating: Valid"}
-                </button>
-              </div>
 
               <Button
                 type="submit"

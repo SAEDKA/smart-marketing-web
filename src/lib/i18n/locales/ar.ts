@@ -34,8 +34,6 @@ export const ar: Dictionary = {
       logout: "تسجيل الخروج",
       collapseSidebar: "طي القائمة الجانبية",
       expandSidebar: "توسيع القائمة الجانبية",
-      switchRole: "تبديل الدور",
-      simulateExpiry: "اختبار انتهاء الجلسة",
       roleOwner: "مالك الشركة",
       roleAdmin: "مدير النظام",
     },
@@ -478,6 +476,9 @@ export const ar: Dictionary = {
       reachLabel: "وصول الجمهور الفريد",
       impressionsLabel: "إجمالي مرات الظهور",
       engagementRateLabel: "متوسط معدل التفاعل",
+      reachHint: "كم شخص مختلف شاف منشوراتك",
+      impressionsHint: "كم مرة انعرضت منشوراتك بالمجموع",
+      engagementHint: "إعجاب وتعليقات ومشاركات من جمهورك",
       likesLabel: "الإعجابات",
       commentsLabel: "التعليقات",
       sharesLabel: "المشاركات",
@@ -497,6 +498,8 @@ export const ar: Dictionary = {
       title: "ذكاء تقارير SWOT والتوصيات",
       subtitle:
         "نقاط القوة والضعف والفرص والتهديدات المستندة إلى الأدلة الرقمية وتوجيهات الذكاء الاصطناعي ذات الأولوية.",
+      swotHint:
+        "بكلمات بسيطة: شو شركتك منيحة فيه، وشو بدو تطوير، والفرص والمخاطر اللي حولها. المربعات تحت بتشرح كل وحدة.",
       swotTitle: "مصفوفة SWOT المستندة إلى الأدلة الإحصائية",
       swotSubtitle:
         "كل عنصر في المصفوفة مدعوم بأدلة عددية حقيقية مستخلصة من أداء المنشورات الفعلية.",
@@ -516,8 +519,6 @@ export const ar: Dictionary = {
       insufficientDataTitle: "بيانات أداء تاريخية غير كافية",
       insufficientDataDesc:
         "يتطلب تحليل SWOT الدقيق المستند إلى الأدلة نشر 3 منشورات على الأقل مع اكتمال جمع بيانات التفاعل. يرجى ربط الحسابات ونشر الحملات للحصول على التقرير الكامل.",
-      insufficientToggle: "محاكاة حالة البيانات غير الكافية",
-      sufficientToggle: "عرض مصفوفة الأدلة الكاملة",
       regenerateReport: "توليد تقرير ذكاء جديد",
       regenerating: "جارٍ تحليل البيانات وصياغة التقرير...",
       applyToCampaign: "بدء حملة تسويقية بناءً على التوصية",

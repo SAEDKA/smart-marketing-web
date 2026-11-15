@@ -34,8 +34,6 @@ export const en: Dictionary = {
       logout: "Sign Out",
       collapseSidebar: "Collapse Sidebar",
       expandSidebar: "Expand Sidebar",
-      switchRole: "Switch Role",
-      simulateExpiry: "Test Session Expiry",
       roleOwner: "Company Owner",
       roleAdmin: "System Admin",
     },
@@ -480,6 +478,9 @@ export const en: Dictionary = {
       reachLabel: "Audience Reach",
       impressionsLabel: "Total Impressions",
       engagementRateLabel: "Avg. Engagement Rate",
+      reachHint: "How many different people saw your posts",
+      impressionsHint: "How many times your posts were shown, in total",
+      engagementHint: "Likes, comments and shares from your audience",
       likesLabel: "Total Likes",
       commentsLabel: "Comments",
       sharesLabel: "Shares",
@@ -499,6 +500,8 @@ export const en: Dictionary = {
       title: "SWOT Intelligence & Strategy",
       subtitle:
         "Evidence-based strengths, weaknesses, opportunities, threats, and prioritized AI marketing directives.",
+      swotHint:
+        "In plain words: what your business does well, what needs work, and the chances and risks around it. The boxes below explain each one.",
       swotTitle: "Evidence-Based SWOT Matrix",
       swotSubtitle:
         "Every strength, weakness, opportunity, and threat is substantiated by observed publication data.",
@@ -518,8 +521,6 @@ export const en: Dictionary = {
       insufficientDataTitle: "Insufficient Historical Performance Data",
       insufficientDataDesc:
         "Evidence-based SWOT analysis requires at least 3 published posts with collected audience telemetry. Connect social accounts and publish campaigns to generate full intelligence.",
-      insufficientToggle: "Simulate Insufficient Data (Cold Start)",
-      sufficientToggle: "View Full Evidence Matrix",
       regenerateReport: "Synthesize Fresh Report",
       regenerating: "Synthesizing AI Matrix...",
       applyToCampaign: "Launch Campaign from Directive",

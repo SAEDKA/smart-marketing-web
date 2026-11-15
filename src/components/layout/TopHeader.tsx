@@ -14,7 +14,6 @@ import {
   Sliders,
   LogOut,
   Shield,
-  Sparkles,
   Calendar,
   Settings,
 } from "lucide-react";
@@ -27,7 +26,7 @@ export const TopHeader = React.memo(function TopHeader({ onOpenMobileNav }: TopH
   const pathname = usePathname();
   const router = useRouter();
   const { t, locale } = useI18n();
-  const { user, logout, switchRole } = useAuth();
+  const { user, logout } = useAuth();
   const [profileOpen, setProfileOpen] = useState(false);
   const [quickQuery, setQuickQuery] = useState("");
   const profileRef = useRef<HTMLDivElement>(null);
@@ -233,33 +232,6 @@ export const TopHeader = React.memo(function TopHeader({ onOpenMobileNav }: TopH
                   <Settings className="w-4 h-4 text-txt-muted" />
                   <span>{t.nav.accountSettings}</span>
                 </Link>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    switchRole(isAdmin ? "COMPANY_OWNER" : "SYSTEM_ADMIN");
-                    setProfileOpen(false);
-                  }}
-                  className="w-full flex items-center justify-between px-3 py-2 text-xs text-txt-secondary hover:text-white hover:bg-white/5 rounded-xl transition-colors text-start"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <Sparkles className="w-4 h-4 text-accent-cyan" />
-                    <span>{t.nav.switchRole}</span>
-                  </div>
-                  <span className="text-[10px] text-accent-violet font-semibold">
-                    {isAdmin
-                      ? locale === "ar"
-                        ? "← حساب العميل"
-                        : locale === "tr"
-                        ? "→ Müşteri Hesabı"
-                        : "→ Client Account"
-                      : locale === "ar"
-                      ? "← حساب الأدمن"
-                      : locale === "tr"
-                      ? "→ Admin Hesabı"
-                      : "→ Admin Account"}
-                  </span>
-                </button>
               </div>
 
               <div className="pt-1 border-t border-white/10">

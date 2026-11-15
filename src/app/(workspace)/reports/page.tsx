@@ -24,13 +24,12 @@ export default function ReportsPage() {
   const [report, setReport] = useState<SwotReport | null>(null);
   const [, setLoading] = useState(true);
   const [regenerating, setRegenerating] = useState(false);
-  const [simulateInsufficient, setSimulateInsufficient] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
-  const fetchSwotReport = async (insufficient: boolean) => {
+  const fetchSwotReport = async () => {
     try {
       setLoading(true);
-      const res = await reportsApi.getSwotReport(insufficient);
+      const res = await reportsApi.getSwotReport(false);
       setReport(res.data);
     } catch {
       setStatusMessage(t.common.errorOccurred);
@@ -40,8 +39,8 @@ export default function ReportsPage() {
   };
 
   useEffect(() => {
-    fetchSwotReport(simulateInsufficient);
-  }, [simulateInsufficient]);
+    fetchSwotReport();
+  }, []);
 
   const handleRegenerate = async () => {
     try {
@@ -72,12 +71,16 @@ export default function ReportsPage() {
           <p className="text-sm text-slate-400 mt-1 max-w-2xl">
             {t.reports.subtitle}
           </p>
+          <p className="text-xs text-emerald-300/80 mt-2 max-w-2xl flex items-start gap-1.5">
+            <Lightbulb className="w-3.5 h-3.5 mt-px shrink-0" />
+            <span>{t.reports.swotHint}</span>
+          </p>
         </div>
 
         <div className="flex items-center gap-3 self-start md:self-auto flex-wrap">
           <button
             onClick={handleRegenerate}
-            disabled={regenerating || simulateInsufficient}
+            disabled={regenerating}
             className="px-4 py-2 rounded-xl text-xs font-semibold bg-violet-600 hover:bg-violet-500 disabled:opacity-50 text-white shadow-lg shadow-violet-600/25 transition flex items-center gap-2"
           >
             <RefreshCw
@@ -144,12 +147,6 @@ export default function ReportsPage() {
               Open Publishing Calendar
               <ArrowRight className="w-4 h-4" />
             </Link>
-            <button
-              onClick={() => setSimulateInsufficient(false)}
-              className="px-4 py-2.5 rounded-xl text-xs font-semibold bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition"
-            >
-              {t.reports.sufficientToggle}
-            </button>
           </div>
         </div>
       ) : (

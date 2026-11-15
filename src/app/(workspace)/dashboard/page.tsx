@@ -46,6 +46,7 @@ import {
   MousePointerClick,
   Clock,
   Lightbulb,
+  X,
 } from "lucide-react";
 
 const DASHBOARD_COPY = {
@@ -88,6 +89,26 @@ const DASHBOARD_COPY = {
       "Instagram carousel posts featuring single-origin tasting notes achieved 4.82% engagement (+31% above benchmark). Schedule 2 additional educational posts this week.",
     viewFullSwotBtn: "View Full SWOT Report",
     clicksLabel: "Link Clicks & Traffic",
+    getStarted: {
+      title: "New here? Start in 3 simple steps",
+      subtitle:
+        "Everything else can wait. This is the shortest path to your first published post.",
+      dismiss: "Hide this guide",
+      steps: [
+        {
+          title: "Add your products",
+          desc: "Enter what you sell — the AI writes from your real products.",
+        },
+        {
+          title: "Create a post with AI",
+          desc: "Pick a product and let the studio draft the text for you.",
+        },
+        {
+          title: "Review & schedule",
+          desc: "Approve the post and choose when it goes out.",
+        },
+      ],
+    },
   },
   tr: {
     assistantPlaceholder:
@@ -128,6 +149,26 @@ const DASHBOARD_COPY = {
       "Tadım notlarını içeren Instagram kaydırmalı gönderileri %4,82 etkileşim oranına ulaştı (ortalamanın %31 üzerinde). Bu hafta 2 eğitici gönderi daha planlayın.",
     viewFullSwotBtn: "Tam SWOT Raporunu Gör",
     clicksLabel: "Bağlantı Tıklamaları",
+    getStarted: {
+      title: "Yeni misiniz? 3 basit adımda başlayın",
+      subtitle:
+        "Gerisi bekleyebilir. İlk yayınlanan gönderinize giden en kısa yol bu.",
+      dismiss: "Bu kılavuzu gizle",
+      steps: [
+        {
+          title: "Ürünlerinizi ekleyin",
+          desc: "Ne sattığınızı girin — yapay zeka gerçek ürünlerinizden yazar.",
+        },
+        {
+          title: "YZ ile gönderi oluşturun",
+          desc: "Bir ürün seçin, stüdyo metni sizin için hazırlasın.",
+        },
+        {
+          title: "İnceleyin ve planlayın",
+          desc: "Gönderiyi onaylayın ve ne zaman yayınlanacağını seçin.",
+        },
+      ],
+    },
   },
   ar: {
     assistantPlaceholder:
@@ -168,6 +209,25 @@ const DASHBOARD_COPY = {
       "حققت منشورات إنستغرام التفاعلية حول إيحاءات القهوة المختصة معدل تفاعل 4.82% (+31% أعلى من المعيار). ننصح بجدولة منشورين تعليميين إضافيين هذا الأسبوع.",
     viewFullSwotBtn: "عرض تقرير SWOT الكامل",
     clicksLabel: "نقرات الروابط والزيارات",
+    getStarted: {
+      title: "جديد هون؟ بلّش بـ ٣ خطوات بسيطة",
+      subtitle: "كل شي تاني بيستنى. هاد أقصر طريق لأول منشور بينشر عندك.",
+      dismiss: "إخفاء هذا الدليل",
+      steps: [
+        {
+          title: "أضف منتجاتك",
+          desc: "حطّ شو بتبيع — الذكاء الاصطناعي بيكتب من منتجاتك الحقيقية.",
+        },
+        {
+          title: "اعمل منشور بالذكاء الاصطناعي",
+          desc: "اختار منتج وخلي الاستوديو يجهّزلك النص.",
+        },
+        {
+          title: "راجع وجدول النشر",
+          desc: "وافق عالمنشور واختار إيمتى يطلع.",
+        },
+      ],
+    },
   },
 } as const;
 
@@ -198,6 +258,24 @@ export default function DashboardPage() {
   const DirectionalArrow = isRtl ? ArrowLeft : ArrowRight;
 
   const [assistantPrompt, setAssistantPrompt] = useState("");
+  const [getStartedDismissed, setGetStartedDismissed] = useState<boolean>(() => {
+    try {
+      return (
+        typeof window !== "undefined" &&
+        window.localStorage.getItem("smp_get_started_dismissed") === "1"
+      );
+    } catch {
+      return false;
+    }
+  });
+  const dismissGetStarted = useCallback(() => {
+    setGetStartedDismissed(true);
+    try {
+      window.localStorage.setItem("smp_get_started_dismissed", "1");
+    } catch {
+      // Storage unavailable; the guide just stays for this session.
+    }
+  }, []);
   const [company, setCompany] = useState<CompanyProfile>({
     id: "cmp_lumiere_01",
     companyName: "Lumiere Artisan Roasters",
@@ -305,8 +383,59 @@ export default function DashboardPage() {
     [copy, company.communicationTone, products.length, campaigns.length, posts.length, accounts.length]
   );
 
+  const getStartedSteps = [
+    { href: "/products", Icon: ShoppingBag },
+    { href: "/content-studio", Icon: Wand2 },
+    { href: "/calendar", Icon: Calendar },
+  ];
+
   return (
     <div className="space-y-7 animate-in fade-in duration-300" data-enter="">
+      {/* Get Started guide: the beginner's path to a first post, dismissible */}
+      {!getStartedDismissed && (
+        <section className="relative overflow-hidden rounded-[26px] glass-panel p-6 sm:p-7">
+          <button
+            type="button"
+            aria-label={copy.getStarted.dismiss}
+            onClick={dismissGetStarted}
+            className="absolute top-4 end-4 p-1.5 text-txt-muted hover:text-white rounded-lg transition-colors"
+          >
+            <X className="w-4 h-4" />
+          </button>
+          <div className="space-y-1.5 pe-8">
+            <h2 className="text-lg sm:text-xl font-bold text-white">
+              {copy.getStarted.title}
+            </h2>
+            <p className="text-sm text-txt-secondary max-w-2xl leading-relaxed">
+              {copy.getStarted.subtitle}
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 mt-5">
+            {getStartedSteps.map(({ href, Icon }, i) => (
+              <Link
+                key={href}
+                href={href}
+                className="group flex items-start gap-3.5 p-4 rounded-2xl bg-white/[0.04] border border-white/10 hover:border-accent-mint/40 hover:bg-white/[0.07] transition-colors"
+              >
+                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-accent-mint/15 border border-accent-mint/30 text-accent-mint text-sm font-bold shrink-0">
+                  {i + 1}
+                </span>
+                <span className="space-y-1 min-w-0">
+                  <span className="flex items-center gap-2 text-sm font-semibold text-white">
+                    <Icon className="w-4 h-4 text-accent-cyan shrink-0" />
+                    {copy.getStarted.steps[i].title}
+                  </span>
+                  <span className="block text-xs text-txt-secondary leading-relaxed">
+                    {copy.getStarted.steps[i].desc}
+                  </span>
+                </span>
+                <DirectionalArrow className="w-4 h-4 text-txt-muted group-hover:text-accent-mint transition-colors ms-auto shrink-0 mt-0.5" />
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* 1. AI Marketing Assistant Command Center Hero with Cursor Spotlight */}
       <section
         onMouseMove={handleSpotlightMove}

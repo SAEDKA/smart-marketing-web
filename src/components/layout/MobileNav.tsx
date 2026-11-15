@@ -43,7 +43,7 @@ export const MobileNav = React.memo(function MobileNav({ isOpen, onClose, onOpen
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { t, locale } = useI18n();
-  const { user, logout, switchRole } = useAuth();
+  const { user, logout } = useAuth();
 
   const isAdmin = user?.role === "SYSTEM_ADMIN";
   const currentAdminTab = searchParams.get("tab") || "overview";
@@ -330,31 +330,11 @@ export const MobileNav = React.memo(function MobileNav({ isOpen, onClose, onOpen
 
             {/* Drawer Footer */}
             <div className="p-4 border-t border-white/10 bg-black/30 space-y-2.5 shrink-0">
-              {/* Role Toggle */}
-              <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/5 text-xs">
+              {/* Current role */}
+              <div className="flex items-center p-2.5 rounded-xl bg-white/5 text-xs">
                 <span className="text-txt-secondary text-[11px]">
                   {isAdmin ? t.nav.roleAdmin : t.nav.roleOwner}
                 </span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    onClose();
-                    switchRole(isAdmin ? "COMPANY_OWNER" : "SYSTEM_ADMIN");
-                  }}
-                  className="text-[10px] text-accent-violet font-semibold px-2.5 py-1 rounded-lg bg-accent-violet/15"
-                >
-                  {locale === "ar"
-                    ? isAdmin
-                      ? "حساب العميل"
-                      : "حساب الأدمن"
-                    : locale === "tr"
-                    ? isAdmin
-                      ? "Müşteri Hesabı"
-                      : "Admin Hesabı"
-                    : isAdmin
-                    ? "Client Account"
-                    : "Admin Account"}
-                </button>
               </div>
 
               <button

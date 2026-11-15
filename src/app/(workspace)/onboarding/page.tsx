@@ -27,7 +27,6 @@ export default function OnboardingPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
-  const [simulateFailure] = useState(false);
 
   // Form State
   const [companyName, setCompanyName] = useState("Lumiere Artisan Roasters");
@@ -120,7 +119,7 @@ export default function OnboardingPage() {
         preferredLanguage,
         communicationTone,
         brandInformation,
-        simulateFailure,
+        simulateFailure: false,
       });
       setIsSaved(true);
     } catch (err: unknown) {

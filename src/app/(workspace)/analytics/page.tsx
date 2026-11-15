@@ -159,8 +159,8 @@ export default function AnalyticsPage() {
                 {summary.reachChangePercent}%
               </span>
             </div>
-            <div className="text-[11px] text-slate-500 font-mono">
-              Unique targeted accounts
+            <div className="text-[11px] text-slate-500">
+              {t.analytics.reachHint}
             </div>
           </div>
 
@@ -183,8 +183,8 @@ export default function AnalyticsPage() {
                 {summary.impressionsChangePercent}%
               </span>
             </div>
-            <div className="text-[11px] text-slate-500 font-mono">
-              {(summary.impressions / (summary.reach || 1)).toFixed(2)}x view frequency
+            <div className="text-[11px] text-slate-500">
+              {t.analytics.impressionsHint}
             </div>
           </div>
 
@@ -207,8 +207,8 @@ export default function AnalyticsPage() {
                 {summary.engagementChangePercent}%
               </span>
             </div>
-            <div className="text-[11px] text-pink-400/90 font-mono">
-              Top 10% in Specialty Coffee
+            <div className="text-[11px] text-slate-500">
+              {t.analytics.engagementHint}
             </div>
           </div>
 

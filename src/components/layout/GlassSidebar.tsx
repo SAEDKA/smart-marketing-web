@@ -47,7 +47,7 @@ export const GlassSidebar = React.memo(function GlassSidebar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { t, dir, locale } = useI18n();
-  const { user, logout, switchRole } = useAuth();
+  const { user, logout } = useAuth();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const isAdmin = user?.role === "SYSTEM_ADMIN";
@@ -443,37 +443,17 @@ export const GlassSidebar = React.memo(function GlassSidebar() {
         ))}
       </div>
 
-      {/* Bottom Dock: Role View Switcher & User Profile */}
+      {/* Bottom Dock: User Profile */}
       <div className="p-3.5 border-t border-white/10 bg-navy-950/50 shrink-0 space-y-2.5">
         {!isCollapsed ? (
           <>
-            <div className="flex items-center justify-between px-2.5 py-2 rounded-[13px] bg-white/5 border border-white/10 text-xs">
+            <div className="flex items-center px-2.5 py-2 rounded-[13px] bg-white/5 border border-white/10 text-xs">
               <div className="flex items-center gap-2 truncate">
                 <UserCheck className="w-3.5 h-3.5 text-accent-cyan shrink-0" />
                 <span className="text-txt-secondary truncate text-[11px] font-medium">
                   {isAdmin ? t.nav.roleAdmin : t.nav.roleOwner}
                 </span>
               </div>
-              <button
-                type="button"
-                onClick={() =>
-                  switchRole(isAdmin ? "COMPANY_OWNER" : "SYSTEM_ADMIN")
-                }
-                title={t.nav.switchRole}
-                className="text-[10px] font-semibold text-accent-violet hover:text-white px-2 py-0.5 rounded-md bg-accent-violet/15 hover:bg-accent-violet/30 border border-accent-violet/30 transition-colors"
-              >
-                {locale === "ar"
-                  ? isAdmin
-                    ? "حساب العميل"
-                    : "حساب الأدمن"
-                  : locale === "tr"
-                  ? isAdmin
-                    ? "Müşteri Hesabı"
-                    : "Admin Hesabı"
-                  : isAdmin
-                  ? "Client Account"
-                  : "Admin Account"}
-              </button>
             </div>
 
             <div className="flex items-center justify-between pt-1">

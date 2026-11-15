@@ -72,8 +72,6 @@ export default function ProductsPage() {
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [isSavingProduct, setIsSavingProduct] = useState(false);
 
-  // Media upload simulation state (WEB-02-02)
-  const [simulateUploadFail] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [, setIsUploadingMedia] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -238,7 +236,7 @@ export default function ProductsPage() {
         fileName: file.name,
         fileSize: file.size,
         mimeType: file.type || "image/jpeg",
-        simulateFailure: simulateUploadFail,
+        simulateFailure: false,
       });
 
       // Update local state

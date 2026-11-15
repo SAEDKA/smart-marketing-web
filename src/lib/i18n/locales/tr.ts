@@ -34,8 +34,6 @@ export const tr: Dictionary = {
       logout: "Oturumu Kapat",
       collapseSidebar: "Menüyü Daralt",
       expandSidebar: "Menüyü Genişlet",
-      switchRole: "Rol Değiştir",
-      simulateExpiry: "Oturum Süresi Testi",
       roleOwner: "Şirket Sahibi",
       roleAdmin: "Sistem Yöneticisi",
     },
@@ -480,6 +478,9 @@ export const tr: Dictionary = {
       reachLabel: "Kitle Erişimi",
       impressionsLabel: "Toplam Gösterim",
       engagementRateLabel: "Ort. Etkileşim Oranı",
+      reachHint: "Gönderilerinizi kaç farklı kişi gördü",
+      impressionsHint: "Gönderileriniz toplamda kaç kez gösterildi",
+      engagementHint: "Kitlenizden gelen beğeni, yorum ve paylaşımlar",
       likesLabel: "Toplam Beğeni",
       commentsLabel: "Yorumlar",
       sharesLabel: "Paylaşımlar",
@@ -499,6 +500,8 @@ export const tr: Dictionary = {
       title: "SWOT Zekası ve Strateji",
       subtitle:
         "Veriye dayalı güçlü ve zayıf yönler, fırsatlar, tehditler ve önceliklendirilmiş YZ pazarlama direktifleri.",
+      swotHint:
+        "Sade bir dille: işletmenizin iyi yaptığı şeyler, geliştirmesi gerekenler ve çevresindeki fırsatlarla riskler. Aşağıdaki kutular her birini açıklar.",
       swotTitle: "Kanıta Dayalı SWOT Matrisi",
       swotSubtitle:
         "Her güçlü yön, zayıflık, fırsat ve tehdit gözlemlenen yayın verileriyle somutlaştırılmıştır.",
@@ -518,8 +521,6 @@ export const tr: Dictionary = {
       insufficientDataTitle: "Yetersiz Geçmiş Performans Verisi",
       insufficientDataDesc:
         "Kanıta dayalı SWOT analizi, kitle telemetrisi toplanmış en az 3 yayınlanmış gönderi gerektirir. Tam zeka raporu oluşturmak için sosyal hesapları bağlayıp kampanyaları yayınlayın.",
-      insufficientToggle: "Yetersiz Veri Durumunu Simüle Et",
-      sufficientToggle: "Tam Kanıt Matrisini Görüntüle",
       regenerateReport: "Yeni Rapor Sentezle",
       regenerating: "YZ Matrisi Sentezleniyor...",
       applyToCampaign: "Direktiften Kampanya Başlat",
