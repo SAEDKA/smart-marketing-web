@@ -189,7 +189,6 @@ export default function ContentStudioPage() {
         contentLanguage: selectedLanguage,
         tone: selectedTone,
         customPrompt: customPrompt.trim(),
-        mediaNames: attachedImages.map((img) => img.name),
         simulateFailure: false,
       });
 
@@ -214,13 +213,9 @@ export default function ContentStudioPage() {
   const handleCreatePost = async (status: "DRAFT" | "PENDING_REVIEW") => {
     if (!currentVariant || !activeCampaign) return;
 
-    // The ad needs a face: an uploaded photo, or a product that has one.
+    // An attached photo becomes the ad's face when there is one.
     const coverImage =
       attachedImages[0]?.url || activeProduct?.media[0]?.url;
-    if (status === "PENDING_REVIEW" && !coverImage) {
-      setErrorMessage(t.studio.uploadRequired);
-      return;
-    }
 
     setIsSubmittingPost(true);
     setSuccessBanner(null);

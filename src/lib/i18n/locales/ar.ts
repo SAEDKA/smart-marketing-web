@@ -349,8 +349,6 @@ export const ar: Dictionary = {
         "الصورة هي وجه إعلانك — وبتورّي الذكاء الاصطناعي شكل منتجك الحقيقي.",
       uploadCta: "انقر للرفع أو اسحب الصور لهون",
       uploadMainBadge: "الغلاف",
-      uploadRequired:
-        "أضف صورة وحدة على الأقل (أو اختر منتج إلو صور) قبل الإرسال للمراجعة.",
       removeImageLabel: "حذف الصورة",
       platformSelect: "منصة النشر المستهدفة",
       languageSelect: "لغة المحتوى",

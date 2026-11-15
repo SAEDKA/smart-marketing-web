@@ -351,8 +351,6 @@ export const tr: Dictionary = {
         "Fotoğraf, reklamınızın yüzüdür — yapay zekaya da ürününüzün gerçek görünümünü gösterir.",
       uploadCta: "Yüklemek için tıklayın ya da görselleri buraya sürükleyin",
       uploadMainBadge: "Kapak",
-      uploadRequired:
-        "İncelemeye göndermeden önce en az bir fotoğraf ekleyin (ya da fotoğrafı olan bir ürün seçin).",
       removeImageLabel: "Görseli kaldır",
       platformSelect: "Hedef Yayın Platformu",
       languageSelect: "İçerik Dili",

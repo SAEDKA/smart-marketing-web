@@ -236,7 +236,6 @@ export interface AiGenerationRequest {
   contentLanguage: ContentLanguage;
   tone: CommunicationTone;
   customPrompt?: string;
-  mediaNames?: string[];
   simulateFailure?: boolean;
 }
 

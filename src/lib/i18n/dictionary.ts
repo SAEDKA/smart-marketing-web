@@ -311,7 +311,6 @@ export interface Dictionary {
     uploadHint: string;
     uploadCta: string;
     uploadMainBadge: string;
-    uploadRequired: string;
     removeImageLabel: string;
     platformSelect: string;
     languageSelect: string;
