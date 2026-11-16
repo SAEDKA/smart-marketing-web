@@ -100,15 +100,14 @@ export default function WorkspaceLayout({
       <div className="relative z-10 flex-1 flex flex-col min-w-0 min-h-screen">
         <TopHeader onOpenMobileNav={openMobileNav} />
 
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 pb-24 lg:pb-10 max-w-7xl w-full mx-auto">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 pb-10 max-w-7xl w-full mx-auto">
           {isUnauthorized ? <UnauthorizedView /> : children}
         </main>
 
-        {/* Mobile Navigation (Bottom bar + Slide drawer) */}
+        {/* Mobile navigation drawer */}
         <MobileNav
           isOpen={mobileNavOpen}
           onClose={closeMobileNav}
-          onOpen={openMobileNav}
         />
       </div>
 

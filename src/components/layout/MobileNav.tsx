@@ -43,10 +43,9 @@ import {
 interface MobileNavProps {
   isOpen: boolean;
   onClose: () => void;
-  onOpen?: () => void;
 }
 
-export const MobileNav = React.memo(function MobileNav({ isOpen, onClose, onOpen }: MobileNavProps) {
+export const MobileNav = React.memo(function MobileNav({ isOpen, onClose }: MobileNavProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { t, locale } = useI18n();
@@ -68,37 +67,6 @@ export const MobileNav = React.memo(function MobileNav({ isOpen, onClose, onOpen
     };
   }, [isOpen]);
 
-  const customerBottomNav = [
-    { href: "/dashboard", icon: LayoutDashboard, label: t.nav.dashboard },
-    { href: "/products", icon: ShoppingBag, label: t.nav.products },
-    { href: "/campaigns", icon: Megaphone, label: t.nav.campaigns },
-    { href: "/content-studio", icon: Sparkles, label: t.nav.contentStudio },
-  ];
-
-  const adminBottomNav = [
-    {
-      href: "/admin?tab=overview",
-      icon: ShieldCheck,
-      label: locale === "ar" ? "نظرة عامة" : locale === "tr" ? "Genel" : "Overview",
-    },
-    {
-      href: "/admin?tab=traffic",
-      icon: Activity,
-      label: locale === "ar" ? "الزوار" : locale === "tr" ? "Trafik" : "Traffic",
-    },
-    {
-      href: "/admin?tab=tenants",
-      icon: Users,
-      label: locale === "ar" ? "الشركات" : locale === "tr" ? "Şirketler" : "Companies",
-    },
-    {
-      href: "/admin?tab=complaints",
-      icon: MessageSquareWarning,
-      label: locale === "ar" ? "الشكاوى" : locale === "tr" ? "Şikayetler" : "Tickets",
-    },
-  ];
-
-  const primaryBottomNav = isAdmin ? adminBottomNav : customerBottomNav;
 
   const customerDrawerLinks = [
     {
@@ -223,67 +191,13 @@ export const MobileNav = React.memo(function MobileNav({ isOpen, onClose, onOpen
 
   return (
     <>
-      {/* Mobile Bottom Navigation Bar (Visible only on <lg screens) */}
-      <nav
-        aria-label="Mobile Bottom Navigation"
-        className="lg:hidden fixed bottom-0 inset-x-0 z-30 h-16 bg-navy-950/85 backdrop-blur-xl border-t border-white/10 px-2 flex items-center justify-around shadow-2xl"
-      >
-        {primaryBottomNav.map((item) => {
-          const Icon = item.icon;
-          const isActive = isLinkActive(item.href);
-          if (!isAdmin && isHrefLocked(accessTier, item.href)) {
-            return (
-              <button
-                key={item.href}
-                type="button"
-                onClick={handleLockedClick}
-                className="flex flex-col items-center justify-center gap-1 flex-1 py-1 text-[10px] font-medium text-txt-muted opacity-45"
-              >
-                <Icon className="w-5 h-5" />
-                <span className="truncate max-w-[64px]">{item.label}</span>
-              </button>
-            );
-          }
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "flex flex-col items-center justify-center gap-1 flex-1 py-1 text-[10px] font-medium transition-colors",
-                isActive
-                  ? "text-accent-cyan"
-                  : "text-txt-muted hover:text-white"
-              )}
-            >
-              <Icon
-                className={cn(
-                  "w-5 h-5 transition-transform",
-                  isActive && "scale-110 text-accent-cyan"
-                )}
-              />
-              <span className="truncate max-w-[64px]">{item.label}</span>
-            </Link>
-          );
-        })}
-
-        {/* Menu Drawer Toggle */}
-        <button
-          type="button"
-          onClick={() => (isOpen ? onClose() : onOpen ? onOpen() : onClose())}
-          aria-expanded={isOpen}
-          className="flex flex-col items-center justify-center gap-1 flex-1 py-1 text-[10px] font-medium text-txt-muted hover:text-white"
-        >
-          <Menu className="w-5 h-5" />
-          <span>{locale === "ar" ? "القائمة" : locale === "tr" ? "Menü" : "Menu"}</span>
-        </button>
-      </nav>
 
       {/* Slide-over Full Drawer */}
       {isOpen && (
         <div
           role="dialog"
           aria-modal="true"
-          className="lg:hidden fixed inset-0 z-50 flex justify-end"
+          className="lg:hidden fixed inset-0 z-50 flex justify-start"
         >
           {/* Backdrop */}
           <div
@@ -292,7 +206,12 @@ export const MobileNav = React.memo(function MobileNav({ isOpen, onClose, onOpen
           />
 
           {/* Drawer Content */}
-          <div className="relative z-10 w-4/5 max-w-sm h-full glass-panel border-s border-white/15 flex flex-col shadow-2xl animate-in slide-in-from-right duration-200">
+          <div
+            className={cn(
+              "relative z-10 w-4/5 max-w-sm h-full glass-panel border-e border-white/15 flex flex-col shadow-2xl animate-in duration-200",
+              locale === "ar" ? "slide-in-from-right" : "slide-in-from-left"
+            )}
+          >
             {/* Header */}
             <div className="h-16 px-5 border-b border-white/10 flex items-center justify-between shrink-0">
               <div className="flex items-center gap-2.5">

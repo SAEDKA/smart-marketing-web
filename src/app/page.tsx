@@ -224,10 +224,10 @@ export default function LandingPage() {
     <div className="min-h-screen flex flex-col bg-navy-950 text-white relative overflow-x-hidden">
       {/* Top Navigation Header */}
       <header className="sticky top-0 z-40 h-20 glass-panel border-b border-white/10 px-4 sm:px-8">
-        <div className="max-w-7xl mx-auto h-full flex items-center justify-between gap-4">
+        <div className="max-w-7xl mx-auto h-full flex items-center justify-between gap-2 sm:gap-4">
           <Link href="/" className="flex items-center gap-3 group">
             <BrandLogo priority className="w-10 h-10 shadow-glow-violet group-hover:scale-105 transition-transform" />
-            <div>
+            <div className="hidden min-[480px]:block">
               <span className="text-sm font-bold tracking-tight text-white block">
                 SMART MARKETING
               </span>
@@ -251,15 +251,16 @@ export default function LandingPage() {
 
           <div className="flex items-center gap-2.5">
             <LanguageSwitcher />
-            <Link href={isAuthenticated ? "/dashboard" : "/login"} className="hidden sm:block">
-              <Button variant="secondary" size="sm">
+            <Link href={isAuthenticated ? "/dashboard" : "/login"} className="hidden sm:block shrink-0">
+              <Button variant="secondary" size="sm" className="whitespace-nowrap">
                 {isAuthenticated ? copy.openDashboard : copy.signIn}
               </Button>
             </Link>
-            <Link href="/dashboard">
+            <Link href="/dashboard" className="shrink-0">
               <Button
                 variant="primary"
                 size="sm"
+                className="whitespace-nowrap"
                 rightIcon={<DirectionalArrow className="w-3.5 h-3.5" />}
               >
                 {copy.openDashboard}
