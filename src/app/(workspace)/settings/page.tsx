@@ -7,6 +7,7 @@ import { useTheme } from "@/lib/theme/context";
 import type { ThemeName } from "@/lib/theme/theme";
 import { accountApi } from "@/lib/api/notifications.api";
 import { adminApi } from "@/lib/api/admin.api";
+import { companyApi } from "@/lib/api/company.api";
 import { AdminComplaintTicket, ApiErrorShape } from "@/types/domain";
 import {
   Settings,
@@ -133,10 +134,18 @@ export default function SettingsPage() {
     if (!ticketSubject.trim() || !ticketMessage.trim()) return;
     try {
       setTicketLoading(true);
+      // The ticket carries the signed-in user's OWN company name.
+      let ticketCompanyName = "";
+      try {
+        const profileRes = await companyApi.getProfile();
+        ticketCompanyName = profileRes.data?.companyName || "";
+      } catch {
+        // Fall back to the account holder's name below.
+      }
       await adminApi.submitComplaint({
-        companyName: "Lumiere Artisan Roasters",
-        ownerName: session?.user.fullName || "Sarah Jenkins",
-        ownerEmail: session?.user.email || "sarah@lumierecoffee.com",
+        companyName: ticketCompanyName || session?.user.fullName || "",
+        ownerName: session?.user.fullName || "",
+        ownerEmail: session?.user.email || "",
         category: ticketCategory,
         priority: "MEDIUM",
         subject: ticketSubject.trim(),

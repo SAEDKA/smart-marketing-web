@@ -60,9 +60,10 @@ function wrapMockResponse<T>(data: T): ApiResponse<T> {
 
 // Seeded fresh-owner test account (nour@nurstore.com): signs in with no
 // company, so the access ladder can be walked end to end. Her onboarding
-// state lives here because the shared mock company profile belongs to
-// the seeded Lumiere workspace; completing PUT /company/onboarding
-// flips it, and the client session mirrors it via completeOnboarding().
+// state lives here because her session starts company-less; completing
+// PUT /company/onboarding creates HER OWN workspace (cmp_owner_nour),
+// flips this flag, and the client session mirrors it via
+// completeOnboarding(companyId).
 let mockFreshOwnerOnboarded = false;
 
 let mockCompanyProfile: CompanyProfile = {
@@ -1129,12 +1130,164 @@ let mockUserProfile: AuthUser = {
   createdAt: "2026-10-01T08:00:00.000Z",
 };
 
+// ---------------------------------------------------------------------------
+// Per-account workspaces (data isolation)
+//
+// Every company's data lives in its own MockWorkspace. The fixtures above
+// seed exactly one workspace — the Lumiere demo company — and remain as
+// its initializers. All company-data handlers read and write ONLY through
+// the workspace resolved for the caller (the "principal"), so a fresh
+// owner never sees another company's products, posts, analytics or SWOT.
+//
+// Resolution rules:
+//   - no principal (server-side calls, the test suite) → Lumiere workspace
+//   - SYSTEM_ADMIN → Lumiere workspace (admin endpoints are global anyway)
+//   - principal with a companyId → that company's workspace, created
+//     empty on first sight (the session already vouches for it)
+//   - signed-in owner with NO companyId (pre-onboarding) → a throwaway
+//     empty workspace; only PUT /company/onboarding persists one for him
+// ---------------------------------------------------------------------------
+
+interface MockWorkspace {
+  profile: CompanyProfile;
+  brand: BrandSettings;
+  products: Product[];
+  campaigns: Campaign[];
+  posts: Post[];
+  socialAccounts: SocialAccount[];
+  notifications: NotificationItem[];
+  analyticsSummary: AnalyticsMetricSummary;
+  analyticsTrends: AnalyticsTrendPoint[];
+  platformBreakdowns: PlatformMetricBreakdown[];
+  swot: SwotReport;
+}
+
+const LUMIERE_COMPANY_ID = "cmp_lumiere_01";
+
+function blankProfile(id: string, onboardingCompleted: boolean): CompanyProfile {
+  return {
+    id,
+    companyName: "",
+    industry: "",
+    description: "",
+    targetAudience: "",
+    countryRegion: "",
+    preferredLanguage: "en",
+    communicationTone: "PROFESSIONAL",
+    brandInformation: "",
+    onboardingCompleted,
+    updatedAt: new Date().toISOString(),
+  };
+}
+
+function emptyWorkspace(profile: CompanyProfile): MockWorkspace {
+  const now = new Date().toISOString();
+  return {
+    profile,
+    brand: {
+      companyId: profile.id,
+      brandName: profile.companyName,
+      brandDescription: profile.description,
+      communicationTone: profile.communicationTone,
+      preferredLanguage: profile.preferredLanguage,
+      targetAudienceSummary: "",
+      keyValueProposition: "",
+      brandGuidelines: "",
+      updatedAt: now,
+    },
+    products: [],
+    campaigns: [],
+    posts: [],
+    socialAccounts: [],
+    notifications: [],
+    analyticsSummary: {
+      reach: 0,
+      impressions: 0,
+      engagementRate: 0,
+      likes: 0,
+      comments: 0,
+      shares: 0,
+      saves: 0,
+      linkClicks: 0,
+      clickThroughRate: 0,
+      reachChangePercent: 0,
+      impressionsChangePercent: 0,
+      engagementChangePercent: 0,
+      clicksChangePercent: 0,
+      measuredPeriod: "",
+      lastSynchronizedAt: now,
+    },
+    analyticsTrends: [],
+    platformBreakdowns: [],
+    swot: {
+      companyId: profile.id,
+      generatedAt: now,
+      hasSufficientData: false,
+      publishedPostsCount: 0,
+      items: [],
+      recommendations: [],
+    },
+  };
+}
+
+const workspaces = new Map<string, MockWorkspace>();
+workspaces.set(LUMIERE_COMPANY_ID, {
+  profile: mockCompanyProfile,
+  brand: mockBrandSettings,
+  products: mockProducts,
+  campaigns: mockCampaigns,
+  posts: mockPosts,
+  socialAccounts: mockSocialAccounts,
+  notifications: mockNotifications,
+  analyticsSummary: mockAnalyticsSummary,
+  analyticsTrends: mockAnalyticsTrends,
+  platformBreakdowns: mockPlatformBreakdowns,
+  swot: mockSwotReport,
+});
+
+function lumiereWorkspace(): MockWorkspace {
+  return workspaces.get(LUMIERE_COMPANY_ID) as MockWorkspace;
+}
+
+function companyIdForUser(userId: string): string {
+  return "cmp_" + userId.replace(/^usr_/, "");
+}
+
+function getOrCreateWorkspace(companyId: string): MockWorkspace {
+  let ws = workspaces.get(companyId);
+  if (!ws) {
+    // The session already vouches for this company (it says onboarding
+    // is complete), so the blank profile starts completed too.
+    ws = emptyWorkspace(blankProfile(companyId, true));
+    workspaces.set(companyId, ws);
+  }
+  return ws;
+}
+
+function resolveWorkspace(principal?: AuthUser | null): MockWorkspace {
+  if (!principal) return lumiereWorkspace();
+  if (principal.role === "SYSTEM_ADMIN") return lumiereWorkspace();
+  if (principal.companyId) return getOrCreateWorkspace(principal.companyId);
+  // Signed-in owner who has not finished onboarding: no company yet.
+  return emptyWorkspace(blankProfile("", false));
+}
+
+// Per-user account profiles for GET/PUT /account/profile when a
+// principal is present; login and register record their session user.
+const mockUsers = new Map<string, AuthUser>();
+
 export async function mockRequestHandler<T>(
   method: string,
   endpoint: string,
-  body?: unknown
+  body?: unknown,
+  principal?: AuthUser | null
 ): Promise<ApiResponse<T>> {
   await delay();
+
+  // The caller's workspace, resolved once per request. Auth handlers
+  // below manage their own targeting; every company-data handler reads
+  // and writes through `ws` only.
+  const ws = resolveWorkspace(principal);
 
   // AUTH: POST /auth/login (BE-01-03)
   if (method === "POST" && endpoint === "/auth/login") {
@@ -1167,6 +1320,8 @@ export async function mockRequestHandler<T>(
 
     // Seeded fresh-owner account: a real registration with no company
     // yet, used to walk the access ladder (account → company → full).
+    // Once onboarded she owns HER OWN workspace (cmp_owner_nour) — she
+    // never joins the Lumiere demo company.
     if (payload.email.toLowerCase() === "nour@nurstore.com") {
       const freshSession: AuthSession = {
         user: {
@@ -1177,13 +1332,14 @@ export async function mockRequestHandler<T>(
           emailVerified: true,
           onboardingCompleted: mockFreshOwnerOnboarded,
           companyId: mockFreshOwnerOnboarded
-            ? mockCompanyProfile.id
+            ? companyIdForUser("usr_owner_nour")
             : undefined,
           createdAt: "2026-11-15T09:00:00.000Z",
         },
         expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 8).toISOString(),
         isSimulated: true,
       };
+      mockUsers.set(freshSession.user.id, freshSession.user);
       return wrapMockResponse(freshSession as unknown as T);
     }
 
@@ -1195,14 +1351,15 @@ export async function mockRequestHandler<T>(
         fullName: isAdmin ? "Kemal Arslan (System Admin)" : "Sarah Jenkins",
         role: isAdmin ? "SYSTEM_ADMIN" : "COMPANY_OWNER",
         emailVerified: true,
-        onboardingCompleted: mockCompanyProfile.onboardingCompleted,
+        onboardingCompleted: lumiereWorkspace().profile.onboardingCompleted,
         // Platform admin has no company; only client accounts do.
-        companyId: isAdmin ? undefined : mockCompanyProfile.id,
+        companyId: isAdmin ? undefined : lumiereWorkspace().profile.id,
         createdAt: "2026-10-01T09:00:00.000Z",
       },
       expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 8).toISOString(),
       isSimulated: true,
     };
+    mockUsers.set(session.user.id, session.user);
     return wrapMockResponse(session as unknown as T);
   }
 
@@ -1220,32 +1377,42 @@ export async function mockRequestHandler<T>(
       };
       throw err;
     }
-    mockCompanyProfile = {
-      ...mockCompanyProfile,
-      companyName: payload.companyName || mockCompanyProfile.companyName,
+    // A registration creates the owner's OWN empty workspace, derived
+    // from his email. It never touches the Lumiere demo workspace.
+    const slug = payload.email.toLowerCase().replace(/[^a-z0-9]+/g, "_");
+    const userId = `usr_${slug}`;
+    const companyId = `cmp_${slug}`;
+    const now = new Date().toISOString();
+    const profile: CompanyProfile = {
+      id: companyId,
+      companyName: payload.companyName || "",
+      industry: "",
+      description: "",
+      targetAudience: "",
+      countryRegion: "",
+      preferredLanguage: "en",
+      communicationTone: "PROFESSIONAL",
+      brandInformation: "",
       onboardingCompleted: false,
-      updatedAt: new Date().toISOString(),
+      updatedAt: now,
     };
-    mockBrandSettings = {
-      ...mockBrandSettings,
-      brandName: payload.companyName || mockBrandSettings.brandName,
-      updatedAt: new Date().toISOString(),
-    };
+    workspaces.set(companyId, emptyWorkspace(profile));
 
     const session: AuthSession = {
       user: {
-        id: "usr_owner_new",
+        id: userId,
         email: payload.email,
         fullName: payload.fullName,
         role: "COMPANY_OWNER",
         emailVerified: false,
         onboardingCompleted: false,
-        companyId: mockCompanyProfile.id,
-        createdAt: new Date().toISOString(),
+        companyId,
+        createdAt: now,
       },
       expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 8).toISOString(),
       isSimulated: true,
     };
+    mockUsers.set(session.user.id, session.user);
     return wrapMockResponse(session as unknown as T);
   }
 
@@ -1305,7 +1472,7 @@ export async function mockRequestHandler<T>(
 
   // COMPANY: GET /company/profile (BE-02-01, BE-02-02)
   if (method === "GET" && endpoint === "/company/profile") {
-    return wrapMockResponse({ ...mockCompanyProfile } as unknown as T);
+    return wrapMockResponse({ ...ws.profile } as unknown as T);
   }
 
   // COMPANY: PUT /company/onboarding (BE-02-01, BE-02-02, BE-02-03, BE-02-04)
@@ -1323,76 +1490,90 @@ export async function mockRequestHandler<T>(
       throw err;
     }
 
-    mockCompanyProfile = {
-      ...mockCompanyProfile,
-      companyName: payload.companyName ?? mockCompanyProfile.companyName,
-      industry: payload.industry ?? mockCompanyProfile.industry,
-      description: payload.description ?? mockCompanyProfile.description,
-      targetAudience: payload.targetAudience ?? mockCompanyProfile.targetAudience,
-      countryRegion: payload.countryRegion ?? mockCompanyProfile.countryRegion,
+    // Target workspace: the principal's own company when he has one;
+    // a company-less owner gets his workspace created now (id derived
+    // from his user id); no principal → the Lumiere demo workspace.
+    let target: MockWorkspace;
+    if (principal?.companyId) {
+      target = getOrCreateWorkspace(principal.companyId);
+    } else if (principal) {
+      target = getOrCreateWorkspace(companyIdForUser(principal.id));
+    } else {
+      target = lumiereWorkspace();
+    }
+
+    target.profile = {
+      ...target.profile,
+      companyName: payload.companyName ?? target.profile.companyName,
+      industry: payload.industry ?? target.profile.industry,
+      description: payload.description ?? target.profile.description,
+      targetAudience: payload.targetAudience ?? target.profile.targetAudience,
+      countryRegion: payload.countryRegion ?? target.profile.countryRegion,
       preferredLanguage:
-        payload.preferredLanguage ?? mockCompanyProfile.preferredLanguage,
+        payload.preferredLanguage ?? target.profile.preferredLanguage,
       communicationTone:
-        payload.communicationTone ?? mockCompanyProfile.communicationTone,
+        payload.communicationTone ?? target.profile.communicationTone,
       brandInformation:
-        payload.brandInformation ?? mockCompanyProfile.brandInformation,
+        payload.brandInformation ?? target.profile.brandInformation,
       onboardingCompleted: true,
       updatedAt: new Date().toISOString(),
     };
-    mockFreshOwnerOnboarded = true;
+    if (principal?.id === "usr_owner_nour") {
+      mockFreshOwnerOnboarded = true;
+    }
 
     // Keep brand settings synchronized with onboarding configuration
-    mockBrandSettings = {
-      ...mockBrandSettings,
-      brandName: mockCompanyProfile.companyName,
-      brandDescription: mockCompanyProfile.description,
-      communicationTone: mockCompanyProfile.communicationTone,
-      preferredLanguage: mockCompanyProfile.preferredLanguage,
-      targetAudienceSummary: mockCompanyProfile.targetAudience,
-      brandGuidelines: mockCompanyProfile.brandInformation,
-      updatedAt: mockCompanyProfile.updatedAt,
+    target.brand = {
+      ...target.brand,
+      brandName: target.profile.companyName,
+      brandDescription: target.profile.description,
+      communicationTone: target.profile.communicationTone,
+      preferredLanguage: target.profile.preferredLanguage,
+      targetAudienceSummary: target.profile.targetAudience,
+      brandGuidelines: target.profile.brandInformation,
+      updatedAt: target.profile.updatedAt,
     };
 
-    return wrapMockResponse({ ...mockCompanyProfile } as unknown as T);
+    return wrapMockResponse({ ...target.profile } as unknown as T);
   }
 
   // BRAND: GET /company/brand (BE-02-03, BE-02-04)
   if (method === "GET" && endpoint === "/company/brand") {
-    return wrapMockResponse({ ...mockBrandSettings } as unknown as T);
+    return wrapMockResponse({ ...ws.brand } as unknown as T);
   }
 
   // BRAND: PUT /company/brand (BE-02-03, BE-02-04)
   if (method === "PUT" && endpoint === "/company/brand") {
     const payload = body as Partial<BrandSettings>;
-    mockBrandSettings = {
-      ...mockBrandSettings,
-      brandName: payload.brandName ?? mockBrandSettings.brandName,
+    ws.brand = {
+      ...ws.brand,
+      brandName: payload.brandName ?? ws.brand.brandName,
       brandDescription:
-        payload.brandDescription ?? mockBrandSettings.brandDescription,
+        payload.brandDescription ?? ws.brand.brandDescription,
       communicationTone:
-        payload.communicationTone ?? mockBrandSettings.communicationTone,
+        payload.communicationTone ?? ws.brand.communicationTone,
       preferredLanguage:
-        payload.preferredLanguage ?? mockBrandSettings.preferredLanguage,
+        payload.preferredLanguage ?? ws.brand.preferredLanguage,
       targetAudienceSummary:
-        payload.targetAudienceSummary ?? mockBrandSettings.targetAudienceSummary,
+        payload.targetAudienceSummary ?? ws.brand.targetAudienceSummary,
       keyValueProposition:
-        payload.keyValueProposition ?? mockBrandSettings.keyValueProposition,
+        payload.keyValueProposition ?? ws.brand.keyValueProposition,
       brandGuidelines:
-        payload.brandGuidelines ?? mockBrandSettings.brandGuidelines,
+        payload.brandGuidelines ?? ws.brand.brandGuidelines,
       updatedAt: new Date().toISOString(),
     };
 
-    mockCompanyProfile = {
-      ...mockCompanyProfile,
-      companyName: mockBrandSettings.brandName,
-      communicationTone: mockBrandSettings.communicationTone,
-      preferredLanguage: mockBrandSettings.preferredLanguage,
-      targetAudience: mockBrandSettings.targetAudienceSummary,
-      brandInformation: mockBrandSettings.brandGuidelines,
-      updatedAt: mockBrandSettings.updatedAt,
+    ws.profile = {
+      ...ws.profile,
+      companyName: ws.brand.brandName,
+      communicationTone: ws.brand.communicationTone,
+      preferredLanguage: ws.brand.preferredLanguage,
+      targetAudience: ws.brand.targetAudienceSummary,
+      brandInformation: ws.brand.brandGuidelines,
+      updatedAt: ws.brand.updatedAt,
     };
 
-    return wrapMockResponse({ ...mockBrandSettings } as unknown as T);
+    return wrapMockResponse({ ...ws.brand } as unknown as T);
   }
 
   const [path, queryString] = endpoint.split("?");
@@ -1400,7 +1581,7 @@ export async function mockRequestHandler<T>(
 
   // PRODUCTS: GET /products (BE-03-01, BE-03-07)
   if (method === "GET" && path === "/products") {
-    let filtered = [...mockProducts];
+    let filtered = [...ws.products];
     const search = queryParams.get("search")?.toLowerCase().trim();
     const status = queryParams.get("status");
     const category = queryParams.get("category");
@@ -1426,7 +1607,7 @@ export async function mockRequestHandler<T>(
   // PRODUCTS: GET /products/:id (BE-03-02)
   if (method === "GET" && path.startsWith("/products/") && !path.includes("/media")) {
     const id = path.replace("/products/", "");
-    const prod = mockProducts.find((p) => p.id === id);
+    const prod = ws.products.find((p) => p.id === id);
     if (!prod) {
       const err: ApiErrorShape = {
         code: "NOT_FOUND",
@@ -1462,7 +1643,7 @@ export async function mockRequestHandler<T>(
 
     const newProduct: Product = {
       id: `prd_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
-      companyId: "cmp_lumiere_01",
+      companyId: ws.profile.id,
       name: payload.name.trim(),
       description: payload.description || "",
       category: payload.category || "General",
@@ -1476,14 +1657,14 @@ export async function mockRequestHandler<T>(
       updatedAt: new Date().toISOString(),
     };
 
-    mockProducts = [newProduct, ...mockProducts];
+    ws.products = [newProduct, ...ws.products];
     return wrapMockResponse(newProduct as unknown as T);
   }
 
   // PRODUCTS: PUT /products/:id (BE-03-04)
   if (method === "PUT" && path.startsWith("/products/") && !path.includes("/media")) {
     const id = path.replace("/products/", "");
-    const index = mockProducts.findIndex((p) => p.id === id);
+    const index = ws.products.findIndex((p) => p.id === id);
     if (index === -1) {
       const err: ApiErrorShape = {
         code: "NOT_FOUND",
@@ -1495,18 +1676,18 @@ export async function mockRequestHandler<T>(
 
     const payload = body as Partial<CreateProductRequest>;
     const updated: Product = {
-      ...mockProducts[index],
+      ...ws.products[index],
       ...payload,
       updatedAt: new Date().toISOString(),
     };
-    mockProducts[index] = updated;
+    ws.products[index] = updated;
     return wrapMockResponse(updated as unknown as T);
   }
 
   // PRODUCTS: DELETE /products/:id (BE-03-04)
   if (method === "DELETE" && path.startsWith("/products/") && !path.includes("/media")) {
     const id = path.replace("/products/", "");
-    const index = mockProducts.findIndex((p) => p.id === id);
+    const index = ws.products.findIndex((p) => p.id === id);
     if (index === -1) {
       const err: ApiErrorShape = {
         code: "NOT_FOUND",
@@ -1515,8 +1696,8 @@ export async function mockRequestHandler<T>(
       };
       throw err;
     }
-    const deleted = mockProducts[index];
-    mockProducts = mockProducts.filter((p) => p.id !== id);
+    const deleted = ws.products[index];
+    ws.products = ws.products.filter((p) => p.id !== id);
     return wrapMockResponse(deleted as unknown as T);
   }
 
@@ -1524,7 +1705,7 @@ export async function mockRequestHandler<T>(
   if (method === "POST" && path.includes("/media") && !path.includes("/reorder")) {
     const parts = path.split("/");
     const productId = parts[2];
-    const prod = mockProducts.find((p) => p.id === productId);
+    const prod = ws.products.find((p) => p.id === productId);
     if (!prod) {
       const notFound: ApiErrorShape = { code: "NOT_FOUND", message: "Product not found", status: 404 };
       throw notFound;
@@ -1584,7 +1765,7 @@ export async function mockRequestHandler<T>(
   if (method === "PUT" && path.includes("/media/reorder")) {
     const parts = path.split("/");
     const productId = parts[2];
-    const prod = mockProducts.find((p) => p.id === productId);
+    const prod = ws.products.find((p) => p.id === productId);
     if (!prod) {
       const notFound: ApiErrorShape = { code: "NOT_FOUND", message: "Product not found", status: 404 };
       throw notFound;
@@ -1611,7 +1792,7 @@ export async function mockRequestHandler<T>(
 
   // CAMPAIGNS: GET /campaigns (BE-04-01, BE-04-07)
   if (method === "GET" && path === "/campaigns") {
-    let filtered = [...mockCampaigns];
+    let filtered = [...ws.campaigns];
     const search = queryParams.get("search")?.toLowerCase().trim();
     const status = queryParams.get("status");
     const objective = queryParams.get("objective");
@@ -1643,7 +1824,7 @@ export async function mockRequestHandler<T>(
   // CAMPAIGNS: GET /campaigns/:id (BE-04-03)
   if (method === "GET" && path.startsWith("/campaigns/")) {
     const id = path.replace("/campaigns/", "");
-    const campaign = mockCampaigns.find((c) => c.id === id);
+    const campaign = ws.campaigns.find((c) => c.id === id);
     if (!campaign) {
       const err: ApiErrorShape = {
         code: "NOT_FOUND",
@@ -1705,7 +1886,7 @@ export async function mockRequestHandler<T>(
 
     const newCampaign: Campaign = {
       id: `cmp_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
-      companyId: "cmp_lumiere_01",
+      companyId: ws.profile.id,
       name: payload.name.trim(),
       objective: payload.objective || "INCREASE_AWARENESS",
       status: payload.status || "DRAFT",
@@ -1722,14 +1903,14 @@ export async function mockRequestHandler<T>(
       updatedAt: new Date().toISOString(),
     };
 
-    mockCampaigns = [newCampaign, ...mockCampaigns];
+    ws.campaigns = [newCampaign, ...ws.campaigns];
     return wrapMockResponse(newCampaign as unknown as T);
   }
 
   // CAMPAIGNS: PUT /campaigns/:id (BE-04-03, BE-04-06) - Status-Aware Editing
   if (method === "PUT" && path.startsWith("/campaigns/")) {
     const id = path.replace("/campaigns/", "");
-    const index = mockCampaigns.findIndex((c) => c.id === id);
+    const index = ws.campaigns.findIndex((c) => c.id === id);
     if (index === -1) {
       const err: ApiErrorShape = {
         code: "NOT_FOUND",
@@ -1739,7 +1920,7 @@ export async function mockRequestHandler<T>(
       throw err;
     }
 
-    const existing = mockCampaigns[index];
+    const existing = ws.campaigns[index];
     const payload = body as Partial<CreateCampaignRequest>;
 
     // Status-based restrictions (BE-04-06): Completed campaigns cannot alter dates or products
@@ -1776,14 +1957,14 @@ export async function mockRequestHandler<T>(
       ...payload,
       updatedAt: new Date().toISOString(),
     };
-    mockCampaigns[index] = updated;
+    ws.campaigns[index] = updated;
     return wrapMockResponse(updated as unknown as T);
   }
 
   // CAMPAIGNS: DELETE /campaigns/:id (BE-04-06)
   if (method === "DELETE" && path.startsWith("/campaigns/")) {
     const id = path.replace("/campaigns/", "");
-    const index = mockCampaigns.findIndex((c) => c.id === id);
+    const index = ws.campaigns.findIndex((c) => c.id === id);
     if (index === -1) {
       const err: ApiErrorShape = {
         code: "NOT_FOUND",
@@ -1792,8 +1973,8 @@ export async function mockRequestHandler<T>(
       };
       throw err;
     }
-    const deleted = mockCampaigns[index];
-    mockCampaigns = mockCampaigns.filter((c) => c.id !== id);
+    const deleted = ws.campaigns[index];
+    ws.campaigns = ws.campaigns.filter((c) => c.id !== id);
     return wrapMockResponse(deleted as unknown as T);
   }
 
@@ -1810,7 +1991,7 @@ export async function mockRequestHandler<T>(
       throw err;
     }
 
-    const prod = mockProducts.find((p) => p.id === payload.productId);
+    const prod = ws.products.find((p) => p.id === payload.productId);
 
     // No product selected: build the variants from the user's own
     // description instead of silently reusing a catalog product.
@@ -1937,7 +2118,7 @@ export async function mockRequestHandler<T>(
 
   // POSTS: GET /posts (BE-05-03, BE-05-05)
   if (method === "GET" && path === "/posts") {
-    let filtered = [...mockPosts];
+    let filtered = [...ws.posts];
     const search = queryParams.get("search")?.toLowerCase().trim();
     const status = queryParams.get("status");
     const platform = queryParams.get("platform");
@@ -1973,7 +2154,7 @@ export async function mockRequestHandler<T>(
     !path.includes("/revert")
   ) {
     const id = path.replace("/posts/", "");
-    const post = mockPosts.find((p) => p.id === id);
+    const post = ws.posts.find((p) => p.id === id);
     if (!post) {
       const err: ApiErrorShape = {
         code: "NOT_FOUND",
@@ -1989,8 +2170,8 @@ export async function mockRequestHandler<T>(
   if (method === "POST" && path === "/posts") {
     const payload = body as CreatePostRequest;
     const camp =
-      mockCampaigns.find((c) => c.id === payload.campaignId) || mockCampaigns[0];
-    const prod = mockProducts.find((p) => p.id === payload.productId);
+      ws.campaigns.find((c) => c.id === payload.campaignId) || ws.campaigns[0];
+    const prod = ws.products.find((p) => p.id === payload.productId);
 
     const initialVersion: PostVersion = {
       id: `ver_${Date.now()}_1`,
@@ -2010,9 +2191,9 @@ export async function mockRequestHandler<T>(
 
     const newPost: Post = {
       id: `pst_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
-      companyId: "cmp_lumiere_01",
+      companyId: ws.profile.id,
       campaignId: payload.campaignId,
-      campaignName: camp.name,
+      campaignName: camp?.name ?? "",
       productId: payload.productId,
       productName: prod?.name,
       platform: payload.platform || "INSTAGRAM",
@@ -2027,7 +2208,7 @@ export async function mockRequestHandler<T>(
       updatedAt: new Date().toISOString(),
     };
 
-    mockPosts = [newPost, ...mockPosts];
+    ws.posts = [newPost, ...ws.posts];
     return wrapMockResponse(newPost as unknown as T);
   }
 
@@ -2040,7 +2221,7 @@ export async function mockRequestHandler<T>(
     !path.includes("/revert")
   ) {
     const id = path.replace("/posts/", "");
-    const index = mockPosts.findIndex((p) => p.id === id);
+    const index = ws.posts.findIndex((p) => p.id === id);
     if (index === -1) {
       const err: ApiErrorShape = {
         code: "NOT_FOUND",
@@ -2050,7 +2231,7 @@ export async function mockRequestHandler<T>(
       throw err;
     }
 
-    const existing = mockPosts[index];
+    const existing = ws.posts[index];
     const payload = body as UpdatePostRequest;
 
     const newVersionNumber = existing.versions.length + 1;
@@ -2079,7 +2260,7 @@ export async function mockRequestHandler<T>(
       updatedAt: new Date().toISOString(),
     };
 
-    mockPosts[index] = updatedPost;
+    ws.posts[index] = updatedPost;
     return wrapMockResponse(updatedPost as unknown as T);
   }
 
@@ -2087,7 +2268,7 @@ export async function mockRequestHandler<T>(
   if (method === "POST" && path.includes("/approve")) {
     const parts = path.split("/");
     const id = parts[2];
-    const index = mockPosts.findIndex((p) => p.id === id);
+    const index = ws.posts.findIndex((p) => p.id === id);
     if (index === -1) {
       throw {
         code: "NOT_FOUND",
@@ -2096,7 +2277,7 @@ export async function mockRequestHandler<T>(
       } as ApiErrorShape;
     }
 
-    const post = mockPosts[index];
+    const post = ws.posts[index];
     if (
       !post.currentVersion.caption ||
       post.currentVersion.caption.trim().length < 10
@@ -2127,7 +2308,7 @@ export async function mockRequestHandler<T>(
       rejectionReason: undefined,
       updatedAt: new Date().toISOString(),
     };
-    mockPosts[index] = approved;
+    ws.posts[index] = approved;
     return wrapMockResponse(approved as unknown as T);
   }
 
@@ -2135,7 +2316,7 @@ export async function mockRequestHandler<T>(
   if (method === "POST" && path.includes("/reject")) {
     const parts = path.split("/");
     const id = parts[2];
-    const index = mockPosts.findIndex((p) => p.id === id);
+    const index = ws.posts.findIndex((p) => p.id === id);
     if (index === -1) {
       throw {
         code: "NOT_FOUND",
@@ -2146,12 +2327,12 @@ export async function mockRequestHandler<T>(
 
     const payload = body as { reason: string };
     const rejected: Post = {
-      ...mockPosts[index],
+      ...ws.posts[index],
       status: "REJECTED",
       rejectionReason: payload.reason || "Revision requested by reviewer.",
       updatedAt: new Date().toISOString(),
     };
-    mockPosts[index] = rejected;
+    ws.posts[index] = rejected;
     return wrapMockResponse(rejected as unknown as T);
   }
 
@@ -2159,7 +2340,7 @@ export async function mockRequestHandler<T>(
   if (method === "POST" && path.includes("/revert")) {
     const parts = path.split("/");
     const id = parts[2];
-    const index = mockPosts.findIndex((p) => p.id === id);
+    const index = ws.posts.findIndex((p) => p.id === id);
     if (index === -1) {
       throw {
         code: "NOT_FOUND",
@@ -2169,7 +2350,7 @@ export async function mockRequestHandler<T>(
     }
 
     const payload = body as { versionNumber: number };
-    const post = mockPosts[index];
+    const post = ws.posts[index];
     const targetVer = post.versions.find(
       (v) => v.versionNumber === payload.versionNumber
     );
@@ -2186,14 +2367,14 @@ export async function mockRequestHandler<T>(
       currentVersion: targetVer,
       updatedAt: new Date().toISOString(),
     };
-    mockPosts[index] = reverted;
+    ws.posts[index] = reverted;
     return wrapMockResponse(reverted as unknown as T);
   }
 
   // POSTS: DELETE /posts/:id
   if (method === "DELETE" && path.startsWith("/posts/")) {
     const id = path.replace("/posts/", "");
-    const index = mockPosts.findIndex((p) => p.id === id);
+    const index = ws.posts.findIndex((p) => p.id === id);
     if (index === -1) {
       throw {
         code: "NOT_FOUND",
@@ -2201,35 +2382,35 @@ export async function mockRequestHandler<T>(
         status: 404,
       } as ApiErrorShape;
     }
-    const deleted = mockPosts[index];
-    mockPosts = mockPosts.filter((p) => p.id !== id);
+    const deleted = ws.posts[index];
+    ws.posts = ws.posts.filter((p) => p.id !== id);
     return wrapMockResponse(deleted as unknown as T);
   }
 
   // SOCIAL INTEGRATIONS: GET /social/accounts (WEB-03-01)
   if (method === "GET" && path === "/social/accounts") {
-    return wrapMockResponse(mockSocialAccounts as unknown as T);
+    return wrapMockResponse(ws.socialAccounts as unknown as T);
   }
 
   // SOCIAL INTEGRATIONS: POST /social/connect (WEB-03-01)
   if (method === "POST" && path === "/social/connect") {
     const payload = body as { platform: SocialPlatform };
-    const existingIndex = mockSocialAccounts.findIndex(
+    const existingIndex = ws.socialAccounts.findIndex(
       (a) => a.platform === payload.platform
     );
     let account: SocialAccount;
     if (existingIndex >= 0) {
       account = {
-        ...mockSocialAccounts[existingIndex],
+        ...ws.socialAccounts[existingIndex],
         status: "CONNECTED",
         tokenExpiresAt: new Date(Date.now() + 60 * 86400000).toISOString(),
         lastSyncedAt: new Date().toISOString(),
       };
-      mockSocialAccounts[existingIndex] = account;
+      ws.socialAccounts[existingIndex] = account;
     } else {
       account = {
         id: `soc_${payload.platform.toLowerCase()}_${Date.now()}`,
-        companyId: "cmp_lumiere_01",
+        companyId: ws.profile.id,
         platform: payload.platform,
         accountName:
           payload.platform === "INSTAGRAM"
@@ -2248,7 +2429,7 @@ export async function mockRequestHandler<T>(
         connectedAt: new Date().toISOString(),
         lastSyncedAt: new Date().toISOString(),
       };
-      mockSocialAccounts.push(account);
+      ws.socialAccounts.push(account);
     }
     return wrapMockResponse({
       redirectUrl: `https://meta.com/oauth/dialog?client_id=mock_app_id&scope=instagram_basic,pages_show_list`,
@@ -2259,7 +2440,7 @@ export async function mockRequestHandler<T>(
   // SOCIAL INTEGRATIONS: POST /social/accounts/:id/reconnect (WEB-03-01)
   if (method === "POST" && path.startsWith("/social/accounts/") && path.endsWith("/reconnect")) {
     const id = path.split("/")[3];
-    const index = mockSocialAccounts.findIndex((a) => a.id === id);
+    const index = ws.socialAccounts.findIndex((a) => a.id === id);
     if (index === -1) {
       throw {
         code: "NOT_FOUND",
@@ -2268,19 +2449,19 @@ export async function mockRequestHandler<T>(
       } as ApiErrorShape;
     }
     const updated: SocialAccount = {
-      ...mockSocialAccounts[index],
+      ...ws.socialAccounts[index],
       status: "CONNECTED",
       tokenExpiresAt: new Date(Date.now() + 60 * 86400000).toISOString(),
       lastSyncedAt: new Date().toISOString(),
     };
-    mockSocialAccounts[index] = updated;
+    ws.socialAccounts[index] = updated;
     return wrapMockResponse(updated as unknown as T);
   }
 
   // SOCIAL INTEGRATIONS: POST /social/accounts/:id/disconnect (WEB-03-01)
   if (method === "POST" && path.startsWith("/social/accounts/") && path.endsWith("/disconnect")) {
     const id = path.split("/")[3];
-    const index = mockSocialAccounts.findIndex((a) => a.id === id);
+    const index = ws.socialAccounts.findIndex((a) => a.id === id);
     if (index === -1) {
       throw {
         code: "NOT_FOUND",
@@ -2288,8 +2469,8 @@ export async function mockRequestHandler<T>(
         status: 404,
       } as ApiErrorShape;
     }
-    mockSocialAccounts[index] = {
-      ...mockSocialAccounts[index],
+    ws.socialAccounts[index] = {
+      ...ws.socialAccounts[index],
       status: "DISCONNECTED",
       lastSyncedAt: new Date().toISOString(),
     };
@@ -2299,7 +2480,7 @@ export async function mockRequestHandler<T>(
   // PUBLISHING CALENDAR: GET /publishing/calendar (WEB-03-02)
   if (method === "GET" && path === "/publishing/calendar") {
     // Return posts that are scheduled, published, or failed (or all workspace posts)
-    return wrapMockResponse(mockPosts as unknown as T);
+    return wrapMockResponse(ws.posts as unknown as T);
   }
 
   // PUBLISHING CALENDAR: POST /publishing/schedule (WEB-03-02)
@@ -2320,7 +2501,7 @@ export async function mockRequestHandler<T>(
       } as ApiErrorShape;
     }
 
-    const postIndex = mockPosts.findIndex((p) => p.id === payload.postId);
+    const postIndex = ws.posts.findIndex((p) => p.id === payload.postId);
     if (postIndex === -1) {
       throw {
         code: "NOT_FOUND",
@@ -2329,7 +2510,7 @@ export async function mockRequestHandler<T>(
       } as ApiErrorShape;
     }
 
-    const targetPost = mockPosts[postIndex];
+    const targetPost = ws.posts[postIndex];
     if (targetPost.status !== "APPROVED" && targetPost.status !== "SCHEDULED") {
       throw {
         code: "VALIDATION_ERROR",
@@ -2345,14 +2526,14 @@ export async function mockRequestHandler<T>(
       publishingError: undefined,
       updatedAt: new Date().toISOString(),
     };
-    mockPosts[postIndex] = updated;
+    ws.posts[postIndex] = updated;
     return wrapMockResponse(updated as unknown as T);
   }
 
   // PUBLISHING: POST /publishing/posts/:id/cancel-schedule (WEB-03-02)
   if (method === "POST" && path.includes("/cancel-schedule")) {
     const id = path.split("/")[3];
-    const index = mockPosts.findIndex((p) => p.id === id);
+    const index = ws.posts.findIndex((p) => p.id === id);
     if (index === -1) {
       throw {
         code: "NOT_FOUND",
@@ -2361,19 +2542,19 @@ export async function mockRequestHandler<T>(
       } as ApiErrorShape;
     }
     const updated: Post = {
-      ...mockPosts[index],
+      ...ws.posts[index],
       status: "APPROVED",
       scheduledAt: undefined,
       updatedAt: new Date().toISOString(),
     };
-    mockPosts[index] = updated;
+    ws.posts[index] = updated;
     return wrapMockResponse(updated as unknown as T);
   }
 
   // PUBLISHING: POST /publishing/posts/:id/retry (WEB-03-03)
   if (method === "POST" && path.includes("/retry")) {
     const id = path.split("/")[3];
-    const index = mockPosts.findIndex((p) => p.id === id);
+    const index = ws.posts.findIndex((p) => p.id === id);
     if (index === -1) {
       throw {
         code: "NOT_FOUND",
@@ -2382,9 +2563,9 @@ export async function mockRequestHandler<T>(
       } as ApiErrorShape;
     }
 
-    const target = mockPosts[index];
+    const target = ws.posts[index];
     // Check account status
-    const account = mockSocialAccounts.find((a) => a.platform === target.platform);
+    const account = ws.socialAccounts.find((a) => a.platform === target.platform);
     if (account && account.status === "TOKEN_EXPIRED") {
       throw {
         code: "VALIDATION_ERROR",
@@ -2401,14 +2582,14 @@ export async function mockRequestHandler<T>(
       publishingError: undefined,
       updatedAt: new Date().toISOString(),
     };
-    mockPosts[index] = updated;
+    ws.posts[index] = updated;
     return wrapMockResponse(updated as unknown as T);
   }
 
   // PUBLISHING: POST /publishing/posts/:id/publish-now (WEB-03-03)
   if (method === "POST" && path.includes("/publish-now")) {
     const id = path.split("/")[3];
-    const index = mockPosts.findIndex((p) => p.id === id);
+    const index = ws.posts.findIndex((p) => p.id === id);
     if (index === -1) {
       throw {
         code: "NOT_FOUND",
@@ -2418,14 +2599,14 @@ export async function mockRequestHandler<T>(
     }
 
     const updated: Post = {
-      ...mockPosts[index],
+      ...ws.posts[index],
       status: "PUBLISHED",
       publishedAt: new Date().toISOString(),
-      externalPostUrl: `https://${mockPosts[index].platform.toLowerCase()}.com/p/live_${Date.now()}`,
+      externalPostUrl: `https://${ws.posts[index].platform.toLowerCase()}.com/p/live_${Date.now()}`,
       publishingError: undefined,
       updatedAt: new Date().toISOString(),
     };
-    mockPosts[index] = updated;
+    ws.posts[index] = updated;
     return wrapMockResponse(updated as unknown as T);
   }
 
@@ -2434,14 +2615,14 @@ export async function mockRequestHandler<T>(
     const range = queryParams.get("range") || "30d";
     let multiplier = range === "7d" ? 0.35 : range === "14d" ? 0.6 : range === "90d" ? 2.8 : 1.0;
     const summary: AnalyticsMetricSummary = {
-      ...mockAnalyticsSummary,
-      reach: Math.round(mockAnalyticsSummary.reach * multiplier),
-      impressions: Math.round(mockAnalyticsSummary.impressions * multiplier),
-      likes: Math.round(mockAnalyticsSummary.likes * multiplier),
-      comments: Math.round(mockAnalyticsSummary.comments * multiplier),
-      shares: Math.round(mockAnalyticsSummary.shares * multiplier),
-      saves: Math.round(mockAnalyticsSummary.saves * multiplier),
-      linkClicks: Math.round(mockAnalyticsSummary.linkClicks * multiplier),
+      ...ws.analyticsSummary,
+      reach: Math.round(ws.analyticsSummary.reach * multiplier),
+      impressions: Math.round(ws.analyticsSummary.impressions * multiplier),
+      likes: Math.round(ws.analyticsSummary.likes * multiplier),
+      comments: Math.round(ws.analyticsSummary.comments * multiplier),
+      shares: Math.round(ws.analyticsSummary.shares * multiplier),
+      saves: Math.round(ws.analyticsSummary.saves * multiplier),
+      linkClicks: Math.round(ws.analyticsSummary.linkClicks * multiplier),
       measuredPeriod:
         range === "7d"
           ? "Last 7 Days (Nov 04 – Nov 11, 2026)"
@@ -2457,14 +2638,14 @@ export async function mockRequestHandler<T>(
   // ANALYTICS: GET /analytics/trends (WEB-03-04)
   if (method === "GET" && path === "/analytics/trends") {
     const range = queryParams.get("range") || "30d";
-    const sliceCount = range === "7d" ? 7 : range === "14d" ? 14 : mockAnalyticsTrends.length;
-    const trends = mockAnalyticsTrends.slice(-sliceCount);
+    const sliceCount = range === "7d" ? 7 : range === "14d" ? 14 : ws.analyticsTrends.length;
+    const trends = ws.analyticsTrends.slice(-sliceCount);
     return wrapMockResponse(trends as unknown as T);
   }
 
   // ANALYTICS: GET /analytics/platforms (WEB-03-04)
   if (method === "GET" && path === "/analytics/platforms") {
-    return wrapMockResponse(mockPlatformBreakdowns as unknown as T);
+    return wrapMockResponse(ws.platformBreakdowns as unknown as T);
   }
 
   // REPORTS: GET /reports/swot (WEB-03-05)
@@ -2472,25 +2653,27 @@ export async function mockRequestHandler<T>(
     const isInsufficient = queryParams.get("insufficient") === "true";
     if (isInsufficient) {
       const emptyReport: SwotReport = {
-        companyId: "cmp_lumiere_01",
+        companyId: ws.profile.id,
         generatedAt: new Date().toISOString(),
         hasSufficientData: false,
-        publishedPostsCount: 1,
+        publishedPostsCount: ws.posts.filter(
+          (p) => p.status === "PUBLISHED"
+        ).length,
         items: [],
         recommendations: [],
       };
       return wrapMockResponse(emptyReport as unknown as T);
     }
-    return wrapMockResponse(mockSwotReport as unknown as T);
+    return wrapMockResponse(ws.swot as unknown as T);
   }
 
   // REPORTS: POST /reports/swot/regenerate (WEB-03-05)
   if (method === "POST" && path === "/reports/swot/regenerate") {
-    mockSwotReport = {
-      ...mockSwotReport,
+    ws.swot = {
+      ...ws.swot,
       generatedAt: new Date().toISOString(),
     };
-    return wrapMockResponse(mockSwotReport as unknown as T);
+    return wrapMockResponse(ws.swot as unknown as T);
   }
 
   // ADMIN: GET /admin/health (WEB-03-06)
@@ -2665,7 +2848,7 @@ export async function mockRequestHandler<T>(
       isRead: false,
       createdAt: new Date().toISOString(),
     };
-    mockNotifications = [newNotif, ...mockNotifications];
+    ws.notifications = [newNotif, ...ws.notifications];
     mockAdminAuditLogs = [
       {
         id: `log_${Date.now()}`,
@@ -2684,13 +2867,13 @@ export async function mockRequestHandler<T>(
 
   // NOTIFICATIONS: GET /notifications (WEB-03-07)
   if (method === "GET" && path === "/notifications") {
-    return wrapMockResponse(mockNotifications as unknown as T);
+    return wrapMockResponse(ws.notifications as unknown as T);
   }
 
   // NOTIFICATIONS: POST /notifications/:id/read (WEB-03-07)
   if (method === "POST" && path.startsWith("/notifications/") && path.endsWith("/read")) {
     const id = path.split("/")[2];
-    const index = mockNotifications.findIndex((n) => n.id === id);
+    const index = ws.notifications.findIndex((n) => n.id === id);
     if (index === -1) {
       throw {
         code: "NOT_FOUND",
@@ -2698,29 +2881,35 @@ export async function mockRequestHandler<T>(
         status: 404,
       } as ApiErrorShape;
     }
-    mockNotifications[index] = {
-      ...mockNotifications[index],
+    ws.notifications[index] = {
+      ...ws.notifications[index],
       isRead: true,
     };
-    return wrapMockResponse(mockNotifications[index] as unknown as T);
+    return wrapMockResponse(ws.notifications[index] as unknown as T);
   }
 
   // NOTIFICATIONS: POST /notifications/read-all (WEB-03-07)
   if (method === "POST" && path === "/notifications/read-all") {
-    const count = mockNotifications.filter((n) => !n.isRead).length;
-    mockNotifications = mockNotifications.map((n) => ({ ...n, isRead: true }));
+    const count = ws.notifications.filter((n) => !n.isRead).length;
+    ws.notifications = ws.notifications.map((n) => ({ ...n, isRead: true }));
     return wrapMockResponse({ updatedCount: count } as unknown as T);
   }
 
   // NOTIFICATIONS: DELETE /notifications/:id (WEB-03-07)
   if (method === "DELETE" && path.startsWith("/notifications/")) {
     const id = path.replace("/notifications/", "");
-    mockNotifications = mockNotifications.filter((n) => n.id !== id);
+    ws.notifications = ws.notifications.filter((n) => n.id !== id);
     return wrapMockResponse({ success: true, id } as unknown as T);
   }
 
   // ACCOUNT: GET /account/profile (WEB-03-07)
   if (method === "GET" && path === "/account/profile") {
+    if (principal) {
+      // The stored per-user profile wins; otherwise the principal IS
+      // the session user object.
+      const stored = mockUsers.get(principal.id);
+      return wrapMockResponse((stored ?? principal) as unknown as T);
+    }
     return wrapMockResponse(mockUserProfile as unknown as T);
   }
 
@@ -2733,6 +2922,15 @@ export async function mockRequestHandler<T>(
         message: "Full name must be at least 2 characters.",
         status: 400,
       } as ApiErrorShape;
+    }
+    if (principal) {
+      const base = mockUsers.get(principal.id) ?? principal;
+      const updated: AuthUser = {
+        ...base,
+        fullName: payload.fullName.trim(),
+      };
+      mockUsers.set(principal.id, updated);
+      return wrapMockResponse(updated as unknown as T);
     }
     mockUserProfile = {
       ...mockUserProfile,

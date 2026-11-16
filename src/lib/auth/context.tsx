@@ -31,8 +31,12 @@ interface AuthContextValue {
   register: (payload: RegisterRequest) => Promise<void>;
   logout: () => void;
   switchRole: (role: UserRole) => void;
-  /** Mark the company onboarding as completed for the signed-in user. */
-  completeOnboarding: () => void;
+  /**
+   * Mark the company onboarding as completed for the signed-in user.
+   * When the onboarding save returns the company's id, bind the session
+   * to that company so later requests resolve to its own workspace.
+   */
+  completeOnboarding: (companyId?: string) => void;
   simulateSessionExpiry: () => void;
   clearSessionExpiry: () => void;
   setSession: (session: AuthSession | null) => void;
@@ -165,13 +169,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [session, saveSession, router]
   );
 
-  const completeOnboarding = useCallback(() => {
-    if (!session) return;
-    saveSession({
-      ...session,
-      user: { ...session.user, onboardingCompleted: true },
-    });
-  }, [session, saveSession]);
+  const completeOnboarding = useCallback(
+    (companyId?: string) => {
+      if (!session) return;
+      saveSession({
+        ...session,
+        user: {
+          ...session.user,
+          onboardingCompleted: true,
+          ...(typeof companyId === "string" && companyId.length > 0
+            ? { companyId }
+            : {}),
+        },
+      });
+    },
+    [session, saveSession]
+  );
 
   const simulateSessionExpiry = useCallback(() => {
     setIsSessionExpired(true);

@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useI18n } from "@/lib/i18n/context";
 import { useAuth } from "@/lib/auth/context";
 import { cn } from "@/lib/utils";
 import { BrandLogo } from "@/components/layout/BrandLogo";
+import { companyApi } from "@/lib/api/company.api";
 import {
   isHrefLocked,
   noticeKindForTier,
@@ -58,6 +59,29 @@ export const GlassSidebar = React.memo(function GlassSidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const isAdmin = user?.role === "SYSTEM_ADMIN";
+
+  // The brand subtitle is the signed-in user's OWN company name —
+  // never another workspace's. Falls back to a neutral label until
+  // the profile loads or while the company has no name yet.
+  const [companyName, setCompanyName] = useState("");
+  useEffect(() => {
+    if (!user || isAdmin) return;
+    let cancelled = false;
+    companyApi
+      .getProfile()
+      .then((res) => {
+        if (!cancelled && res.data?.companyName) {
+          setCompanyName(res.data.companyName);
+        }
+      })
+      .catch(() => {
+        // Keep the neutral fallback label.
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [user, isAdmin]);
+
   const handleLockedClick = () =>
     showAccessNotice(noticeKindForTier(accessTier));
   const currentAdminTab = searchParams.get("tab") || "overview";
@@ -328,7 +352,12 @@ export const GlassSidebar = React.memo(function GlassSidebar() {
                     : locale === "tr"
                     ? "Merkezi Yönetim Paneli"
                     : "System Admin Console"
-                  : "Lumiere Artisan Roasters"}
+                  : companyName ||
+                    (locale === "ar"
+                      ? "مساحة عملي"
+                      : locale === "tr"
+                      ? "Çalışma Alanım"
+                      : "My Workspace")}
               </span>
             </div>
           </Link>

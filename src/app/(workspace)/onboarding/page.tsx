@@ -112,7 +112,7 @@ export default function OnboardingPage() {
     setIsSaved(false);
 
     try {
-      await companyApi.saveOnboarding({
+      const res = await companyApi.saveOnboarding({
         companyName,
         industry,
         description,
@@ -124,8 +124,9 @@ export default function OnboardingPage() {
         simulateFailure: false,
       });
       // The company now exists: unlock the full workspace for this
-      // session and let the dashboard greet him with the saved banner.
-      completeOnboarding();
+      // session, bind it to the saved company's id, and let the
+      // dashboard greet him with the saved banner.
+      completeOnboarding(res.data?.id);
       try {
         window.sessionStorage.setItem("smp_company_saved", "1");
       } catch {

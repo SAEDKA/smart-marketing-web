@@ -91,6 +91,9 @@ const DASHBOARD_COPY = {
       "Instagram carousel posts featuring single-origin tasting notes achieved 4.82% engagement (+31% above benchmark). Schedule 2 additional educational posts this week.",
     viewFullSwotBtn: "View Full SWOT Report",
     clicksLabel: "Link Clicks & Traffic",
+    emptyTitle: "Your workspace is empty — for now",
+    emptyDesc:
+      "Everything you create will appear here: your products, campaigns, posts and results. Follow the steps above to set up your company and create your first ad.",
   },
   tr: {
     assistantPlaceholder:
@@ -131,6 +134,9 @@ const DASHBOARD_COPY = {
       "Tadım notlarını içeren Instagram kaydırmalı gönderileri %4,82 etkileşim oranına ulaştı (ortalamanın %31 üzerinde). Bu hafta 2 eğitici gönderi daha planlayın.",
     viewFullSwotBtn: "Tam SWOT Raporunu Gör",
     clicksLabel: "Bağlantı Tıklamaları",
+    emptyTitle: "Çalışma alanınız şimdilik boş",
+    emptyDesc:
+      "Oluşturduğunuz her şey burada görünecek: ürünleriniz, kampanyalarınız, gönderileriniz ve sonuçlarınız. Şirketinizi kurmak ve ilk reklamınızı oluşturmak için yukarıdaki adımları izleyin.",
   },
   ar: {
     assistantPlaceholder:
@@ -171,6 +177,9 @@ const DASHBOARD_COPY = {
       "حققت منشورات إنستغرام التفاعلية حول إيحاءات القهوة المختصة معدل تفاعل 4.82% (+31% أعلى من المعيار). ننصح بجدولة منشورين تعليميين إضافيين هذا الأسبوع.",
     viewFullSwotBtn: "عرض تقرير SWOT الكامل",
     clicksLabel: "نقرات الروابط والزيارات",
+    emptyTitle: "مساحة عملك فاضية — لحد هلأ",
+    emptyDesc:
+      "كل شي بتعمله بيظهر هون: منتجاتك وحملاتك ومنشوراتك ونتائجك. اتبع الخطوات اللي فوق لتجهيز شركتك وإنشاء أول إعلان إلك.",
   },
 } as const;
 
@@ -234,6 +243,10 @@ export default function DashboardPage() {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
   const [accounts, setAccounts] = useState<SocialAccount[]>([]);
+  // True once the overview fetch settles (success or failure). Until
+  // then the dashboard shows the ladder card plus a loading panel —
+  // never data sections built from placeholder state.
+  const [loaded, setLoaded] = useState(false);
 
 
   useEffect(() => {
@@ -256,10 +269,22 @@ export default function DashboardPage() {
         if (accRes.data) setAccounts(accRes.data);
       } catch (err) {
         console.error("Workspace overview sync warning:", err);
+      } finally {
+        setLoaded(true);
       }
     }
     loadWorkspaceOverview();
   }, []);
+
+  // A workspace counts as active only when the company actually has
+  // something in it. A brand-new owner sees the ladder and an honest
+  // empty state instead of another company's numbers.
+  const hasActivity =
+    products.length > 0 ||
+    campaigns.length > 0 ||
+    posts.length > 0 ||
+    accounts.length > 0 ||
+    metrics.reach > 0;
 
   const handleSpotlightMove = useSpotlight();
 
@@ -281,43 +306,45 @@ export default function DashboardPage() {
     },
     {
       label: copy.stages.products,
-      value: `${products.length || 5} Active`,
+      value: `${products.filter((p) => p.status === "ACTIVE").length} Active`,
       href: "/products",
       icon: ShoppingBag,
     },
     {
       label: copy.stages.campaigns,
-      value: `${campaigns.length || 4} Live`,
+      value: `${campaigns.filter((c) => c.status === "ACTIVE").length} Live`,
       href: "/campaigns",
       icon: Megaphone,
     },
     {
       label: copy.stages.studio,
-      value: "3 Variants",
+      value: posts.length > 0 ? `${posts.length} Posts` : "Not yet",
       href: "/content-studio",
       icon: Sparkles,
     },
     {
       label: copy.stages.approval,
-      value: `${posts.length || 7} Posts`,
+      value: `${posts.length} Posts`,
       href: "/posts",
       icon: PenTool,
     },
     {
       label: copy.stages.calendar,
-      value: `${accounts.length || 2} Channels`,
+      value: `${accounts.length} Channels`,
       href: "/calendar",
       icon: Calendar,
     },
     {
       label: copy.stages.swot,
-      value: "SWOT Ready",
+      value: posts.some((p) => p.status === "PUBLISHED")
+        ? "SWOT Ready"
+        : "Not yet",
       href: "/reports",
       icon: FileText,
     },
     ],
     // Icons and hrefs are module constants; only these values vary.
-    [copy, company.communicationTone, products.length, campaigns.length, posts.length, accounts.length]
+    [copy, company.communicationTone, products, campaigns, posts, accounts]
   );
 
   // Guest dashboard: no data at all — just the professional sign-in
@@ -379,6 +406,32 @@ export default function DashboardPage() {
 
       {/* Getting started: the access ladder (account, company, products) */}
       <GettingStartedCard />
+
+      {/* While the overview loads: card + a plain loading panel only */}
+      {!loaded && (
+        <section className="glass-panel rounded-[26px] p-6 sm:p-8">
+          <p className="text-sm text-txt-secondary">{t.common.loading}</p>
+        </section>
+      )}
+
+      {/* Loaded but the company has done nothing yet: an honest empty
+          state instead of demo numbers from another workspace */}
+      {loaded && !hasActivity && (
+        <section className="glass-panel rounded-[26px] p-6 sm:p-8 flex flex-col items-center text-center gap-3">
+          <span className="w-12 h-12 rounded-full bg-accent-violet/15 border border-accent-violet/30 flex items-center justify-center">
+            <Sparkles className="w-6 h-6 text-accent-violet" />
+          </span>
+          <h2 className="text-lg sm:text-xl font-bold text-white">
+            {copy.emptyTitle}
+          </h2>
+          <p className="text-sm text-txt-secondary leading-relaxed max-w-xl">
+            {copy.emptyDesc}
+          </p>
+        </section>
+      )}
+
+      {loaded && hasActivity && (
+        <>
 
       {/* 1. AI Marketing Assistant Command Center Hero with Cursor Spotlight */}
       <section
@@ -1016,6 +1069,9 @@ export default function DashboardPage() {
           </Card>
         </div>
       </div>
+
+        </>
+      )}
     </div>
   );
 }

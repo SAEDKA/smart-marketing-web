@@ -633,7 +633,7 @@ export default function PostsPage() {
 
           <Input
             label={t.studio.hashtagsLabel}
-            placeholder="#SpecialtyCoffee #LumiereRoasters"
+            placeholder="#MyBrand #SpecialtyCoffee"
             value={editHashtags}
             onChange={(e) => setEditHashtags(e.target.value)}
           />

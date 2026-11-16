@@ -1,4 +1,9 @@
-import { ApiErrorShape, ApiResponse, AuthSession } from "@/types/domain";
+import {
+  ApiErrorShape,
+  ApiResponse,
+  AuthSession,
+  AuthUser,
+} from "@/types/domain";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ||
@@ -30,6 +35,22 @@ function getStoredBearerToken(): string | undefined {
   }
 }
 
+// Mock mode only: the signed-in user from the stored session acts as the
+// caller identity ("principal") so the mock adapter can resolve which
+// company's workspace a request belongs to. No stored session → no
+// principal → the adapter falls back to the seeded demo workspace.
+function getStoredPrincipal(): AuthUser | undefined {
+  if (typeof window === "undefined") return undefined;
+  try {
+    const raw = window.localStorage.getItem(STORAGE_SESSION_KEY);
+    if (!raw) return undefined;
+    const parsed = JSON.parse(raw) as AuthSession;
+    return parsed?.user;
+  } catch {
+    return undefined;
+  }
+}
+
 export async function apiRequest<T>(
   method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE",
   endpoint: string,
@@ -42,7 +63,7 @@ export async function apiRequest<T>(
     // never call it. Now it is a separate chunk, downloaded only when
     // the first mock request actually happens.
     const { mockRequestHandler } = await import("./mock-adapter");
-    return mockRequestHandler<T>(method, endpoint, body);
+    return mockRequestHandler<T>(method, endpoint, body, getStoredPrincipal());
   }
 
   try {
