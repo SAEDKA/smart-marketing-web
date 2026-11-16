@@ -168,8 +168,9 @@ export default function CalendarPage() {
       setStatusMessage("Post scheduled successfully on publication calendar.");
       setIsScheduleModalOpen(false);
       await fetchCalendarData();
-    } catch (err: any) {
-      setScheduleError(err?.message || t.common.errorOccurred);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "";
+      setScheduleError(message || t.common.errorOccurred);
     } finally {
       setActionLoading(null);
     }
@@ -196,8 +197,9 @@ export default function CalendarPage() {
       setStatusMessage("Publication retried and published successfully!");
       setSelectedPost(res.data);
       await fetchCalendarData();
-    } catch (err: any) {
-      setStatusMessage(err?.message || "Publishing retry failed.");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "";
+      setStatusMessage(message || "Publishing retry failed.");
     } finally {
       setActionLoading(null);
     }
@@ -210,8 +212,9 @@ export default function CalendarPage() {
       setStatusMessage("Post published immediately to connected channel!");
       setSelectedPost(res.data);
       await fetchCalendarData();
-    } catch (err: any) {
-      setStatusMessage(err?.message || "Immediate publishing failed.");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "";
+      setStatusMessage(message || "Immediate publishing failed.");
     } finally {
       setActionLoading(null);
     }

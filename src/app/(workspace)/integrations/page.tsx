@@ -267,7 +267,7 @@ export default function IntegrationsPage() {
               <p className="text-xs text-slate-400 leading-relaxed">
                 Connect your Instagram Professional or Creator account linked to
                 your Meta Business Manager to enable automated feed publishing
-                and performance telemetry.
+                and performance data.
               </p>
             )}
           </div>

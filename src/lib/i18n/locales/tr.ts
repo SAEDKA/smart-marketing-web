@@ -383,7 +383,7 @@ export const tr: Dictionary = {
       toneSelect: "İletişim Tonu",
       customPromptLabel: "Reklamınızı anlatın — yapay zeka ne üretsin?",
       generateBtn: "3 YZ Varyasyonu Üret",
-      generatingBtn: "YZ Varyasyonları Sentezleniyor...",
+      generatingBtn: "YZ Varyasyonları Üretiliyor...",
       idleStateTitle: "Kampanya İçeriği Üretmeye Hazır",
       idleStateDesc:
         "Kampanya bağlamınızı seçin ve yüksek dönüşümlü sosyal medya metinleri üretmek için Üret'e tıklayın.",
@@ -515,7 +515,7 @@ export const tr: Dictionary = {
     analytics: {
       title: "Performans Analitiği",
       subtitle:
-        "Gerçek zamanlı pazarlama metrikleri, kitle erişimi, etkileşim hızı ve dönüşüm telemetrisi.",
+        "Gerçek zamanlı pazarlama metrikleri, kitle erişimi, etkileşim hızı ve dönüşüm verileri.",
       reachVsImpressionsTitle: "Erişim ve Gösterim Ayrımı",
       reachVsImpressionsDesc:
         "Erişim içeriğinizi gören tekil hesapları temsil ederken, Gösterim içeriğinizin toplam görüntülenme sayısını ölçer.",
@@ -537,7 +537,7 @@ export const tr: Dictionary = {
       range14d: "14 Gün",
       range30d: "30 Gün",
       range90d: "90 Gün",
-      telemetrySyncNotice: "Meta Telemetrisi Eşitlendi:",
+      telemetrySyncNotice: "Meta Verileri Eşitlendi:",
       refreshMetrics: "Metrikleri Güncelle",
     },
     reports: {
@@ -555,7 +555,7 @@ export const tr: Dictionary = {
       threats: "Tehditler",
       recommendationsTitle: "Önceliklendirilmiş Stratejik Direktifler",
       recommendationsSubtitle:
-        "Tahmini dönüşüm etkisiyle YZ pazarlama motoru tarafından sentezlenen uygulanabilir öneriler.",
+        "Tahmini dönüşüm etkisiyle YZ pazarlama motoru tarafından üretilen uygulanabilir öneriler.",
       highPriority: "Yüksek Öncelik",
       mediumPriority: "Orta Öncelik",
       lowPriority: "Düşük Öncelik",
@@ -564,15 +564,15 @@ export const tr: Dictionary = {
       numericalEvidenceLabel: "Gözlemlenen Veri Kanıtı",
       insufficientDataTitle: "Yetersiz Geçmiş Performans Verisi",
       insufficientDataDesc:
-        "Kanıta dayalı SWOT analizi, kitle telemetrisi toplanmış en az 3 yayınlanmış gönderi gerektirir. Tam zeka raporu oluşturmak için sosyal hesapları bağlayıp kampanyaları yayınlayın.",
-      regenerateReport: "Yeni Rapor Sentezle",
-      regenerating: "YZ Matrisi Sentezleniyor...",
+        "Kanıta dayalı SWOT analizi, kitle verileri toplanmış en az 3 yayınlanmış gönderi gerektirir. Tam raporu oluşturmak için sosyal hesapları bağlayıp kampanyaları yayınlayın.",
+      regenerateReport: "Yeni Rapor Üret",
+      regenerating: "Rapor Üretiliyor...",
       applyToCampaign: "Direktiften Kampanya Başlat",
     },
     admin: {
       title: "Sistem Yönetimi ve Altyapı",
       subtitle:
-        "Genel çok kiracılı izleme, yayın kuyruğu telemetrisi ve hassas altyapı operasyonları.",
+        "Genel çok kiracılı izleme, yayın kuyruğu izlemesi ve hassas altyapı operasyonları.",
       accessRestrictedTitle: "Sistem Yöneticisi Erişimi Gerekli",
       accessRestrictedDesc:
         "Bu konsol yalnızca SYSTEM_ADMIN rolüne sahip kullanıcılarla sınırlıdır. Bu ekranı test etmek için üst başlıktaki demo rol değiştiriciyi kullanabilirsiniz.",
@@ -606,7 +606,7 @@ export const tr: Dictionary = {
       flushCache: "YZ Önbelleğini Boşalt",
       flushConfirmTitle: "Yapay Zeka Önbelleğini Temizle",
       flushConfirmDesc:
-        "Bu işlem çalışan belleğindeki vektör gömmelerini ve önbelleğe alınmış şablonları temizleyecektir.",
+        "Bu işlem çalışan belleğindeki önbelleğe alınmış gömmeleri ve şablonları temizleyecektir.",
     },
     notifications: {
       title: "Bildirim Merkezi",

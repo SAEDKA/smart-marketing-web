@@ -47,7 +47,7 @@ export default function ReportsPage() {
       setRegenerating(true);
       const res = await reportsApi.regenerateSwotReport();
       setReport(res.data);
-      setStatusMessage("AI Strategy matrix re-synthesized from latest telemetry.");
+      setStatusMessage("AI strategy refreshed from the latest performance data.");
     } catch {
       setStatusMessage(t.common.errorOccurred);
     } finally {
@@ -124,7 +124,7 @@ export default function ReportsPage() {
           {/* Progress Indicator */}
           <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5 max-w-md mx-auto space-y-2">
             <div className="flex items-center justify-between text-xs font-semibold">
-              <span className="text-slate-400">Published Posts Telemetry</span>
+              <span className="text-slate-400">Published Posts</span>
               <span className="text-amber-400 font-mono">
                 {report.publishedPostsCount} / 3 Posts
               </span>

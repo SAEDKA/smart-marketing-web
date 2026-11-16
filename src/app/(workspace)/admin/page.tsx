@@ -303,7 +303,7 @@ export default function AdminDashboardPage() {
         setStatusMessage(
           locale === "ar"
             ? `تم مسح الذاكرة المؤقتة للذكاء الاصطناعي (${res.data.evictedEntries} سجل).`
-            : `Neural cache flushed. ${res.data.evictedEntries} cached embeddings evicted.`
+            : `Cache flushed. ${res.data.evictedEntries} cached entries evicted.`
         );
       }
       setConfirmModal({ isOpen: false, type: "SUSPEND" });
@@ -729,7 +729,7 @@ export default function AdminDashboardPage() {
             </div>
           </div>
 
-          {/* Daily Visitors Bar & Telemetry Chart */}
+          {/* Daily Visitors Bar & Traffic Chart */}
           <div className="glass-card p-6 space-y-5">
             <div>
               <h2 className="text-base font-bold text-white">

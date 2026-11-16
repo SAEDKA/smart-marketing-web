@@ -28,7 +28,7 @@ import {
 const LANDING_COPY = {
   en: {
     navProduct: "Platform",
-    navPipeline: "Neural Pipeline",
+    navPipeline: "How It Works",
     navWorkflow: "Live Studio",
     openDashboard: "Open Workspace",
     signIn: "Sign In",
@@ -43,15 +43,15 @@ const LANDING_COPY = {
       "Turn your product catalog and brand voice into approved Instagram Professional and Facebook Page campaigns, scheduled publications, and evidence-based SWOT intelligence in one workspace.",
     tryStudioBtn: "Launch AI Content Studio",
     exploreDashboardBtn: "Explore Marketing Command",
-    liveFrameTitle: "Interactive Studio Preview — Select a business to test live synthesis",
+    liveFrameTitle: "Interactive Studio Preview — Select a business to test live creation",
     approvePreviewBtn: "Approved for Meta Schedule",
     diagramHeading: "One brand input drives three parallel marketing lanes.",
     diagramSub:
-      "Your brand identity and product catalog feed the neural synthesis engine, dispatching human-approved posts to Instagram, Facebook, and the SWOT telemetry loop.",
+      "Your brand identity and product catalog feed the AI content engine, dispatching human-approved posts to Instagram, Facebook, and the SWOT report.",
     inputNodeTitle: "Brand & Catalog Input",
     inputNodeSub: "Tone, audience & product media",
-    coreNodeTitle: "Neural Marketing Engine",
-    coreNodeSub: "Multi-variant synthesis & readiness gate",
+    coreNodeTitle: "AI Marketing Engine",
+    coreNodeSub: "Multi-variant generation & approval gate",
     lane1Title: "Instagram Professional",
     lane1Sub: "Carousels, Reels captions & hashtags",
     lane2Title: "Facebook Page",
@@ -70,7 +70,7 @@ const LANDING_COPY = {
   },
   tr: {
     navProduct: "Platform",
-    navPipeline: "Sinirsel Hat",
+    navPipeline: "Nasıl Çalışır",
     navWorkflow: "Canlı Stüdyo",
     openDashboard: "Çalışma Alanını Aç",
     signIn: "Giriş Yap",
@@ -86,15 +86,15 @@ const LANDING_COPY = {
       "Ürün kataloğunuzu ve marka sesinizi tek bir çalışma alanında onaylı Instagram Profesyonel ve Facebook Sayfası kampanyalarına, yayın takvimine ve kanıta dayalı SWOT analizlerine dönüştürün.",
     tryStudioBtn: "YZ İçerik Stüdyosunu Aç",
     exploreDashboardBtn: "Pazarlama Merkezini Keşfet",
-    liveFrameTitle: "Canlı Stüdyo Önizlemesi — Sentezi test etmek için bir işletme seçin",
+    liveFrameTitle: "Canlı Stüdyo Önizlemesi — Canlı üretimi denemek için bir işletme seçin",
     approvePreviewBtn: "Meta Takvimi İçin Onaylandı",
     diagramHeading: "Tek bir marka girdisi üç paralel pazarlama hattını besler.",
     diagramSub:
-      "Marka kimliğiniz ve ürün kataloğunuz sinirsel sentez motorunu besler; insan onaylı gönderileri Instagram, Facebook ve SWOT analiz döngüsüne iletir.",
+      "Marka kimliğiniz ve ürün kataloğunuz YZ içerik motorunu besler; insan onaylı gönderileri Instagram, Facebook ve SWOT raporuna iletir.",
     inputNodeTitle: "Marka & Katalog Girdisi",
     inputNodeSub: "Ton, hedef kitle ve ürün medyası",
-    coreNodeTitle: "Sinirsel Pazarlama Motoru",
-    coreNodeSub: "Çoklu varyasyon sentezi ve onay kapısı",
+    coreNodeTitle: "YZ Pazarlama Motoru",
+    coreNodeSub: "Çoklu varyasyon üretimi ve onay kapısı",
     lane1Title: "Instagram Profesyonel",
     lane1Sub: "Kaydırmalı gönderiler ve etiketler",
     lane2Title: "Facebook Sayfası",
@@ -113,7 +113,7 @@ const LANDING_COPY = {
   },
   ar: {
     navProduct: "المنصة",
-    navPipeline: "المسار العصبي",
+    navPipeline: "كيف يعمل",
     navWorkflow: "الاستوديو الحي",
     openDashboard: "فتح مساحة العمل",
     signIn: "تسجيل الدخول",
@@ -132,10 +132,10 @@ const LANDING_COPY = {
     approvePreviewBtn: "معتمد لجدولة النشر",
     diagramHeading: "مدخل واحد للعلامة التجارية يغذي ثلاثة مسارات تسويقية متوازية.",
     diagramSub:
-      "تغذي هوية علامتك التجارية وكتالوج منتجاتك محرك التوليد العصبي، لإرسال المنشورات المعتمدة بشرياً إلى إنستغرام وفيسبوك وحلقة تحليلات SWOT.",
+      "تغذي هوية علامتك التجارية وكتالوج منتجاتك محرك توليد المحتوى الذكي، لإرسال المنشورات المعتمدة بشرياً إلى إنستغرام وفيسبوك وتقرير SWOT.",
     inputNodeTitle: "مدخلات الهوية والمنتجات",
     inputNodeSub: "النبرة، الجمهور، وصور المنتجات",
-    coreNodeTitle: "محرك التسويق العصبي",
+    coreNodeTitle: "محرك التسويق الذكي",
     coreNodeSub: "توليد نسخ متعددة وبوابة الاعتماد البشري",
     lane1Title: "إنستغرام الاحترافي",
     lane1Sub: "منشورات تفاعلية ووسوم مستهدفة",
@@ -241,7 +241,7 @@ export default function LandingPage() {
             <a href="#studio-frame" className="hover:text-white transition-colors">
               {copy.navProduct}
             </a>
-            <a href="#neural-pipeline" className="hover:text-white transition-colors">
+            <a href="#pipeline" className="hover:text-white transition-colors">
               {copy.navPipeline}
             </a>
             <a href="#dealt-moment" className="hover:text-white transition-colors">
@@ -352,7 +352,7 @@ export default function LandingPage() {
                   </div>
                 </div>
 
-                {/* Inside App Frame: Two-column live AI synthesis preview */}
+                {/* Inside App Frame: Two-column live AI creation preview */}
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-5 relative z-10">
                   {/* Left: Brand & Product Spec */}
                   <div className="md:col-span-5 flex flex-col justify-between space-y-4 border-b md:border-b-0 md:border-e border-white/10 pb-4 md:pb-0 md:pe-4">
@@ -382,7 +382,7 @@ export default function LandingPage() {
                       </div>
                     </div>
 
-                    {/* Live Telemetry Readout */}
+                    {/* Live Metrics Readout */}
                     <div className="space-y-2 pt-3 border-t border-white/10">
                       <div className="flex items-center justify-between text-xs">
                         <span className="text-txt-muted">30d Reach</span>
@@ -405,7 +405,7 @@ export default function LandingPage() {
                     </div>
                   </div>
 
-                  {/* Right: Synthesized Post & SWOT Evidence */}
+                  {/* Right: Generated Post & SWOT Evidence */}
                   <div className="md:col-span-7 space-y-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
@@ -455,9 +455,9 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* SCREEN 2: PULSING NEURAL HUB & PARALLEL LANES DIAGRAM (taste-skill Rule 7) */}
+        {/* SCREEN 2: PIPELINE & PARALLEL LANES DIAGRAM */}
         <section
-          id="neural-pipeline"
+          id="pipeline"
           className="max-w-7xl mx-auto px-4 sm:px-8 py-20 border-t border-white/10"
         >
           <div className="max-w-3xl space-y-3 mb-12">

@@ -299,7 +299,7 @@ export default function AnalyticsPage() {
               {t.analytics.performanceTrends}
             </h3>
             <p className="text-xs text-slate-400">
-              Daily telemetry tracking reach and gross impressions volume
+              Daily tracking of reach and total impressions volume
             </p>
           </div>
 

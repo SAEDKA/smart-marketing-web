@@ -66,7 +66,7 @@ function wrapMockResponse<T>(data: T): ApiResponse<T> {
 // completeOnboarding(companyId).
 let mockFreshOwnerOnboarded = false;
 
-let mockCompanyProfile: CompanyProfile = {
+const mockCompanyProfile: CompanyProfile = {
   id: "cmp_lumiere_01",
   companyName: "Lumiere Artisan Roasters",  industry: "Specialty Coffee & Artisanal Bakery",
   description:
@@ -82,7 +82,7 @@ let mockCompanyProfile: CompanyProfile = {
   updatedAt: "2026-11-11T10:30:00.000Z",
 };
 
-let mockBrandSettings: BrandSettings = {
+const mockBrandSettings: BrandSettings = {
   companyId: "cmp_lumiere_01",
   brandName: "Lumiere Artisan Roasters",
   brandDescription:
@@ -98,7 +98,7 @@ let mockBrandSettings: BrandSettings = {
   updatedAt: "2026-11-11T10:30:00.000Z",
 };
 
-let mockProducts: Product[] = [
+const mockProducts: Product[] = [
   {
     id: "prd_yirgacheffe_01",
     companyId: "cmp_lumiere_01",
@@ -265,7 +265,7 @@ let mockProducts: Product[] = [
   },
 ];
 
-let mockCampaigns: Campaign[] = [
+const mockCampaigns: Campaign[] = [
   {
     id: "cmp_winter_drop_01",
     companyId: "cmp_lumiere_01",
@@ -343,7 +343,7 @@ let mockCampaigns: Campaign[] = [
   },
 ];
 
-let mockPosts: Post[] = [
+const mockPosts: Post[] = [
   {
     id: "pst_yirga_drop_01",
     companyId: "cmp_lumiere_01",
@@ -702,7 +702,7 @@ let mockPosts: Post[] = [
   },
 ];
 
-let mockSocialAccounts: SocialAccount[] = [
+const mockSocialAccounts: SocialAccount[] = [
   {
     id: "soc_instagram_01",
     companyId: "cmp_lumiere_01",
@@ -733,7 +733,7 @@ let mockSocialAccounts: SocialAccount[] = [
   },
 ];
 
-let mockAnalyticsSummary: AnalyticsMetricSummary = {
+const mockAnalyticsSummary: AnalyticsMetricSummary = {
   reach: 18420,
   impressions: 42910,
   engagementRate: 4.82,
@@ -751,7 +751,7 @@ let mockAnalyticsSummary: AnalyticsMetricSummary = {
   lastSynchronizedAt: "2026-11-11T09:15:00.000Z",
 };
 
-let mockAnalyticsTrends: AnalyticsTrendPoint[] = [
+const mockAnalyticsTrends: AnalyticsTrendPoint[] = [
   { date: "2026-11-01", label: "Nov 01", reach: 1200, impressions: 2800, engagement: 140 },
   { date: "2026-11-02", label: "Nov 02", reach: 1450, impressions: 3200, engagement: 168 },
   { date: "2026-11-03", label: "Nov 03", reach: 1300, impressions: 3050, engagement: 155 },
@@ -765,7 +765,7 @@ let mockAnalyticsTrends: AnalyticsTrendPoint[] = [
   { date: "2026-11-11", label: "Nov 11", reach: 2670, impressions: 5910, engagement: 345 },
 ];
 
-let mockPlatformBreakdowns: PlatformMetricBreakdown[] = [
+const mockPlatformBreakdowns: PlatformMetricBreakdown[] = [
   {
     platform: "INSTAGRAM",
     reach: 12400,
@@ -782,7 +782,7 @@ let mockPlatformBreakdowns: PlatformMetricBreakdown[] = [
   },
 ];
 
-let mockSwotReport: SwotReport = {
+const mockSwotReport: SwotReport = {
   companyId: "cmp_lumiere_01",
   generatedAt: "2026-11-11T08:00:00.000Z",
   hasSufficientData: true,
@@ -893,7 +893,7 @@ let mockSwotReport: SwotReport = {
   ],
 };
 
-let mockAdminTenants: AdminTenant[] = [
+const mockAdminTenants: AdminTenant[] = [
   {
     id: "cmp_lumiere_01",
     companyName: "Lumière Artisan Roastery",
@@ -950,7 +950,7 @@ let mockAdminHealth: AdminSystemHealth = {
   dbLatencyMs: 18,
 };
 
-let mockAdminTraffic: AdminTrafficAnalytics = {
+const mockAdminTraffic: AdminTrafficAnalytics = {
   totalVisitors30d: 128450,
   visitorsGrowthPercent: 24.8,
   totalPageViews30d: 412900,
@@ -1053,8 +1053,8 @@ let mockAdminAuditLogs: AdminAuditLog[] = [
   {
     id: "log_01",
     actor: "Kemal Arslan (System Admin)",
-    action: "Flushed AI Neural Embeddings Cache (142 entries cleared)",
-    target: "AI Synthesis Cluster",
+    action: "Flushed AI Cache (142 entries cleared)",
+    target: "AI Generation Service",
     timestamp: "2026-11-11T10:45:00.000Z",
     severity: "INFO",
   },
@@ -1076,7 +1076,7 @@ let mockAdminAuditLogs: AdminAuditLog[] = [
   },
 ];
 
-let mockNotifications: NotificationItem[] = [
+const mockNotifications: NotificationItem[] = [
   {
     id: "notif_01",
     companyId: "cmp_lumiere_01",
@@ -1102,7 +1102,7 @@ let mockNotifications: NotificationItem[] = [
     companyId: "cmp_lumiere_01",
     category: "AI_STUDIO",
     title: "AI Generation Job Completed",
-    message: "3 multi-variant marketing captions synthesized successfully for Guatemala Antigua.",
+    message: "3 multi-variant marketing captions generated successfully for Guatemala Antigua.",
     isRead: true,
     actionUrl: "/content-studio",
     createdAt: "2026-11-09T16:20:00.000Z",
@@ -1111,8 +1111,8 @@ let mockNotifications: NotificationItem[] = [
     id: "notif_04",
     companyId: "cmp_lumiere_01",
     category: "SYSTEM",
-    title: "Weekly Telemetry Report Ready",
-    message: "Your weekly SWOT and performance telemetry report is now available for review.",
+    title: "Weekly Performance Report Ready",
+    message: "Your weekly SWOT and performance report is now available for review.",
     isRead: true,
     actionUrl: "/reports",
     createdAt: "2026-11-08T08:00:00.000Z",
@@ -2613,7 +2613,7 @@ export async function mockRequestHandler<T>(
   // ANALYTICS: GET /analytics/summary (WEB-03-04)
   if (method === "GET" && path === "/analytics/summary") {
     const range = queryParams.get("range") || "30d";
-    let multiplier = range === "7d" ? 0.35 : range === "14d" ? 0.6 : range === "90d" ? 2.8 : 1.0;
+    const multiplier = range === "7d" ? 0.35 : range === "14d" ? 0.6 : range === "90d" ? 2.8 : 1.0;
     const summary: AnalyticsMetricSummary = {
       ...ws.analyticsSummary,
       reach: Math.round(ws.analyticsSummary.reach * multiplier),
@@ -2740,8 +2740,8 @@ export async function mockRequestHandler<T>(
       {
         id: `log_${Date.now()}`,
         actor: "System Admin",
-        action: "Flushed AI Neural Cache (142 entries evicted)",
-        target: "AI Synthesis Cluster",
+        action: "Flushed AI Cache (142 entries evicted)",
+        target: "AI Generation Service",
         timestamp: new Date().toISOString(),
         severity: "INFO",
       },

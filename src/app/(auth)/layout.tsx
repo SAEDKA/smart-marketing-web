@@ -20,7 +20,7 @@ const AUTH_SHOWCASE_COPY = {
   en: {
     headline: "From brand voice to verified social reach in one workspace.",
     subhead:
-      "Connect your product catalog, synthesize multi-channel campaigns in AI Studio, approve with confidence, and track evidence-based SWOT insights.",
+      "Connect your product catalog, create multi-channel campaigns in AI Studio, approve with confidence, and track evidence-based SWOT insights.",
     liveCardTitle: "Lumiere Artisan Roasters • AI Campaign Preview",
     approvedBadge: "Human Approved",
     captionSample:
@@ -101,7 +101,7 @@ export default function AuthLayout({
               </p>
             </div>
 
-            {/* Pulsing Neural Pipeline Mini-Diagram */}
+            {/* Pulsing Pipeline Mini-Diagram */}
             <div className="grid grid-cols-3 gap-3 items-center pt-1">
               <div className="p-3.5 rounded-2xl bg-white/[0.04] border border-white/10 flex items-center gap-2.5">
                 <Sliders className="w-4 h-4 text-accent-violet shrink-0" />
@@ -134,7 +134,7 @@ export default function AuthLayout({
                     SWOT Engine
                   </p>
                   <p className="text-[10px] text-txt-muted truncate">
-                    Verified Telemetry
+                    Verified Performance
                   </p>
                 </div>
               </div>

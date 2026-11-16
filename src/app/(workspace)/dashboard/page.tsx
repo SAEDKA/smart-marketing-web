@@ -62,9 +62,9 @@ const DASHBOARD_COPY = {
       "Weekend artisanal sourdough & pour-over pairing",
       "Behind-the-scenes small-batch roasting story",
     ],
-    workflowTitle: "Intelligent Marketing Pipeline & Neural Hub",
+    workflowTitle: "Smart Marketing Pipeline",
     workflowSubtitle:
-      "Live data flow from your brand identity and catalog through the AI synthesis engine to Meta channels and SWOT intelligence",
+      "Live data flow from your brand identity and catalog through the AI content engine to Meta channels and SWOT reports",
     stages: {
       brand: "Brand Identity",
       products: "Product Catalog",
@@ -105,9 +105,9 @@ const DASHBOARD_COPY = {
       "Hafta sonu ekşi mayalı ekmek ve filtre kahve eşleşmesi",
       "Sahne arkası butik kahve kavurma hikayesi",
     ],
-    workflowTitle: "Akıllı Pazarlama Hattı ve Sinirsel Merkez",
+    workflowTitle: "Akıllı Pazarlama Hattı",
     workflowSubtitle:
-      "Marka kimliğiniz ve ürün kataloğunuzdan YZ sentez motoruna, Meta kanallarına ve SWOT istihbaratına canlı veri akışı",
+      "Marka kimliğiniz ve ürün kataloğunuzdan YZ içerik motoruna, Meta kanallarına ve SWOT raporlarına canlı veri akışı",
     stages: {
       brand: "Marka Kimliği",
       products: "Ürün Kataloğu",
@@ -148,7 +148,7 @@ const DASHBOARD_COPY = {
       "عرض نهاية الأسبوع: خبز الساوردو الحرفي مع القهوة المقطرة",
       "قصة من خلف الكواليس لتحميص القهوة بكميات صغيرة",
     ],
-    workflowTitle: "مسار التسويق الذكي والمركز العصبي",
+    workflowTitle: "مسار التسويق الذكي",
     workflowSubtitle:
       "تدفق حي للبيانات من هوية العلامة التجارية والمنتجات عبر محرك الذكاء الاصطناعي إلى قنوات ميتا وتقارير SWOT",
     stages: {
@@ -536,7 +536,7 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      {/* 2. Executive KPI Telemetry Strip (Animated Count-Up + Area Sparklines) */}
+      {/* 2. Executive KPI Strip (Animated Count-Up + Area Sparklines) */}
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Link
           href="/analytics"
@@ -717,7 +717,7 @@ export default function DashboardPage() {
         </Link>
       </section>
 
-      {/* 3. End-to-End Marketing Workflow Pipeline + Pulsing Neural Vector Line */}
+      {/* 3. End-to-End Marketing Workflow Pipeline + Pulsing Vector Line */}
       <Card
         onMouseMove={handleSpotlightMove}
         className="p-6 glass-spotlight"
@@ -732,11 +732,11 @@ export default function DashboardPage() {
             </p>
           </div>
           <Badge variant="mint" size="sm">
-            Neural Pipeline Synchronized
+            Pipeline up to date
           </Badge>
         </div>
 
-        {/* Animated Pulsing SVG Neural Line (taste-skill Rule 7) */}
+        {/* Animated Pulsing SVG Line */}
         <div className="hidden lg:block pt-4 pb-1 relative z-10">
           <svg className="w-full h-5 overflow-visible" viewBox="0 0 1000 20" fill="none">
             <path

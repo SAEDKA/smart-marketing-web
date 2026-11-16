@@ -21,7 +21,8 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     },
     ref
   ) => {
-    const generatedId = id || React.useId();
+    const reactId = React.useId();
+    const generatedId = id || reactId;
 
     return (
       <div className="w-full space-y-1.5 text-start">

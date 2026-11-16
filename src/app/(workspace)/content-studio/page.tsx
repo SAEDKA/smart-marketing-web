@@ -165,7 +165,7 @@ export default function ContentStudioPage() {
   const activeProduct = products.find((p) => p.id === selectedProductId);
   const currentVariant = variants[activeVariantIndex] || variants[0];
 
-  // Start AI Generation Job with Authored Multi-Stage Telemetry
+  // Start AI Generation Job with Multi-Stage Progress
   const handleGenerate = async () => {
     setErrorMessage(null);
     setSuccessBanner(null);
@@ -296,7 +296,7 @@ export default function ContentStudioPage() {
               <span>Studio Generator Controls</span>
             </h2>
             <Badge variant="cyan" size="sm">
-              Neural Assistant
+              AI Assistant
             </Badge>
           </div>
 
@@ -553,7 +553,7 @@ export default function ContentStudioPage() {
                 </p>
               </div>
 
-              {/* Neural Readiness Vector Preview */}
+              {/* Readiness Preview */}
               <div className="max-w-md mx-auto pt-2">
                 <svg
                   viewBox="0 0 400 44"
@@ -601,7 +601,7 @@ export default function ContentStudioPage() {
             </Card>
           )}
 
-          {/* Asynchronous State Feedback: Queued / Processing (Authored Focal Synthesis Moment) */}
+          {/* Asynchronous State Feedback: Queued / Processing */}
           {(generationState === "QUEUED" || generationState === "PROCESSING") && (
             <Card className="p-8 space-y-6 border-accent-violet/30">
               <div className="flex items-center justify-between">
@@ -618,7 +618,7 @@ export default function ContentStudioPage() {
                         : t.studio.processingState}
                     </h3>
                     <p className="text-xs text-txt-secondary">
-                      Synthesizing copy aligned with brand voice ({selectedTone})
+                      Generating copy aligned with brand voice ({selectedTone})
                       for {selectedPlatform}...
                     </p>
                   </div>
@@ -632,7 +632,7 @@ export default function ContentStudioPage() {
                 </span>
               </div>
 
-              {/* 3-Step Neural Telemetry Stages */}
+              {/* 3-Step Generation Stages */}
               <div className="space-y-2.5 pt-2">
                 {[
                   {
