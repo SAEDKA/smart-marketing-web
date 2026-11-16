@@ -18,19 +18,24 @@ describe("Theme system", () => {
     document.documentElement.removeAttribute("data-theme");
   });
 
-  it("recognizes exactly the four shipped themes", () => {
-    expect(THEMES).toEqual(["emerald", "ocean", "violet", "light"]);
+  it("recognizes exactly the two shipped modes", () => {
+    expect(THEMES).toEqual(["dark", "light"]);
     for (const name of THEMES) expect(isThemeName(name)).toBe(true);
-    expect(isThemeName("dark")).toBe(false);
+    expect(isThemeName("emerald")).toBe(false);
+    expect(isThemeName("ocean")).toBe(false);
+    expect(isThemeName("violet")).toBe(false);
     expect(isThemeName("")).toBe(false);
     expect(isThemeName(null)).toBe(false);
     expect(isThemeName(undefined)).toBe(false);
   });
 
-  it("falls back to emerald when nothing valid is stored", () => {
-    expect(getStoredTheme()).toBe("emerald");
+  it("falls back to dark when nothing valid is stored", () => {
+    expect(getStoredTheme()).toBe("dark");
     window.localStorage.setItem(THEME_STORAGE_KEY, "neon");
-    expect(getStoredTheme()).toBe("emerald");
+    expect(getStoredTheme()).toBe("dark");
+    // Legacy multi-theme values fall back to dark as well.
+    window.localStorage.setItem(THEME_STORAGE_KEY, "violet");
+    expect(getStoredTheme()).toBe("dark");
   });
 
   it("applyTheme writes the data-theme attribute on <html>", () => {
@@ -41,14 +46,14 @@ describe("Theme system", () => {
   });
 
   it("provider restores the saved theme on mount", () => {
-    window.localStorage.setItem(THEME_STORAGE_KEY, "violet");
+    window.localStorage.setItem(THEME_STORAGE_KEY, "light");
     const wrapper = ({ children }: { children: React.ReactNode }) => (
       <ThemeProvider>{children}</ThemeProvider>
     );
     const { result } = renderHook(() => useTheme(), { wrapper });
-    expect(result.current.theme).toBe("violet");
+    expect(result.current.theme).toBe("light");
     expect(document.documentElement.getAttribute("data-theme")).toBe(
-      "violet"
+      "light"
     );
   });
 
@@ -77,7 +82,7 @@ describe("Theme system", () => {
     expect(css).toContain('[data-theme="light"] .border-white\\/10');
     // Glass surfaces get light-theme shadows/borders, blur stays.
     expect(css).toContain('[data-theme="light"] .glass-card');
-    // The white theme carries the brand color wash in its background.
+    // The light theme is pure white: no color wash on the page.
     expect(css).toContain('[data-theme="light"] body');
     expect(css).toContain('[data-theme="light"] .glass-button-primary');
   });

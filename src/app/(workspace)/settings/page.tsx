@@ -28,24 +28,14 @@ const THEME_OPTIONS: {
   names: Record<"en" | "tr" | "ar", string>;
 }[] = [
   {
-    id: "emerald",
-    swatch: "linear-gradient(135deg, #38c995, #40d9e8)",
-    names: { en: "Emerald", tr: "Zümrüt", ar: "زمردي" },
-  },
-  {
-    id: "ocean",
-    swatch: "linear-gradient(135deg, #40d9e8, #55d6a6)",
-    names: { en: "Ocean", tr: "Okyanus", ar: "محيطي" },
-  },
-  {
-    id: "violet",
-    swatch: "linear-gradient(135deg, #8b72ff, #40d9e8)",
-    names: { en: "Violet", tr: "Menekşe", ar: "بنفسجي" },
+    id: "dark",
+    swatch: "linear-gradient(135deg, #121920, #38c995)",
+    names: { en: "Dark", tr: "Koyu", ar: "داكن" },
   },
   {
     id: "light",
-    swatch: "linear-gradient(135deg, #ffffff, #a9e6cf 55%, #9fdcf0)",
-    names: { en: "White", tr: "Beyaz", ar: "أبيض" },
+    swatch: "linear-gradient(135deg, #ffffff, #eceeee)",
+    names: { en: "Light", tr: "Açık", ar: "فاتح" },
   },
 ];
 

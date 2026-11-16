@@ -4,7 +4,7 @@
 
 @layer base {
   :root,
-  [data-theme="emerald"] {
+  [data-theme="dark"] {
     color-scheme: dark;
     --bg-deep: #0c1116;
     --bg-dark: #121920;
@@ -34,73 +34,15 @@
     --txt-muted-rgb: 119 131 154;
   }
 
-  [data-theme="ocean"] {
-    color-scheme: dark;
-    --bg-deep: #0b1020;
-    --bg-dark: #111a2e;
-    --bg-surface: #151e33;
-    --bg-deep-rgb: 11 16 32;
-    --bg-dark-rgb: 17 26 46;
-    --bg-surface-rgb: 21 30 51;
-    --accent-violet: #40d9e8;
-    --accent-indigo: #38c995;
-    --accent-cyan: #55d6a6;
-    --accent-mint: #38c995;
-    --accent-violet-rgb: 64 217 232;
-    --accent-indigo-rgb: 56 201 149;
-    --accent-cyan-rgb: 85 214 166;
-    --accent-mint-rgb: 56 201 149;
-    --semantic-success: #38c995;
-    --semantic-warning: #f5b85c;
-    --semantic-error: #f16c7d;
-    --semantic-success-rgb: 56 201 149;
-    --semantic-warning-rgb: 245 184 92;
-    --semantic-error-rgb: 241 108 125;
-    --txt-primary: #ffffff;
-    --txt-secondary: #a8b2c6;
-    --txt-muted: #77839a;
-    --txt-primary-rgb: 255 255 255;
-    --txt-secondary-rgb: 168 178 198;
-    --txt-muted-rgb: 119 131 154;
-  }
 
-  [data-theme="violet"] {
-    color-scheme: dark;
-    --bg-deep: #0b1020;
-    --bg-dark: #111a2e;
-    --bg-surface: #151e33;
-    --bg-deep-rgb: 11 16 32;
-    --bg-dark-rgb: 17 26 46;
-    --bg-surface-rgb: 21 30 51;
-    --accent-violet: #8b72ff;
-    --accent-indigo: #6c7dff;
-    --accent-cyan: #40d9e8;
-    --accent-mint: #55d6a6;
-    --accent-violet-rgb: 139 114 255;
-    --accent-indigo-rgb: 108 125 255;
-    --accent-cyan-rgb: 64 217 232;
-    --accent-mint-rgb: 85 214 166;
-    --semantic-success: #38c995;
-    --semantic-warning: #f5b85c;
-    --semantic-error: #f16c7d;
-    --semantic-success-rgb: 56 201 149;
-    --semantic-warning-rgb: 245 184 92;
-    --semantic-error-rgb: 241 108 125;
-    --txt-primary: #ffffff;
-    --txt-secondary: #a8b2c6;
-    --txt-muted: #77839a;
-    --txt-primary-rgb: 255 255 255;
-    --txt-secondary-rgb: 168 178 198;
-    --txt-muted-rgb: 119 131 154;
-  }
 
   [data-theme="light"] {
     color-scheme: light;
-    --bg-deep: #e2efe9;
-    --bg-dark: #eef6f2;
+    --bg-deep: #ffffff;
+    --bg-dark: #f4f5f5;
     --bg-surface: #ffffff;
-    --bg-deep-rgb: 226 239 233;
-    --bg-dark-rgb: 238 246 242;
+    --bg-deep-rgb: 255 255 255;
+    --bg-dark-rgb: 244 245 245;
     --bg-surface-rgb: 255 255 255;
     --accent-violet: #0b7a55;
     --accent-indigo: #0a6e5c;
@@ -317,32 +259,24 @@
     border-radius: 9999px;
   }
 
-  /* Light theme: same Liquid Glass, retinted for white surfaces —
-     frosted glass washed with the brand mint, emerald-tinted shadows,
-     dark-tinted hairlines. */
+  /* Light theme: same Liquid Glass on pure white — white glass,
+     neutral hairlines and soft neutral shadows. The brand emerald
+     lives only in accents and the primary gradient. */
   [data-theme="light"] .glass-card,
   [data-theme="light"] .glass-card-interactive {
-    background: linear-gradient(
-      155deg,
-      color-mix(in srgb, var(--accent-mint) 9%, #ffffff) 0%,
-      color-mix(in srgb, var(--bg-dark) 90%, transparent) 100%
-    );
+    background: linear-gradient(155deg, #ffffff 0%, #fbfcfc 100%);
   }
 
   [data-theme="light"] .glass-panel {
-    background: linear-gradient(
-      145deg,
-      color-mix(in srgb, var(--accent-mint) 11%, #ffffff) 0%,
-      color-mix(in srgb, var(--bg-dark) 92%, transparent) 100%
-    );
+    background: linear-gradient(145deg, #ffffff 0%, #f8f9f9 100%);
   }
 
   [data-theme="light"] .glass-card,
   [data-theme="light"] .glass-card-interactive,
   [data-theme="light"] .glass-panel {
-    border-color: rgb(19 34 44 / 0.1);
+    border-color: rgb(19 34 44 / 0.09);
     box-shadow:
-      0 20px 44px -18px rgb(11 90 66 / 0.22),
+      0 16px 36px -18px rgb(19 34 44 / 0.14),
       inset 0 1px 0 0 rgb(255 255 255 / 0.65);
   }
 
@@ -353,7 +287,7 @@
   [data-theme="light"] .glass-card-interactive:hover {
     border-color: color-mix(in srgb, var(--accent-violet) 45%, transparent);
     box-shadow:
-      0 24px 52px -14px rgb(11 90 66 / 0.28),
+      0 20px 44px -16px rgb(19 34 44 / 0.18),
       inset 0 1px 0 0 rgb(255 255 255 / 0.7);
   }
 
@@ -460,16 +394,13 @@
    Under the light theme those utilities are re-tinted to slate-based
    equivalents so every screen flips without editing each component.
    Unlayered on purpose: it must win over Tailwind's utility layer. */
-/* The white theme keeps the brand's ambient color wash — stronger
-   pastel glows than the dark themes need, plus one warm accent —
-   and a livelier emerald-to-cyan primary gradient. Backgrounds and
-   gradients only: text colors are untouched, so copy stays readable. */
+/* The light theme is pure white: no ambient color wash on the page.
+   Color appears only in accents, charts and the primary gradient. */
 [data-theme="light"] body {
-  background-image:
-    radial-gradient(at 12% 8%, color-mix(in srgb, var(--accent-violet) 26%, transparent) 0px, transparent 48%),
-    radial-gradient(at 88% 14%, color-mix(in srgb, var(--accent-cyan) 24%, transparent) 0px, transparent 44%),
-    radial-gradient(at 52% 88%, color-mix(in srgb, var(--accent-indigo) 22%, transparent) 0px, transparent 52%),
-    radial-gradient(at 80% 84%, rgb(245 184 92 / 0.12) 0px, transparent 42%);
+  background-image: none;
+}
+[data-theme="light"] .ambient-glow {
+  display: none;
 }
 [data-theme="light"] .glass-button-primary {
   background: linear-gradient(135deg, #0a8f66 0%, #07829b 100%);

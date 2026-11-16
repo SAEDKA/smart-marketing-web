@@ -22,7 +22,7 @@ export default function RootLayout({
             of the default palette. Mirrors getStoredTheme(). */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{var t=localStorage.getItem("smp_theme_preference");if(t==="emerald"||t==="ocean"||t==="violet"||t==="light"){document.documentElement.setAttribute("data-theme",t)}}catch(e){}`,
+            __html: `try{var t=localStorage.getItem("smp_theme_preference");if(t==="dark"||t==="light"){document.documentElement.setAttribute("data-theme",t)}}catch(e){}`,
           }}
         />
         {/* Apply the saved language + direction before first paint, so
@@ -34,9 +34,9 @@ export default function RootLayout({
           }}
         />
         {/* Ambient background light gradients for authentic Liquid Glass depth */}
-        <div className="fixed top-0 -start-40 w-96 h-96 rounded-full bg-accent-violet/10 blur-[120px] pointer-events-none -z-10" />
-        <div className="fixed top-1/3 -end-40 w-96 h-96 rounded-full bg-accent-cyan/10 blur-[130px] pointer-events-none -z-10" />
-        <div className="fixed bottom-0 start-1/3 w-96 h-96 rounded-full bg-accent-indigo/10 blur-[140px] pointer-events-none -z-10" />
+        <div className="ambient-glow fixed top-0 -start-40 w-96 h-96 rounded-full bg-accent-violet/10 blur-[120px] pointer-events-none -z-10" />
+        <div className="ambient-glow fixed top-1/3 -end-40 w-96 h-96 rounded-full bg-accent-cyan/10 blur-[130px] pointer-events-none -z-10" />
+        <div className="ambient-glow fixed bottom-0 start-1/3 w-96 h-96 rounded-full bg-accent-indigo/10 blur-[140px] pointer-events-none -z-10" />
 
         <I18nProvider>
           <ThemeProvider>

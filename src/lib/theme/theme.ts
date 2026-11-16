@@ -3,16 +3,14 @@
  * `[data-theme="..."]` variable blocks; this module only tracks which
  * theme is active and applies it to the document root.
  *
- * - "emerald" — the original default (also the `:root` values)
- * - "ocean"   — cyan-leaning dark
- * - "violet"  — purple dark
- * - "light"   — white theme, same Liquid Glass retinted for light surfaces
+ * - "dark"  — the brand dark mode (also the `:root` values)
+ * - "light" — pure-white light mode, same Liquid Glass on white
  */
-export const THEMES = ["emerald", "ocean", "violet", "light"] as const;
+export const THEMES = ["dark", "light"] as const;
 
 export type ThemeName = (typeof THEMES)[number];
 
-export const DEFAULT_THEME: ThemeName = "emerald";
+export const DEFAULT_THEME: ThemeName = "dark";
 
 export const THEME_STORAGE_KEY = "smp_theme_preference";
 
