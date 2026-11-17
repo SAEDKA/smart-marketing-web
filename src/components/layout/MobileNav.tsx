@@ -287,7 +287,7 @@ export const MobileNav = React.memo(function MobileNav({ isOpen, onClose }: Mobi
             </div>
 
             {/* Drawer Footer */}
-            <div className="p-4 border-t border-white/10 bg-black/30 space-y-2.5 shrink-0">
+            <div className="p-4 border-t border-white/10 bg-navy-900 space-y-2.5 shrink-0">
               {!user ? (
                 <Link
                   href="/login"

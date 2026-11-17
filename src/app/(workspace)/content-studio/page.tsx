@@ -162,6 +162,15 @@ export default function ContentStudioPage() {
   }, [searchParams]);
 
   const activeCampaign = campaigns.find((c) => c.id === selectedCampaignId);
+
+  // Plain-language objective for the campaign context options — the
+  // raw enum (INCREASE_ENGAGEMENT) means nothing to a shop owner.
+  const objectiveLabel = (obj: Campaign["objective"]) =>
+    obj === "INCREASE_SALES"
+      ? t.campaigns.filterSales
+      : obj === "INCREASE_ENGAGEMENT"
+        ? t.campaigns.filterEngagement
+        : t.campaigns.filterAwareness;
   const activeProduct = products.find((p) => p.id === selectedProductId);
   const currentVariant = variants[activeVariantIndex] || variants[0];
 
@@ -391,7 +400,7 @@ export default function ContentStudioPage() {
             >
               {campaigns.map((camp) => (
                 <option key={camp.id} value={camp.id}>
-                  {camp.name} ({camp.objective})
+                  {camp.name} — {objectiveLabel(camp.objective)}
                 </option>
               ))}
             </select>
@@ -491,11 +500,15 @@ export default function ContentStudioPage() {
                 }
                 className="glass-input w-full h-10 px-3 text-xs text-white bg-navy-900 focus:outline-none"
               >
-                <option value="LUXURY">LUXURY</option>
-                <option value="PROFESSIONAL">PROFESSIONAL</option>
-                <option value="FRIENDLY">FRIENDLY</option>
-                <option value="BOLD">BOLD</option>
-                <option value="EDUCATIONAL">EDUCATIONAL</option>
+                <option value="LUXURY">{t.onboarding.tones.LUXURY}</option>
+                <option value="PROFESSIONAL">
+                  {t.onboarding.tones.PROFESSIONAL}
+                </option>
+                <option value="FRIENDLY">{t.onboarding.tones.FRIENDLY}</option>
+                <option value="BOLD">{t.onboarding.tones.BOLD}</option>
+                <option value="EDUCATIONAL">
+                  {t.onboarding.tones.EDUCATIONAL}
+                </option>
               </select>
             </div>
 
