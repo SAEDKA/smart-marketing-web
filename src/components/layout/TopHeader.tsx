@@ -7,6 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useI18n } from "@/lib/i18n/context";
 import { useAuth } from "@/lib/auth/context";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
+import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import {
   isHrefLocked,
   noticeKindForTier,
@@ -187,6 +188,9 @@ export const TopHeader = React.memo(function TopHeader({ onOpenMobileNav }: TopH
 
         {/* 3-Language Switcher (EN, TR, AR with RTL) */}
         <LanguageSwitcher />
+
+        {/* Dark / Light mode switch */}
+        <ThemeToggle />
 
         {/* Notification Bell */}
         {isHrefLocked(accessTier, "/notifications") ? (

@@ -481,3 +481,165 @@
 [data-theme="light"] .glass-button-primary .text-white {
   color: #ffffff;
 }
+
+/* Light-mode retint for the fixed slate/violet palette utilities used
+   by the calendar, analytics, reports, integrations and notifications
+   pages. Those pages were authored with translucent dark panels
+   (bg-slate-900/60), slate text and violet accents, which turn into
+   muddy grey blocks on a white page. Under the light theme the panels
+   become white surfaces, their slate text takes the theme text
+   colors, and violet accents become the brand emerald. Solid dark
+   containers (modals, device frames, chips) are deliberately NOT
+   retinted, and dark mode is untouched. */
+[data-theme="light"] .bg-slate-900\/60,
+[data-theme="light"] .bg-slate-900\/80,
+[data-theme="light"] .bg-slate-800\/80 {
+  background-color: #ffffff;
+}
+[data-theme="light"] .bg-slate-900\/40,
+[data-theme="light"] .bg-slate-800\/60 {
+  background-color: #f4f5f5;
+}
+[data-theme="light"] .bg-slate-900\/20 {
+  background-color: #f7f8f8;
+}
+[data-theme="light"] .bg-slate-700\/40 {
+  background-color: rgb(19 34 44 / 0.06);
+}
+[data-theme="light"] :is(.bg-slate-900\/60, .bg-slate-900\/80, .bg-slate-900\/40, .bg-slate-900\/20, .bg-slate-800\/80, .bg-slate-800\/60) .text-slate-200,
+[data-theme="light"] :is(.bg-slate-900\/60, .bg-slate-900\/80, .bg-slate-900\/40, .bg-slate-900\/20, .bg-slate-800\/80, .bg-slate-800\/60).text-slate-200 {
+  color: var(--txt-primary);
+}
+[data-theme="light"] :is(.bg-slate-900\/60, .bg-slate-900\/80, .bg-slate-900\/40, .bg-slate-900\/20, .bg-slate-800\/80, .bg-slate-800\/60) .text-slate-300,
+[data-theme="light"] :is(.bg-slate-900\/60, .bg-slate-900\/80, .bg-slate-900\/40, .bg-slate-900\/20, .bg-slate-800\/80, .bg-slate-800\/60).text-slate-300 {
+  color: var(--txt-secondary);
+}
+[data-theme="light"] :is(.bg-slate-900\/60, .bg-slate-900\/80, .bg-slate-900\/40, .bg-slate-900\/20, .bg-slate-800\/80, .bg-slate-800\/60) .text-slate-400,
+[data-theme="light"] :is(.bg-slate-900\/60, .bg-slate-900\/80, .bg-slate-900\/40, .bg-slate-900\/20, .bg-slate-800\/80, .bg-slate-800\/60).text-slate-400,
+[data-theme="light"] :is(.bg-slate-900\/60, .bg-slate-900\/80, .bg-slate-900\/40, .bg-slate-900\/20, .bg-slate-800\/80, .bg-slate-800\/60) .text-slate-500,
+[data-theme="light"] :is(.bg-slate-900\/60, .bg-slate-900\/80, .bg-slate-900\/40, .bg-slate-900\/20, .bg-slate-800\/80, .bg-slate-800\/60).text-slate-500 {
+  color: var(--txt-muted);
+}
+[data-theme="light"] .bg-white\/5.text-slate-200 {
+  color: var(--txt-secondary);
+}
+[data-theme="light"] .border-slate-700 {
+  border-color: rgb(19 34 44 / 0.18);
+}
+/* Text inside solid dark containers keeps its light colors. */
+[data-theme="light"] .bg-slate-900 .text-white,
+[data-theme="light"] .bg-slate-900.text-white {
+  color: #ffffff;
+}
+/* Violet accents become the brand emerald gradient/tints. */
+[data-theme="light"] .bg-violet-600,
+[data-theme="light"] .bg-violet-500,
+[data-theme="light"] .bg-violet-600\/80 {
+  background: linear-gradient(135deg, #0a8f66 0%, #07829b 100%);
+}
+[data-theme="light"] .bg-violet-500\/10,
+[data-theme="light"] .bg-violet-950\/10 {
+  background-color: rgb(var(--accent-violet-rgb) / 0.08);
+}
+[data-theme="light"] .bg-violet-500\/20,
+[data-theme="light"] .bg-violet-600\/20 {
+  background-color: rgb(var(--accent-violet-rgb) / 0.14);
+}
+[data-theme="light"] .bg-violet-600\/30 {
+  background-color: rgb(var(--accent-violet-rgb) / 0.22);
+}
+[data-theme="light"] .text-violet-400,
+[data-theme="light"] .text-violet-300,
+[data-theme="light"] .text-violet-200 {
+  color: var(--accent-violet);
+}
+[data-theme="light"] .hover\:text-violet-200:hover {
+  color: var(--accent-violet);
+}
+[data-theme="light"] .border-violet-500\/30 {
+  border-color: rgb(var(--accent-violet-rgb) / 0.3);
+}
+[data-theme="light"] .border-violet-500\/20 {
+  border-color: rgb(var(--accent-violet-rgb) / 0.2);
+}
+[data-theme="light"] .ring-violet-500 {
+  --tw-ring-color: rgb(var(--accent-violet-rgb) / 1);
+}
+[data-theme="light"] .ring-violet-500\/50 {
+  --tw-ring-color: rgb(var(--accent-violet-rgb) / 0.5);
+}
+[data-theme="light"] .shadow-violet-600\/25 {
+  --tw-shadow-color: rgb(10 143 102 / 0.25);
+}
+[data-theme="light"] .shadow-violet-600\/20 {
+  --tw-shadow-color: rgb(10 143 102 / 0.2);
+}
+[data-theme="light"] .shadow-violet-950\/20 {
+  --tw-shadow-color: rgb(19 34 44 / 0.2);
+}
+[data-theme="light"] .from-violet-600 {
+  --tw-gradient-from: #0a8f66 var(--tw-gradient-via-position);
+}
+[data-theme="light"] .from-violet-500,
+[data-theme="light"] .hover\:from-violet-500:hover {
+  --tw-gradient-from: #0a8f66 var(--tw-gradient-via-position);
+}
+[data-theme="light"] .to-violet-500,
+[data-theme="light"] .to-indigo-600 {
+  --tw-gradient-to: #07829b var(--tw-gradient-via-position);
+}
+[data-theme="light"] .hover\:to-indigo-500:hover {
+  --tw-gradient-to: #07829b var(--tw-gradient-via-position);
+}
+/* The integrations scope banner: dark translucent gradient stops
+   become a soft light tint, and its pastel labels deepen. */
+[data-theme="light"] .from-blue-950\/40.via-violet-950\/30.to-purple-950\/40 {
+  background-image: linear-gradient(
+    to right,
+    rgb(11 114 133 / 0.07),
+    rgb(var(--accent-violet-rgb) / 0.07),
+    rgb(214 58 82 / 0.05)
+  );
+}
+[data-theme="light"] .from-blue-950\/40 .text-slate-300 {
+  color: var(--txt-secondary);
+}
+[data-theme="light"] .from-blue-950\/40 .text-slate-400,
+[data-theme="light"] .from-blue-950\/40 .text-slate-500 {
+  color: var(--txt-muted);
+}
+[data-theme="light"] .from-blue-950\/40 .text-blue-300,
+[data-theme="light"] .from-blue-950\/40 .text-blue-400 {
+  color: #0284c7;
+}
+[data-theme="light"] .from-blue-950\/40 .text-pink-300 {
+  color: #db2777;
+}
+[data-theme="light"] .from-blue-950\/40 .text-emerald-300 {
+  color: var(--accent-violet);
+}
+
+/* Round two: pastel chip text and the analytics info banner. */
+[data-theme="light"] .text-blue-200 {
+  color: #1d4ed8;
+}
+[data-theme="light"] .text-emerald-200 {
+  color: #047857;
+}
+[data-theme="light"] .text-rose-200 {
+  color: #be123c;
+}
+[data-theme="light"] .text-rose-300 {
+  color: #e11d48;
+}
+[data-theme="light"] .from-blue-950\/40.via-cyan-950\/20.to-slate-900\/40 {
+  background-image: linear-gradient(
+    to right,
+    rgb(11 114 133 / 0.07),
+    rgb(var(--accent-violet-rgb) / 0.06),
+    rgb(19 34 44 / 0.04)
+  );
+}
+[data-theme="light"] .from-blue-950\/40.via-cyan-950\/20 .text-cyan-300 {
+  color: #0b7285;
+}

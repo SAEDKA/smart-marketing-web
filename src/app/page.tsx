@@ -7,6 +7,7 @@ import { useI18n } from "@/lib/i18n/context";
 import { useAuth } from "@/lib/auth/context";
 import { useSpotlight } from "@/lib/hooks/use-spotlight";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
+import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { BrandLogo } from "@/components/layout/BrandLogo";
 import { TypewriterHeadline } from "@/components/landing/TypewriterHeadline";
 import { Button } from "@/components/ui/Button";
@@ -251,6 +252,7 @@ export default function LandingPage() {
 
           <div className="flex items-center gap-2.5">
             <LanguageSwitcher />
+            <ThemeToggle />
             <Link href={isAuthenticated ? "/dashboard" : "/login"} className="hidden sm:block shrink-0">
               <Button variant="secondary" size="sm" className="whitespace-nowrap">
                 {isAuthenticated ? copy.openDashboard : copy.signIn}
