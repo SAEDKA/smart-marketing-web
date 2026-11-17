@@ -495,6 +495,9 @@ export const tr: Dictionary = {
       publishedPostsCount: "Yayınlanmış",
       failedPostsCount: "İnceleme Gerekli",
       scheduleModalTitle: "Yayın Zaman Dilimi Planla",
+      serverTimeNote: "Saat dilimi: Avrupa/İstanbul",
+      targetDate: "Hedef Tarih",
+      targetTime: "Hedef Saat (UTC+03:00)",
       selectApprovedPost: "Onaylanmış Gönderi Seçin",
       selectDateTime: "Yayın Tarihi ve Saati",
       minScheduleNotice:

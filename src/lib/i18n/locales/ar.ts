@@ -491,6 +491,9 @@ export const ar: Dictionary = {
       publishedPostsCount: "منشورة",
       failedPostsCount: "تتطلب اهتماماً",
       scheduleModalTitle: "جدولة موعد النشر",
+      serverTimeNote: "المنطقة الزمنية: أوروبا/إسطنبول",
+      targetDate: "تاريخ النشر",
+      targetTime: "وقت النشر (UTC+03:00)",
       selectApprovedPost: "اختر منشوراً معتمداً",
       selectDateTime: "تاريخ ووقت النشر",
       minScheduleNotice:

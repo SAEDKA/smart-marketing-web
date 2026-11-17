@@ -229,7 +229,7 @@ export default function CalendarPage() {
             <CalendarIcon className="w-7 h-7 text-cyan-400" />
             {t.calendar.title}
           </h1>
-          <p className="text-sm text-slate-400 mt-1 max-w-2xl">
+          <p className="text-sm text-txt-muted mt-1 max-w-2xl">
             {t.calendar.subtitle}
           </p>
         </div>
@@ -262,12 +262,12 @@ export default function CalendarPage() {
             <Clock className="w-5 h-5 text-blue-400" />
           </div>
           <div>
-            <div className="text-xs text-slate-400 font-medium">
+            <div className="text-xs text-txt-muted font-medium">
               {t.calendar.scheduledPostsCount}
             </div>
             <div className="text-xl font-bold text-white">
               {scheduledCount}{" "}
-              <span className="text-xs font-normal text-slate-400">queued</span>
+              <span className="text-xs font-normal text-txt-muted">queued</span>
             </div>
           </div>
         </div>
@@ -277,12 +277,12 @@ export default function CalendarPage() {
             <CheckCircle2 className="w-5 h-5 text-emerald-400" />
           </div>
           <div>
-            <div className="text-xs text-slate-400 font-medium">
+            <div className="text-xs text-txt-muted font-medium">
               {t.calendar.publishedPostsCount}
             </div>
             <div className="text-xl font-bold text-white">
               {publishedCount}{" "}
-              <span className="text-xs font-normal text-slate-400">live</span>
+              <span className="text-xs font-normal text-txt-muted">live</span>
             </div>
           </div>
         </div>
@@ -292,12 +292,12 @@ export default function CalendarPage() {
             <AlertTriangle className="w-5 h-5 text-rose-400" />
           </div>
           <div>
-            <div className="text-xs text-slate-400 font-medium">
+            <div className="text-xs text-txt-muted font-medium">
               {t.calendar.failedPostsCount}
             </div>
             <div className="text-xl font-bold text-white">
               {failedCount}{" "}
-              <span className="text-xs font-normal text-slate-400">issues</span>
+              <span className="text-xs font-normal text-txt-muted">issues</span>
             </div>
           </div>
         </div>
@@ -307,7 +307,7 @@ export default function CalendarPage() {
             <Info className="w-5 h-5 text-violet-400" />
           </div>
           <div className="min-w-0">
-            <div className="text-xs text-slate-400 font-medium truncate">
+            <div className="text-xs text-txt-muted font-medium truncate">
               Server Timezone
             </div>
             <div className="text-xs font-mono font-semibold text-slate-200 truncate">
@@ -323,7 +323,7 @@ export default function CalendarPage() {
           <div className="flex items-center rounded-xl bg-white/5 border border-white/10 p-1">
             <button
               onClick={handlePrevMonth}
-              className="p-1.5 rounded-lg hover:bg-white/10 text-slate-300 transition"
+              className="p-1.5 rounded-lg hover:bg-white/10 text-txt-secondary transition"
               title={t.calendar.prev}
             >
               <ChevronLeft className="w-4 h-4" />
@@ -336,7 +336,7 @@ export default function CalendarPage() {
             </button>
             <button
               onClick={handleNextMonth}
-              className="p-1.5 rounded-lg hover:bg-white/10 text-slate-300 transition"
+              className="p-1.5 rounded-lg hover:bg-white/10 text-txt-secondary transition"
               title={t.calendar.next}
             >
               <ChevronRight className="w-4 h-4" />
@@ -355,7 +355,7 @@ export default function CalendarPage() {
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
                 viewMode === "month"
                   ? "bg-violet-600 text-white shadow-md shadow-violet-600/25"
-                  : "text-slate-400 hover:text-white"
+                  : "text-txt-muted hover:text-txt-primary"
               }`}
             >
               {t.calendar.monthView}
@@ -365,7 +365,7 @@ export default function CalendarPage() {
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
                 viewMode === "week"
                   ? "bg-violet-600 text-white shadow-md shadow-violet-600/25"
-                  : "text-slate-400 hover:text-white"
+                  : "text-txt-muted hover:text-txt-primary"
               }`}
             >
               {t.calendar.weekView}
@@ -377,7 +377,7 @@ export default function CalendarPage() {
       {/* Calendar Grid Container */}
       <div className="rounded-2xl border border-white/10 bg-slate-900/40 backdrop-blur-xl overflow-hidden shadow-2xl">
         {/* Day of Week Header */}
-        <div className="grid grid-cols-7 border-b border-white/10 text-center text-xs font-semibold text-slate-400 bg-white/[0.02]">
+        <div className="grid grid-cols-7 border-b border-white/10 text-center text-xs font-semibold text-txt-muted bg-white/[0.02]">
           {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
             <div key={day} className="py-3 uppercase tracking-wider">
               {day}
@@ -411,7 +411,7 @@ export default function CalendarPage() {
                       isToday
                         ? "bg-violet-600 text-white font-bold"
                         : dayObj.isCurrentMonth
-                        ? "text-slate-300"
+                        ? "text-txt-secondary"
                         : "text-slate-600"
                     }`}
                   >
@@ -443,7 +443,7 @@ export default function CalendarPage() {
                             ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-200 hover:border-emerald-400"
                             : post.status === "FAILED"
                             ? "bg-rose-500/20 border-rose-500/40 text-rose-200 hover:border-rose-400"
-                            : "bg-slate-800/60 border-slate-700 text-slate-300"
+                            : "bg-slate-800/60 border-slate-700 text-txt-secondary"
                         }`}
                       >
                         {isInstagram ? (
@@ -472,7 +472,7 @@ export default function CalendarPage() {
       {/* Schedule Post Modal */}
       {isScheduleModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4 animate-in fade-in duration-200">
-          <div className="w-full max-w-lg rounded-2xl bg-slate-900 border border-white/15 p-6 shadow-2xl space-y-5">
+          <div className="w-full max-w-lg rounded-2xl bg-navy-950 border border-white/15 p-6 shadow-2xl space-y-5">
             <div className="flex items-center justify-between border-b border-white/10 pb-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-violet-500/20 border border-violet-500/30 flex items-center justify-center">
@@ -482,14 +482,14 @@ export default function CalendarPage() {
                   <h3 className="text-base font-bold text-white">
                     {t.calendar.scheduleModalTitle}
                   </h3>
-                  <p className="text-xs text-slate-400">
-                    Server Authoritative • Europe/Istanbul Timezone
+                  <p className="text-xs text-txt-muted">
+                    {t.calendar.serverTimeNote}
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => setIsScheduleModalOpen(false)}
-                className="text-slate-400 hover:text-white text-sm"
+                className="text-txt-muted hover:text-txt-primary text-sm"
               >
                 ✕
               </button>
@@ -505,7 +505,7 @@ export default function CalendarPage() {
             <form onSubmit={handleConfirmSchedule} className="space-y-4">
               {/* Select Approved Post */}
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                <label className="block text-xs font-semibold text-txt-secondary mb-1.5">
                   {t.calendar.selectApprovedPost}
                 </label>
                 {approvedPosts.length === 0 ? (
@@ -522,7 +522,7 @@ export default function CalendarPage() {
                       <option
                         key={post.id}
                         value={post.id}
-                        className="bg-slate-900 text-white"
+                        className="bg-navy-950 text-white"
                       >
                         [{post.platform}] {post.currentVersion.title} (
                         {post.campaignName})
@@ -535,8 +535,8 @@ export default function CalendarPage() {
               {/* Date & Time Picker */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-                    Target Date
+                  <label className="block text-xs font-semibold text-txt-secondary mb-1.5">
+                    {t.calendar.targetDate}
                   </label>
                   <input
                     type="date"
@@ -547,8 +547,8 @@ export default function CalendarPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-                    Target Time (UTC+03:00)
+                  <label className="block text-xs font-semibold text-txt-secondary mb-1.5">
+                    {t.calendar.targetTime}
                   </label>
                   <input
                     type="time"
@@ -560,8 +560,8 @@ export default function CalendarPage() {
                 </div>
               </div>
 
-              <div className="p-3 rounded-xl bg-white/[0.03] border border-white/5 text-[11px] text-slate-400 space-y-1">
-                <div className="flex items-center gap-1.5 text-slate-300">
+              <div className="p-3 rounded-xl bg-white/[0.03] border border-white/5 text-[11px] text-txt-muted space-y-1">
+                <div className="flex items-center gap-1.5 text-txt-secondary">
                   <Info className="w-3.5 h-3.5 text-violet-400" />
                   <span>{t.calendar.minScheduleNotice}</span>
                 </div>
@@ -573,7 +573,7 @@ export default function CalendarPage() {
                   type="button"
                   onClick={() => setIsScheduleModalOpen(false)}
                   disabled={actionLoading === "schedule"}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold bg-white/5 hover:bg-white/10 text-slate-300 transition"
+                  className="px-4 py-2 rounded-xl text-xs font-semibold bg-white/5 hover:bg-white/10 text-txt-secondary transition"
                 >
                   {t.common.cancel}
                 </button>
@@ -598,7 +598,7 @@ export default function CalendarPage() {
       {/* Post Inspector Modal (WEB-03-03) */}
       {selectedPost && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-md p-4 animate-in fade-in duration-200">
-          <div className="w-full max-w-xl rounded-2xl bg-slate-900 border border-white/15 p-6 shadow-2xl space-y-5">
+          <div className="w-full max-w-xl rounded-2xl bg-navy-950 border border-white/15 p-6 shadow-2xl space-y-5">
             {/* Header */}
             <div className="flex items-start justify-between border-b border-white/10 pb-4">
               <div className="flex items-center gap-3">
@@ -619,7 +619,7 @@ export default function CalendarPage() {
                   <h3 className="text-base font-bold text-white">
                     {selectedPost.currentVersion?.title}
                   </h3>
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs text-txt-muted">
                     {selectedPost.campaignName} •{" "}
                     {selectedPost.platform === "INSTAGRAM"
                       ? "Instagram Professional"
@@ -645,7 +645,7 @@ export default function CalendarPage() {
                   {selectedPost.status}
                 </span>
               ) : (
-                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-slate-700/40 text-slate-300 border border-slate-600/30">
+                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-slate-700/40 text-txt-secondary border border-slate-600/30">
                   {selectedPost.status}
                 </span>
               )}
@@ -687,7 +687,7 @@ export default function CalendarPage() {
                     <CheckCircle2 className="w-3.5 h-3.5" />
                     Published Live to Social Network
                   </div>
-                  <div className="text-[11px] text-slate-400">
+                  <div className="text-[11px] text-txt-muted">
                     {selectedPost.publishedAt
                       ? new Date(selectedPost.publishedAt).toLocaleString(locale)
                       : "Timestamp confirmed"}
@@ -711,7 +711,7 @@ export default function CalendarPage() {
             {/* Post Content Details */}
             <div className="p-4 rounded-xl bg-white/[0.03] border border-white/5 space-y-3">
               <div>
-                <span className="text-[11px] font-semibold text-slate-400 block mb-1">
+                <span className="text-[11px] font-semibold text-txt-muted block mb-1">
                   Caption
                 </span>
                 <p className="text-xs text-slate-200 leading-relaxed whitespace-pre-wrap">
@@ -721,7 +721,7 @@ export default function CalendarPage() {
 
               {selectedPost.currentVersion?.hashtags?.length > 0 && (
                 <div>
-                  <span className="text-[11px] font-semibold text-slate-400 block mb-1">
+                  <span className="text-[11px] font-semibold text-txt-muted block mb-1">
                     Hashtags
                   </span>
                   <div className="flex flex-wrap gap-1">
@@ -739,7 +739,7 @@ export default function CalendarPage() {
 
               {selectedPost.currentVersion?.callToAction && (
                 <div>
-                  <span className="text-[11px] font-semibold text-slate-400 block mb-0.5">
+                  <span className="text-[11px] font-semibold text-txt-muted block mb-0.5">
                     Call to Action
                   </span>
                   <p className="text-xs font-semibold text-cyan-300">
@@ -749,7 +749,7 @@ export default function CalendarPage() {
               )}
 
               {selectedPost.scheduledAt && (
-                <div className="pt-2 border-t border-white/5 flex items-center justify-between text-xs text-slate-400">
+                <div className="pt-2 border-t border-white/5 flex items-center justify-between text-xs text-txt-muted">
                   <span>Scheduled Publication:</span>
                   <span className="font-mono text-slate-200 font-semibold">
                     {new Date(selectedPost.scheduledAt).toLocaleString(locale)}
@@ -792,7 +792,7 @@ export default function CalendarPage() {
               <button
                 type="button"
                 onClick={() => setSelectedPost(null)}
-                className="px-4 py-2 rounded-xl text-xs font-semibold bg-white/5 hover:bg-white/10 text-slate-300 transition"
+                className="px-4 py-2 rounded-xl text-xs font-semibold bg-white/5 hover:bg-white/10 text-txt-secondary transition"
               >
                 {t.common.close}
               </button>

@@ -438,6 +438,9 @@ export interface Dictionary {
     publishedPostsCount: string;
     failedPostsCount: string;
     scheduleModalTitle: string;
+    serverTimeNote: string;
+    targetDate: string;
+    targetTime: string;
     selectApprovedPost: string;
     selectDateTime: string;
     minScheduleNotice: string;

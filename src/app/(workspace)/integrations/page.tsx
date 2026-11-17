@@ -114,7 +114,7 @@ export default function IntegrationsPage() {
             <Share2 className="w-7 h-7 text-violet-400" />
             {t.integrations.title}
           </h1>
-          <p className="text-sm text-slate-400 mt-1 max-w-2xl">
+          <p className="text-sm text-txt-muted mt-1 max-w-2xl">
             {t.integrations.subtitle}
           </p>
         </div>
@@ -158,11 +158,11 @@ export default function IntegrationsPage() {
                 Active Channels
               </span>
             </div>
-            <p className="text-xs lg:text-sm text-slate-300 leading-relaxed">
+            <p className="text-xs lg:text-sm text-txt-secondary leading-relaxed">
               {t.integrations.mvpLimitationDesc}
             </p>
             <div className="flex items-center gap-2 pt-1 flex-wrap">
-              <span className="text-xs text-slate-400 font-medium me-1">
+              <span className="text-xs text-txt-muted font-medium me-1">
                 Supported:
               </span>
               <span className="text-xs px-2.5 py-1 rounded-lg bg-pink-500/20 border border-pink-500/30 text-pink-300 font-medium flex items-center gap-1.5">
@@ -196,7 +196,7 @@ export default function IntegrationsPage() {
                   <h3 className="text-lg font-bold text-white">
                     Instagram Professional
                   </h3>
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs text-txt-muted">
                     Meta Business API • Publishing & Insights
                   </p>
                 </div>
@@ -214,8 +214,8 @@ export default function IntegrationsPage() {
                   {t.integrations.statusTokenExpired}
                 </span>
               ) : (
-                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-slate-700/40 text-slate-400 border border-slate-600/30 flex items-center gap-1.5">
-                  <XCircle className="w-3.5 h-3.5 text-slate-400" />
+                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-slate-700/40 text-txt-muted border border-slate-600/30 flex items-center gap-1.5">
+                  <XCircle className="w-3.5 h-3.5 text-txt-muted" />
                   {t.integrations.statusDisconnected}
                 </span>
               )}
@@ -234,8 +234,8 @@ export default function IntegrationsPage() {
                     </div>
                   </div>
                   <div className="text-end">
-                    <div className="text-xs text-slate-400 flex items-center gap-1 justify-end">
-                      <Users className="w-3.5 h-3.5 text-slate-400" />
+                    <div className="text-xs text-txt-muted flex items-center gap-1 justify-end">
+                      <Users className="w-3.5 h-3.5 text-txt-muted" />
                       {t.integrations.followers}
                     </div>
                     <div className="text-sm font-bold text-slate-200">
@@ -244,10 +244,10 @@ export default function IntegrationsPage() {
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-white/5 text-xs text-slate-400 space-y-1">
+                <div className="pt-2 border-t border-white/5 text-xs text-txt-muted space-y-1">
                   <div className="flex justify-between">
                     <span>{t.integrations.externalId}:</span>
-                    <span className="font-mono text-slate-300">
+                    <span className="font-mono text-txt-secondary">
                       {instagramAccount.externalId}
                     </span>
                   </div>
@@ -264,7 +264,7 @@ export default function IntegrationsPage() {
                 </div>
               </div>
             ) : (
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <p className="text-xs text-txt-muted leading-relaxed">
                 Connect your Instagram Professional or Creator account linked to
                 your Meta Business Manager to enable automated feed publishing
                 and performance data.
@@ -324,7 +324,7 @@ export default function IntegrationsPage() {
                   <h3 className="text-lg font-bold text-white">
                     Facebook Business Pages
                   </h3>
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs text-txt-muted">
                     Meta Graph API • Page Management & Publishing
                   </p>
                 </div>
@@ -342,8 +342,8 @@ export default function IntegrationsPage() {
                   {t.integrations.statusTokenExpired}
                 </span>
               ) : (
-                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-slate-700/40 text-slate-400 border border-slate-600/30 flex items-center gap-1.5">
-                  <XCircle className="w-3.5 h-3.5 text-slate-400" />
+                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-slate-700/40 text-txt-muted border border-slate-600/30 flex items-center gap-1.5">
+                  <XCircle className="w-3.5 h-3.5 text-txt-muted" />
                   {t.integrations.statusDisconnected}
                 </span>
               )}
@@ -370,8 +370,8 @@ export default function IntegrationsPage() {
                     </div>
                   </div>
                   <div className="text-end">
-                    <div className="text-xs text-slate-400 flex items-center gap-1 justify-end">
-                      <Users className="w-3.5 h-3.5 text-slate-400" />
+                    <div className="text-xs text-txt-muted flex items-center gap-1 justify-end">
+                      <Users className="w-3.5 h-3.5 text-txt-muted" />
                       {t.integrations.followers}
                     </div>
                     <div className="text-sm font-bold text-slate-200">
@@ -380,10 +380,10 @@ export default function IntegrationsPage() {
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-white/5 text-xs text-slate-400 space-y-1">
+                <div className="pt-2 border-t border-white/5 text-xs text-txt-muted space-y-1">
                   <div className="flex justify-between">
                     <span>{t.integrations.externalId}:</span>
-                    <span className="font-mono text-slate-300">
+                    <span className="font-mono text-txt-secondary">
                       {facebookAccount.externalId}
                     </span>
                   </div>
@@ -406,7 +406,7 @@ export default function IntegrationsPage() {
                 </div>
               </div>
             ) : (
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <p className="text-xs text-txt-muted leading-relaxed">
                 Connect your official Facebook Business Page to distribute
                 approved marketing campaigns, link previews, and customer
                 updates directly to your brand followers.
@@ -472,14 +472,14 @@ export default function IntegrationsPage() {
             <h4 className="text-sm font-semibold text-white">
               Enterprise OAuth 2.0 PKCE Security
             </h4>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-txt-muted">
               Access tokens are stored server-side with AES-256 encryption. The
               frontend web application never persists or handles unencrypted Meta
               API secrets.
             </p>
           </div>
         </div>
-        <span className="text-xs px-3 py-1 rounded-full bg-slate-800 text-slate-400 border border-slate-700 font-mono">
+        <span className="text-xs px-3 py-1 rounded-full bg-slate-800 text-txt-muted border border-slate-700 font-mono">
           Strict Token Boundary • Client Isolation
         </span>
       </div>
@@ -487,7 +487,7 @@ export default function IntegrationsPage() {
       {/* OAuth Redirection Simulation Modal */}
       {oauthModal.isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4 animate-in fade-in duration-200">
-          <div className="w-full max-w-md rounded-2xl bg-slate-900 border border-white/15 p-6 shadow-2xl space-y-5">
+          <div className="w-full max-w-md rounded-2xl bg-navy-950 border border-white/15 p-6 shadow-2xl space-y-5">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-violet-500/20 border border-violet-500/30 flex items-center justify-center">
                 <Lock className="w-5 h-5 text-violet-400" />
@@ -496,7 +496,7 @@ export default function IntegrationsPage() {
                 <h3 className="text-base font-bold text-white">
                   {t.integrations.oauthModalTitle}
                 </h3>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-txt-muted">
                   {oauthModal.platform === "INSTAGRAM"
                     ? "Instagram Professional API"
                     : "Facebook Pages API"}
@@ -504,14 +504,14 @@ export default function IntegrationsPage() {
               </div>
             </div>
 
-            <p className="text-xs text-slate-300 leading-relaxed">
+            <p className="text-xs text-txt-secondary leading-relaxed">
               {t.integrations.oauthModalDesc}
             </p>
 
-            <div className="p-3.5 rounded-xl bg-white/[0.03] border border-white/5 text-xs text-slate-400 space-y-1">
+            <div className="p-3.5 rounded-xl bg-white/[0.03] border border-white/5 text-xs text-txt-muted space-y-1">
               <div>
                 <span className="text-slate-500">Target Origin:</span>{" "}
-                <span className="font-mono text-slate-300">
+                <span className="font-mono text-txt-secondary">
                   https://www.facebook.com/v19.0/dialog/oauth
                 </span>
               </div>
@@ -528,7 +528,7 @@ export default function IntegrationsPage() {
                 type="button"
                 onClick={() => setOauthModal({ isOpen: false })}
                 disabled={actionLoading === "oauth"}
-                className="px-4 py-2 rounded-xl text-xs font-semibold bg-white/5 hover:bg-white/10 text-slate-300 transition"
+                className="px-4 py-2 rounded-xl text-xs font-semibold bg-white/5 hover:bg-white/10 text-txt-secondary transition"
               >
                 {t.common.cancel}
               </button>
@@ -558,7 +558,7 @@ export default function IntegrationsPage() {
       {/* Disconnect Confirmation Modal */}
       {disconnectModal.isOpen && disconnectModal.account && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4 animate-in fade-in duration-200">
-          <div className="w-full max-w-md rounded-2xl bg-slate-900 border border-white/15 p-6 shadow-2xl space-y-5">
+          <div className="w-full max-w-md rounded-2xl bg-navy-950 border border-white/15 p-6 shadow-2xl space-y-5">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-rose-500/20 border border-rose-500/30 flex items-center justify-center">
                 <AlertTriangle className="w-5 h-5 text-rose-400" />
@@ -573,7 +573,7 @@ export default function IntegrationsPage() {
               </div>
             </div>
 
-            <p className="text-xs text-slate-300 leading-relaxed">
+            <p className="text-xs text-txt-secondary leading-relaxed">
               {t.integrations.disconnectConfirm}
             </p>
 
@@ -582,7 +582,7 @@ export default function IntegrationsPage() {
                 type="button"
                 onClick={() => setDisconnectModal({ isOpen: false })}
                 disabled={actionLoading === "disconnect"}
-                className="px-4 py-2 rounded-xl text-xs font-semibold bg-white/5 hover:bg-white/10 text-slate-300 transition"
+                className="px-4 py-2 rounded-xl text-xs font-semibold bg-white/5 hover:bg-white/10 text-txt-secondary transition"
               >
                 {t.common.cancel}
               </button>

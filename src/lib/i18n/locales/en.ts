@@ -495,6 +495,9 @@ export const en: Dictionary = {
       publishedPostsCount: "Published",
       failedPostsCount: "Attention Required",
       scheduleModalTitle: "Schedule Publication Slot",
+      serverTimeNote: "Europe/Istanbul timezone",
+      targetDate: "Target Date",
+      targetTime: "Target Time (UTC+03:00)",
       selectApprovedPost: "Select Approved Post",
       selectDateTime: "Publishing Date & Time",
       minScheduleNotice:
