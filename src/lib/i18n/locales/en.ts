@@ -190,8 +190,7 @@ export const en: Dictionary = {
       draftProtectedNotice:
         "Safe Recovery Active: Your form inputs are preserved locally in memory if a network or API error occurs during submission.",
       completeOnboardingBtn: "Save & Complete Onboarding",
-      onboardingSuccessMsg:
-        "Company onboarding saved to /api/v1/company/onboarding.",
+      onboardingSuccessMsg: "Your company details were saved successfully.",
       tones: {
         PROFESSIONAL: "Professional & Authoritative",
         FRIENDLY: "Warm, Friendly & Conversational",
@@ -367,6 +366,8 @@ export const en: Dictionary = {
       subtitle:
         "Generate multi-variant marketing copy, hashtags, CTAs, and visual ideas with asynchronous job states.",
       campaignContext: "Campaign Strategy Context",
+      noCampaignsYet:
+        "No campaigns yet — create one from the Campaigns page first",
       productContext: "Featured Product",
       productOptionalBadge: "Optional",
       productOptionalHint:

@@ -325,6 +325,7 @@ export interface Dictionary {
     title: string;
     subtitle: string;
     campaignContext: string;
+    noCampaignsYet: string;
     productContext: string;
     productOptionalBadge: string;
     productOptionalHint: string;

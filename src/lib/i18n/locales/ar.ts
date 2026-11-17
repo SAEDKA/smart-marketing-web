@@ -187,8 +187,7 @@ export const ar: Dictionary = {
       draftProtectedNotice:
         "حماية المسودة نشطة: يتم الاحتفاظ بمدخلاتك بأمان في حال حدوث خطأ في الشبكة أو الخادم أثناء الحفظ.",
       completeOnboardingBtn: "حفظ وإكمال الإعداد",
-      onboardingSuccessMsg:
-        "تم حفظ بيانات إعداد الشركة بنجاح في /api/v1/company/onboarding.",
+      onboardingSuccessMsg: "تم حفظ بيانات شركتك بنجاح.",
       tones: {
         PROFESSIONAL: "احترافية وموثوقة",
         FRIENDLY: "ودودة وقريبة من الجمهور",
@@ -364,6 +363,7 @@ export const ar: Dictionary = {
       subtitle:
         "توليد نصوص تسويقية متعددة البدائل والوسوم ونداء العمل والأفكار البصرية مع حالات معالجة غير متزامنة.",
       campaignContext: "سياق الحملة التسويقية",
+      noCampaignsYet: "لا توجد حملات بعد — أنشئ حملة من صفحة الحملات أولاً",
       productContext: "المنتج المستهدف",
       productOptionalBadge: "اختياري",
       productOptionalHint:

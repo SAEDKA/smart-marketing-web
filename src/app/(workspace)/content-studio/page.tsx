@@ -396,8 +396,12 @@ export default function ContentStudioPage() {
             <select
               value={selectedCampaignId}
               onChange={(e) => setSelectedCampaignId(e.target.value)}
+              disabled={campaigns.length === 0}
               className="glass-input w-full h-11 px-3 text-xs text-white bg-navy-900 focus:outline-none"
             >
+              {campaigns.length === 0 && (
+                <option value="">{t.studio.noCampaignsYet}</option>
+              )}
               {campaigns.map((camp) => (
                 <option key={camp.id} value={camp.id}>
                   {camp.name} — {objectiveLabel(camp.objective)}

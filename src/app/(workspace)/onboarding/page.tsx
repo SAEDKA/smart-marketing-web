@@ -237,9 +237,6 @@ export default function OnboardingPage() {
             <CheckCircle2 className="w-5 h-5 shrink-0 mt-0.5" />
             <div>
               <p className="font-semibold">{t.onboarding.onboardingSuccessMsg}</p>
-              <p className="mt-1 text-white/90">
-                Company profile synchronized to /company/profile. Brand configuration updated.
-              </p>
             </div>
           </div>
         )}
@@ -413,7 +410,8 @@ export default function OnboardingPage() {
                 </p>
                 <p>
                   <strong className="text-white">Language / Tone:</strong>{" "}
-                  {preferredLanguage.toUpperCase()} &bull; {communicationTone}
+                  {t.onboarding.languages[preferredLanguage]} &bull;{" "}
+                  {t.onboarding.tones[communicationTone]}
                 </p>
               </div>
             </div>

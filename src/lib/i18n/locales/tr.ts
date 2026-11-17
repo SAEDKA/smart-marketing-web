@@ -189,8 +189,7 @@ export const tr: Dictionary = {
       draftProtectedNotice:
         "Güvenli Kurtarma Aktif: Gönderim sırasında ağ veya API hatası oluşursa girdiğiniz veriler kaybolmaz.",
       completeOnboardingBtn: "Kaydet ve Kurulumu Tamamla",
-      onboardingSuccessMsg:
-        "Şirket kurulum bilgileri /api/v1/company/onboarding uç noktasına kaydedildi.",
+      onboardingSuccessMsg: "Şirket bilgileriniz başarıyla kaydedildi.",
       tones: {
         PROFESSIONAL: "Profesyonel & Güvenilir",
         FRIENDLY: "Sıcak, Samimi & Doğal",
@@ -367,6 +366,8 @@ export const tr: Dictionary = {
       subtitle:
         "Eşzamansız iş durumları ile çoklu varyasyonlu pazarlama metinleri, etiketler ve görsel fikirler üretin.",
       campaignContext: "Kampanya Strateji Bağlamı",
+      noCampaignsYet:
+        "Henüz kampanya yok — önce Kampanyalar sayfasından oluşturun",
       productContext: "Öne Çıkarılan Ürün",
       productOptionalBadge: "İsteğe bağlı",
       productOptionalHint:
