@@ -419,10 +419,11 @@ export default function OnboardingPage() {
         )}
 
         {/* Wizard Navigation Actions */}
-        <div className="flex items-center justify-between pt-6 border-t border-white/10 mt-6">
+        <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between pt-6 border-t border-white/10 mt-6">
           <Button
             type="button"
             variant="ghost"
+            className="w-full sm:w-auto"
             onClick={handleBack}
             disabled={currentStep === 1}
             leftIcon={<ArrowLeft className="w-4 h-4" />}
@@ -434,6 +435,7 @@ export default function OnboardingPage() {
             <Button
               type="button"
               variant="primary"
+              className="w-full sm:w-auto"
               onClick={handleNext}
               rightIcon={<ArrowRight className="w-4 h-4" />}
             >
@@ -443,6 +445,7 @@ export default function OnboardingPage() {
             <Button
               type="button"
               variant="primary"
+              className="w-full sm:w-auto"
               onClick={handleComplete}
               isLoading={isLoading}
               leftIcon={<CheckCircle2 className="w-4 h-4" />}
